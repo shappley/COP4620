@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class Lexer {
     public static final String TOKEN_PATTERN = "^(?<token>(\\s*(%s)))(.+)?$";
     public static final String CHAR_TOKEN = "[a-zA-Z]+";
-    public static final String NUM_TOKEN = "\\d+";
+    public static final String NUM_TOKEN = "\\d+(\\.\\d+)?(E(\\+|-)?\\d+)?";
     public static final String LINE_COMMENT = "//.*(\n\r?)?";
     private static final Pattern[] TOKEN_PATTERNS = {
             Pattern.compile(TOKEN_PATTERN.replace("%s", CHAR_TOKEN)),
