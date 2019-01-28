@@ -32,7 +32,15 @@ class LexerTest {
                 arguments("if (hello == 42)", 3, new Token(TokenType.ID, "hello")),
                 arguments("if (hello == 42)", 4, new Token(TokenType.SPECIAL_SYMBOL, "==")),
                 arguments("if (hello == 42)", 5, new Token(TokenType.NUM, "42")),
-                arguments("if (hello == 42)", 6, new Token(TokenType.SPECIAL_SYMBOL, ")"))
+                arguments("if (hello == 42)", 6, new Token(TokenType.SPECIAL_SYMBOL, ")")),
+                arguments("if(dlfgldfg >= 1.04", 4, new Token(TokenType.SPECIAL_SYMBOL, ">=")),
+                arguments("if(dlfgldfg <= 1.04", 4, new Token(TokenType.SPECIAL_SYMBOL, "<=")),
+                arguments("if(dlfgldfg != 1.04", 4, new Token(TokenType.SPECIAL_SYMBOL, "!=")),
+                arguments("if(dlfgldfg > 1.04", 4, new Token(TokenType.SPECIAL_SYMBOL, ">")),
+                arguments("if(dlfgldfg < 1.04", 4, new Token(TokenType.SPECIAL_SYMBOL, "<")),
+                arguments("if(dlfgldfg >= 1.04", 5, new Token(TokenType.NUM, "1.04")),
+                arguments("if(dlfgldfg >= 1.04E2", 5, new Token(TokenType.NUM, "1.04E2")),
+                arguments("if(dlfgldfg >= 1.04E-2", 5, new Token(TokenType.NUM, "1.04E-2"))
         );
     }
 
@@ -48,18 +56,18 @@ class LexerTest {
     private static Stream<Arguments> getTokensArguments() {
         return Stream.of(
                 arguments("if(hello==42) { /*fgfgh/*int i = 5;*/fgfgh*/ return 11; }//int j = 12;", new Token[]{
-                        new Token(TokenType.KEYWORD, "if"),
-                        new Token(TokenType.SPECIAL_SYMBOL, "("),
-                        new Token(TokenType.ID, "hello"),
-                        new Token(TokenType.SPECIAL_SYMBOL, "=="),
-                        new Token(TokenType.NUM, "42"),
-                        new Token(TokenType.SPECIAL_SYMBOL, ")"),
-                        new Token(TokenType.SPECIAL_SYMBOL, "{"),
-                        new Token(TokenType.KEYWORD, "return"),
-                        new Token(TokenType.NUM, "11"),
-                        new Token(TokenType.SPECIAL_SYMBOL, ";"),
-                        new Token(TokenType.SPECIAL_SYMBOL, "}")
-                }
-        ));
+                                new Token(TokenType.KEYWORD, "if"),
+                                new Token(TokenType.SPECIAL_SYMBOL, "("),
+                                new Token(TokenType.ID, "hello"),
+                                new Token(TokenType.SPECIAL_SYMBOL, "=="),
+                                new Token(TokenType.NUM, "42"),
+                                new Token(TokenType.SPECIAL_SYMBOL, ")"),
+                                new Token(TokenType.SPECIAL_SYMBOL, "{"),
+                                new Token(TokenType.KEYWORD, "return"),
+                                new Token(TokenType.NUM, "11"),
+                                new Token(TokenType.SPECIAL_SYMBOL, ";"),
+                                new Token(TokenType.SPECIAL_SYMBOL, "}")
+                        }
+                ));
     }
 }
