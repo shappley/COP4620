@@ -9,20 +9,31 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class LexerTest {
 
     @ParameterizedTest
     @DisplayName("getNextToken")
     @MethodSource("getNextTokenArguments")
-    void getNextToken(String source, Token expected) {
+    void getNextToken(String source, int index, Token expected) {
         Lexer lexer = new Lexer(source);
-        Token actual = lexer.getNextToken();
+        Token actual = null;
+        for (int i = 0; i < index; i++) {
+            actual = lexer.getNextToken();
+        }
         assertEquals(expected, actual);
     }
 
     private static Stream<Arguments> getNextTokenArguments() {
-        return Stream.of(Arguments.of("if(hello)", new Token(TokenType.KEYWORD, "if")));
+        return Stream.of(
+                arguments("if (hello == 42)", 1, new Token(TokenType.KEYWORD, "if")),
+                arguments("if (hello == 42)", 2, new Token(TokenType.SPECIAL_SYMBOL, "(")),
+                arguments("if (hello == 42)", 3, new Token(TokenType.ID, "hello")),
+                arguments("if (hello == 42)", 4, new Token(TokenType.SPECIAL_SYMBOL, "==")),
+                arguments("if (hello == 42)", 5, new Token(TokenType.NUM, "42")),
+                arguments("if (hello == 42)", 6, new Token(TokenType.SPECIAL_SYMBOL, ")"))
+        );
     }
 
     @ParameterizedTest(name = "{0}")
