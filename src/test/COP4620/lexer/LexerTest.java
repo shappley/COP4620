@@ -46,8 +46,8 @@ class LexerTest {
     }
 
     private static Stream<Arguments> getTokensArguments() {
-        return Stream.of(Arguments.of(
-                "if(hello==42)", new Token[]{
+        return Stream.of(
+                arguments("if(hello==42)//int i = 5;", new Token[]{
                         new Token(TokenType.KEYWORD, "if"),
                         new Token(TokenType.SPECIAL_SYMBOL, "("),
                         new Token(TokenType.ID, "hello"),
@@ -56,5 +56,21 @@ class LexerTest {
                         new Token(TokenType.SPECIAL_SYMBOL, ")")
                 }
         ));
+    }
+
+    @ParameterizedTest
+    @DisplayName("stripComments")
+    @MethodSource("stripCommentsArguments")
+    void stripComments(String source, String expected) {
+        Lexer lexer = new Lexer(source);
+        lexer.stripComments();
+        assertEquals(expected, lexer.getRemainingSource());
+    }
+
+    private static Stream<Arguments> stripCommentsArguments() {
+        return Stream.of(
+                arguments("if(hello==42)//int i = 5;", "if(hello==42)"),
+                arguments("if(hello==42)/*int i = 5;*/", "if(hello==42)")
+        );
     }
 }
