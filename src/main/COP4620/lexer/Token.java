@@ -29,6 +29,6 @@ public class Token {
 
     @Override
     public String toString() {
-        return "[" + "'" + getType() + "', " + getValue() + "]";
+        return "[" + "'" + getType() + "', '" + getValue() + "']";
     }
 }
