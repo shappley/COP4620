@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Lexer {
-    public static final String TOKEN_PATTERN = "^(\\s+)?(?<token>%s)(.+)?$";
+    public static final String TOKEN_PATTERN = "^(?<token>(\\s*(%s)))(.+)?$";
     public static final String CHAR_TOKEN = "[a-zA-Z]+";
     public static final String NUM_TOKEN = "\\d+";
     private static final Pattern[] TOKEN_PATTERNS = {
