@@ -1,6 +1,7 @@
 package COP4620.lexer;
 
 import COP4620.SpecialSymbol;
+import COP4620.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,9 @@ public class Lexer {
 
     public Token getNextToken() {
         final String tokenString = readToken();
+        if (tokenString == null) {
+            return null;
+        }
         final TokenType tokenType = TokenType.getTypeOf(tokenString);
         return new Token(tokenType, tokenString);
     }
@@ -45,18 +49,37 @@ public class Lexer {
     }
 
     private String readToken() {
-        for (Pattern p : TOKEN_PATTERNS) {
-            final Matcher m = p.matcher(source);
+        for (int i = 0; i < TOKEN_PATTERNS.length; i++) {
+            final Matcher m = TOKEN_PATTERNS[i].matcher(source);
             if (m.find()) {
                 final String token = m.group("token");
-                this.source = this.source.substring(token.length());
-                return token.trim();
+                final String trimmed = token.trim();
+                if (trimmed.equals(SpecialSymbol.LINE_COMMENT.getValue())) {
+                    //strip the comment until a newline
+                    this.source = this.source.replaceFirst(LINE_COMMENT, "$1");
+                    //start the process over to find the next good token
+                    i = -1;
+                } else if (trimmed.equals(SpecialSymbol.OPEN_COMMENT.getValue())) {
+                    this.source = stripBlockComment(this.source);
+                    i = -1;
+                } else {
+                    this.source = this.source.substring(token.length());
+                    return trimmed;
+                }
             }
         }
         return null;
     }
 
-    public void stripComments() {
-        this.source = this.source.replaceAll(LINE_COMMENT, "$1");
+    private String stripBlockComment(String string) {
+        Matcher m = Pattern.compile("(?<!/)\\*/").matcher(string);
+        int close = string.length();
+        if (m.find()) {
+            close = m.start();
+        }
+        int open = StringUtil.lastIndexLessThan(string, "/*", close);
+        String s1 = string.substring(0, open);
+        String s2 = string.substring(close + 2);
+        return s1.concat(s2);
     }
 }

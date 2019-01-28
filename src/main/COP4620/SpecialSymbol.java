@@ -1,14 +1,16 @@
 package COP4620;
 
 public enum SpecialSymbol {
-    PLUS("+"),
-    MINUS("-"),
-    MULTIPLY("*"),
-    DIVIDE("/"),
+    OPEN_COMMENT("/*"),
+    LINE_COMMENT("//"),
     LESS_OR_EQUAL("<="),
     GREATER_OR_EQUAL(">="),
     NOT_EQUAL("!="),
     EQUAL("=="),
+    PLUS("+"),
+    MINUS("-"),
+    MULTIPLY("*"),
+    DIVIDE("/"),
     LESS_THAN("<"),
     GREATER_THAN(">"),
     ASSIGNMENT("="),

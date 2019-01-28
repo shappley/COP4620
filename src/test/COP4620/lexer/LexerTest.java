@@ -47,30 +47,19 @@ class LexerTest {
 
     private static Stream<Arguments> getTokensArguments() {
         return Stream.of(
-                arguments("if(hello==42)//int i = 5;", new Token[]{
+                arguments("if(hello==42) { /*fgfgh/*int i = 5;*/fgfgh*/ return 11; }//int j = 12;", new Token[]{
                         new Token(TokenType.KEYWORD, "if"),
                         new Token(TokenType.SPECIAL_SYMBOL, "("),
                         new Token(TokenType.ID, "hello"),
                         new Token(TokenType.SPECIAL_SYMBOL, "=="),
                         new Token(TokenType.NUM, "42"),
-                        new Token(TokenType.SPECIAL_SYMBOL, ")")
+                        new Token(TokenType.SPECIAL_SYMBOL, ")"),
+                        new Token(TokenType.SPECIAL_SYMBOL, "{"),
+                        new Token(TokenType.KEYWORD, "return"),
+                        new Token(TokenType.NUM, "11"),
+                        new Token(TokenType.SPECIAL_SYMBOL, ";"),
+                        new Token(TokenType.SPECIAL_SYMBOL, "}")
                 }
         ));
-    }
-
-    @ParameterizedTest
-    @DisplayName("stripComments")
-    @MethodSource("stripCommentsArguments")
-    void stripComments(String source, String expected) {
-        Lexer lexer = new Lexer(source);
-        lexer.stripComments();
-        assertEquals(expected, lexer.getRemainingSource());
-    }
-
-    private static Stream<Arguments> stripCommentsArguments() {
-        return Stream.of(
-                arguments("if(hello==42)//int i = 5;", "if(hello==42)"),
-                arguments("if(hello==42)/*int i = 5;*/", "if(hello==42)")
-        );
     }
 }
