@@ -1,4 +1,4 @@
-package COP4620;
+package COP4620.lexer;
 
 public enum Keyword {
     ELSE("else"),

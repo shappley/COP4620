@@ -1,8 +1,5 @@
 package COP4620.lexer;
 
-import COP4620.Keyword;
-import COP4620.SpecialSymbol;
-
 public enum TokenType {
     KEYWORD, SPECIAL_SYMBOL, ID, NUM, ERROR;
 

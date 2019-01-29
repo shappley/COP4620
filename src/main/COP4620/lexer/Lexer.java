@@ -1,6 +1,5 @@
 package COP4620.lexer;
 
-import COP4620.SpecialSymbol;
 import COP4620.util.StringUtil;
 
 import java.util.ArrayList;
@@ -53,6 +52,7 @@ public class Lexer {
             final Matcher m = TOKEN_PATTERNS[i].matcher(source);
             if (m.find()) {
                 final String token = m.group("token");
+                System.out.println("we found " + token);
                 final String trimmed = token.trim();
                 if (trimmed.equals(SpecialSymbol.LINE_COMMENT.getValue())) {
                     //strip the comment until a newline
