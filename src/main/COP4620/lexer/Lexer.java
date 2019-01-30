@@ -8,14 +8,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Lexer {
+    public static final String SPECIAL_CHARS = SpecialSymbol.toRegexPatternString();
     public static final String TOKEN_PATTERN = "^(?<token>(\\s*(%s)))((.|\n)+)?$";
     public static final String CHAR_TOKEN = "[a-zA-Z]+";
     public static final String NUM_TOKEN = "\\d+(\\.\\d+)?(E(\\+|-)?\\d+)?";
     public static final String LINE_COMMENT = "//.*(\n\r?)?";
+    public static final Pattern ERROR_PATTERN = Pattern.compile(
+            TOKEN_PATTERN.replace("%s", "(?<error>.+?)(\\s|" + SPECIAL_CHARS + ")")
+    );
     private static final Pattern[] TOKEN_PATTERNS = {
             Pattern.compile(TOKEN_PATTERN.replace("%s", CHAR_TOKEN)),
             Pattern.compile(TOKEN_PATTERN.replace("%s", NUM_TOKEN)),
-            Pattern.compile(TOKEN_PATTERN.replace("%s", SpecialSymbol.toRegexPatternString()))
+            Pattern.compile(TOKEN_PATTERN.replace("%s", SPECIAL_CHARS)),
     };
 
     private String source;
@@ -30,9 +34,6 @@ public class Lexer {
 
     public Token getNextToken() {
         final String tokenString = readToken();
-        if (tokenString == null) {
-            return null;
-        }
         final TokenType tokenType = TokenType.getTypeOf(tokenString);
         return new Token(tokenType, tokenString);
     }
@@ -52,7 +53,6 @@ public class Lexer {
             final Matcher m = TOKEN_PATTERNS[i].matcher(source);
             if (m.find()) {
                 final String token = m.group("token");
-                System.out.println("we found " + token);
                 final String trimmed = token.trim();
                 if (trimmed.equals(SpecialSymbol.LINE_COMMENT.getValue())) {
                     //strip the comment until a newline
@@ -68,6 +68,17 @@ public class Lexer {
                 }
             }
         }
+        return getErrantToken();
+    }
+
+    private String getErrantToken() {
+        final Matcher m = ERROR_PATTERN.matcher(source);
+        if (m.find()) {
+            final String token = m.group("token");
+            final String error = m.group("error");
+            this.source = this.source.substring(token.length());
+            return error.trim();
+        }
         return null;
     }
 
@@ -80,8 +91,6 @@ public class Lexer {
         int open = StringUtil.lastIndexLessThan(string, "/*", close);
         String s1 = string.substring(0, open);
         String s2 = string.substring(close + 2);
-        String s3 = s1.concat(s2);
-        System.out.println("new string: " + s3);
-        return s3;
+        return s1.concat(s2);
     }
 }
