@@ -49,7 +49,8 @@ class LexerTest {
                 arguments("if(dlfgldfg >= 1.04E2)", 5, new Token(NUM, "1.04E2")),
                 arguments("if(dlfgldfg >= 1.04E-2)", 5, new Token(NUM, "1.04E-2")),
                 arguments("if(dlfgldfg >= /*/*foo*/*/ 1.04E-2)", 5, new Token(NUM, "1.04E-2")),
-                arguments("/*6*/test = 5", 2, new Token(ID, "test"))
+                arguments("/*6*/test = 5", 1, new Token(ID, "test")),
+                arguments("/*6*/\ntest = 5", 1, new Token(ID, "test"))
         );
     }
 

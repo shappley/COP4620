@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Lexer {
-    public static final String TOKEN_PATTERN = "^(?<token>(\\s*(%s)))(.+)?$";
+    public static final String TOKEN_PATTERN = "^(?<token>(\\s*(%s)))((.|\n)+)?$";
     public static final String CHAR_TOKEN = "[a-zA-Z]+";
     public static final String NUM_TOKEN = "\\d+(\\.\\d+)?(E(\\+|-)?\\d+)?";
     public static final String LINE_COMMENT = "//.*(\n\r?)?";
@@ -72,7 +72,7 @@ public class Lexer {
     }
 
     private String stripBlockComment(String string) {
-        Matcher m = Pattern.compile("(?<!/)\\*/").matcher(string);
+        Matcher m = Pattern.compile("(:?^|(?<!/))\\*/").matcher(string);
         int close = string.length();
         if (m.find()) {
             close = m.start();
@@ -80,6 +80,8 @@ public class Lexer {
         int open = StringUtil.lastIndexLessThan(string, "/*", close);
         String s1 = string.substring(0, open);
         String s2 = string.substring(close + 2);
-        return s1.concat(s2);
+        String s3 = s1.concat(s2);
+        System.out.println("new string: " + s3);
+        return s3;
     }
 }
