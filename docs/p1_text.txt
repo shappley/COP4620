@@ -8,8 +8,23 @@ Running the program:
 1. Execute `make` to compile the program
 2. Execute `p1` script to execute the program
 
-Input Files:
-None
+Input:
+The application accepts a file name as argument 0 to be processed.
 
 Output:
 All output is printed to the console.
+
+Overall Design:
+The design of the Lexer was made to be as simple as possible.
+The general flow of the application is:
+    0. Start with the input string s;
+    1. Find the first, longest string, s1, that matches one of the token patterns;
+    2. Trim the whitespace from s1, making s2;
+    3. Remove s1 from s;
+    4. Using s2:
+     4.1. If it's a Keyword, mark the token type as Keyword;
+     4.2. Else if it's a Number, mark the token type as NUM
+     4.3. Else if it matches [A-Za-z], mark the token type as ID
+     4.4. Else if it is a Special Symbol (as defined in SpecialSymbol.java), mark the token type as Special Symbol
+     4.5. Else mark the token type as Error
+    5. Repeat until s is empty
