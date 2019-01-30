@@ -16,44 +16,13 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class LexerTest {
 
-    @ParameterizedTest
-    @DisplayName("getNextToken")
-    @MethodSource("getNextTokenArguments")
-    void getNextToken(String source, int index, Token expected) {
+    private void getNextToken(String source, int index, Token expected) {
         Lexer lexer = new Lexer(source);
         Token actual = null;
         for (int i = 0; i < index; i++) {
             actual = lexer.getNextToken();
         }
         assertEquals(expected, actual);
-    }
-
-    private static Stream<Arguments> getNextTokenArguments() {
-        return Stream.of(
-                arguments("void func(){}", 1, new Token(KEYWORD, "void")),
-                arguments("int hello = 42", 1, new Token(KEYWORD, "int")),
-                arguments("float hello = 42.44", 1, new Token(KEYWORD, "float")),
-                arguments("return 11;", 1, new Token(KEYWORD, "return")),
-                arguments("while(dlfgldfg >= 1.04)", 1, new Token(KEYWORD, "while")),
-                arguments("while(tacos)", 3, new Token(ID, "tacos")),
-                arguments("while(tacos+burritos < 13)", 3, new Token(ID, "tacos")),
-                arguments("while(tacos-burritos < 13)", 5, new Token(ID, "burritos")),
-                arguments("while(tacos + burritos < 13)", 4, new Token(SPECIAL_SYMBOL, "+")),
-                arguments("while(tacos - burritos < 13)", 4, new Token(SPECIAL_SYMBOL, "-")),
-                arguments("while(tacos * burritos < 13)", 4, new Token(SPECIAL_SYMBOL, "*")),
-                arguments("while(tacos / burritos < 13)", 4, new Token(SPECIAL_SYMBOL, "/")),
-                arguments("if(dlfgldfg >= 1.04)", 4, new Token(SPECIAL_SYMBOL, ">=")),
-                arguments("if(dlfgldfg <= 1.04)", 4, new Token(SPECIAL_SYMBOL, "<=")),
-                arguments("if(dlfgldfg != 1.04)", 4, new Token(SPECIAL_SYMBOL, "!=")),
-                arguments("if(dlfgldfg > 1.04)", 4, new Token(SPECIAL_SYMBOL, ">")),
-                arguments("if(dlfgldfg < 1.04)", 4, new Token(SPECIAL_SYMBOL, "<")),
-                arguments("if(dlfgldfg >= 1.04)", 5, new Token(NUM, "1.04")),
-                arguments("if(dlfgldfg >= 1.04E2)", 5, new Token(NUM, "1.04E2")),
-                arguments("if(dlfgldfg >= 1.04E-2)", 5, new Token(NUM, "1.04E-2")),
-                arguments("if(dlfgldfg >= /*/*foo*/*/ 1.04E-2)", 5, new Token(NUM, "1.04E-2")),
-                arguments("/*6*/test = 5", 1, new Token(ID, "test")),
-                arguments("/*6*/\ntest = 5", 1, new Token(ID, "test"))
-        );
     }
 
     @ParameterizedTest
@@ -150,7 +119,11 @@ class LexerTest {
                 arguments("[", 1, new Token(SPECIAL_SYMBOL, "[")),
                 arguments("]", 1, new Token(SPECIAL_SYMBOL, "]")),
                 arguments("}", 1, new Token(SPECIAL_SYMBOL, "}")),
-                arguments("{", 1, new Token(SPECIAL_SYMBOL, "{"))
+                arguments("{", 1, new Token(SPECIAL_SYMBOL, "{")),
+                arguments("while(tacos + burritos < 13)", 4, new Token(SPECIAL_SYMBOL, "+")),
+                arguments("while(tacos - burritos < 13)", 4, new Token(SPECIAL_SYMBOL, "-")),
+                arguments("while(tacos * burritos < 13)", 4, new Token(SPECIAL_SYMBOL, "*")),
+                arguments("while(tacos / burritos < 13)", 4, new Token(SPECIAL_SYMBOL, "/"))
         );
     }
 
@@ -165,7 +138,9 @@ class LexerTest {
         return Stream.of(
                 arguments("djfdjfgh//dfgdjfg", 2, null),
                 arguments("/*hello*/ world", 1, new Token(ID, "world")),
-                arguments("/*/* hello */*/ world", 1, new Token(ID, "world"))
+                arguments("/*/* hello */*/ world", 1, new Token(ID, "world")),
+                //multiline block comment
+                arguments("/*/* \nhello */*/ world", 1, new Token(ID, "world"))
         );
     }
 }
