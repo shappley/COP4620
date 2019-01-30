@@ -7,8 +7,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static COP4620.lexer.TokenType.*;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static COP4620.lexer.TokenType.ID;
+import static COP4620.lexer.TokenType.KEYWORD;
+import static COP4620.lexer.TokenType.NUM;
+import static COP4620.lexer.TokenType.SPECIAL_SYMBOL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -54,30 +56,30 @@ class LexerTest {
         );
     }
 
-    @ParameterizedTest(name = "{0}")
-    @DisplayName("getTokens")
-    @MethodSource("getTokensArguments")
-    void getTokens(String source, Token[] expected) {
-        Lexer lexer = new Lexer(source);
-        Token[] actual = lexer.getTokens();
-        assertArrayEquals(expected, actual);
+    @ParameterizedTest
+    @DisplayName("Keywords")
+    @MethodSource("getKeywordsArguments")
+    void testKeywords(String source, int index, Token expected) {
+        getNextToken(source, index, expected);
     }
 
-    private static Stream<Arguments> getTokensArguments() {
+    private static Stream<Arguments> getKeywordsArguments() {
         return Stream.of(
-                arguments("if(hello==42) { /*fgfgh/*int i = 5;*/fgfgh*/ return 11; }//int j = 12;", new Token[]{
-                                new Token(KEYWORD, "if"),
-                                new Token(SPECIAL_SYMBOL, "("),
-                                new Token(ID, "hello"),
-                                new Token(SPECIAL_SYMBOL, "=="),
-                                new Token(NUM, "42"),
-                                new Token(SPECIAL_SYMBOL, ")"),
-                                new Token(SPECIAL_SYMBOL, "{"),
-                                new Token(KEYWORD, "return"),
-                                new Token(NUM, "11"),
-                                new Token(SPECIAL_SYMBOL, ";"),
-                                new Token(SPECIAL_SYMBOL, "}")
-                        }
-                ));
+                arguments("else", 1, new Token(KEYWORD, "else")),
+                arguments("float", 1, new Token(KEYWORD, "float")),
+                arguments("if", 1, new Token(KEYWORD, "if")),
+                arguments("int", 1, new Token(KEYWORD, "int")),
+                arguments("return", 1, new Token(KEYWORD, "return")),
+                arguments("void", 1, new Token(KEYWORD, "void")),
+                arguments("while", 1, new Token(KEYWORD, "while")),
+                /* capitalization test */
+                arguments("ELSE", 1, new Token(ID, "ELSE")),
+                arguments("FLOAT", 1, new Token(ID, "FLOAT")),
+                arguments("IF", 1, new Token(ID, "IF")),
+                arguments("INT", 1, new Token(ID, "INT")),
+                arguments("RETURN", 1, new Token(ID, "RETURN")),
+                arguments("VOID", 1, new Token(ID, "VOID")),
+                arguments("WHILE", 1, new Token(ID, "WHILE"))
+        );
     }
 }
