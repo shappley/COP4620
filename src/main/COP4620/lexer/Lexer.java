@@ -79,7 +79,7 @@ public class Lexer {
         if (m.find()) {
             final String token = m.group("token");
             final String error = m.group("error");
-            this.source = this.source.substring(token.length());
+            this.source = this.source.substring(token.length() - 1);
             return error.trim();
         }
         return null;
