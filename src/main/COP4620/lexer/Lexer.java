@@ -34,6 +34,9 @@ public class Lexer {
 
     public Token getNextToken() {
         final String tokenString = readToken();
+        if (tokenString == null) {
+            return null;
+        }
         final TokenType tokenType = TokenType.getTypeOf(tokenString);
         return new Token(tokenType, tokenString);
     }
