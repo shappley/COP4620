@@ -2,6 +2,7 @@ package COP4620;
 
 import COP4620.lexer.Lexer;
 import COP4620.lexer.Token;
+import COP4620.lexer.TokenType;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,7 +20,11 @@ public class Project1 {
             Lexer lexer = new Lexer(input);
             Token[] tokens = lexer.getTokens();
             for (Token t : tokens) {
-                System.out.println(t);
+                if (t.getType() == TokenType.SPECIAL_SYMBOL) {
+                    System.out.println(t.getValue());
+                } else {
+                    System.out.println(t.getType() + ": " + t.getValue());
+                }
             }
         }
     }
@@ -27,9 +32,7 @@ public class Project1 {
     private static String readFile(String filename) {
         try {
             List<String> input = Files.readAllLines(Paths.get(filename));
-            String s = String.join("\n", input);
-            System.out.println(s);
-            return s;
+            return String.join("\n", input);
         } catch (IOException e) {
             System.out.println("Unable to read input file \"" + filename + "\"");
         }
