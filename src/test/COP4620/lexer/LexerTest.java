@@ -1,12 +1,19 @@
 package COP4620.lexer;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
+import static COP4620.lexer.TokenType.ERROR;
 import static COP4620.lexer.TokenType.ID;
 import static COP4620.lexer.TokenType.KEYWORD;
 import static COP4620.lexer.TokenType.NUM;
@@ -142,5 +149,78 @@ class LexerTest {
                 //multiline block comment
                 arguments("/*/* \nhello */*/ world", 1, new Token(ID, "world"))
         );
+    }
+
+    @Test
+    @DisplayName("Eggman Test")
+    void eggmanTest() throws IOException {
+        List<String> input = Files.readAllLines(Paths.get("test_files/p1_test_1.txt"));
+        String source = String.join("\n", input);
+        Token[] expected = {
+                new Token(SPECIAL_SYMBOL, "*"),
+                new Token(SPECIAL_SYMBOL, "/"),
+                new Token(ID, "iiii"),
+                new Token(SPECIAL_SYMBOL, "="),
+                new Token(NUM, "3"),
+                new Token(ERROR, "@33"),
+                new Token(SPECIAL_SYMBOL, ";"),
+                //
+                new Token(KEYWORD, "int"),
+                new Token(ID, "g"),
+                new Token(NUM, "4"),
+                new Token(ID, "cd"),
+                new Token(SPECIAL_SYMBOL, "("),
+                new Token(KEYWORD, "int"),
+                new Token(ID, "u"),
+                new Token(SPECIAL_SYMBOL, ","),
+                new Token(KEYWORD, "int"),
+                new Token(ID, "v"),
+                new Token(SPECIAL_SYMBOL, ")"),
+                new Token(SPECIAL_SYMBOL, "{"),
+                //
+                new Token(KEYWORD, "if"),
+                new Token(SPECIAL_SYMBOL, "("),
+                new Token(ID, "v"),
+                new Token(SPECIAL_SYMBOL, "=="),
+                new Token(SPECIAL_SYMBOL, ">="),
+                new Token(NUM, "0"),
+                new Token(SPECIAL_SYMBOL, ")"),
+                new Token(KEYWORD, "return"),
+                new Token(ID, "u"),
+                new Token(SPECIAL_SYMBOL, ";"),
+                //
+                new Token(KEYWORD, "else"),
+                new Token(ID, "ret"),
+                new Token(ERROR, "_urn"),
+                new Token(ID, "gcd"),
+                new Token(SPECIAL_SYMBOL, "("),
+                new Token(ID, "vxxxxxxvvvvv"),
+                new Token(SPECIAL_SYMBOL, ","),
+                new Token(ID, "u"),
+                new Token(SPECIAL_SYMBOL, "-"),
+                new Token(ID, "u"),
+                new Token(SPECIAL_SYMBOL, "/"),
+                new Token(ID, "v"),
+                new Token(SPECIAL_SYMBOL, "*"),
+                new Token(ID, "v"),
+                new Token(SPECIAL_SYMBOL, ")"),
+                new Token(SPECIAL_SYMBOL, ";"),
+                //
+                new Token(ERROR, "!"),
+                new Token(SPECIAL_SYMBOL, "}"),
+                //
+                new Token(KEYWORD, "return"),
+                new Token(KEYWORD, "void"),
+                new Token(KEYWORD, "while"),
+                new Token(KEYWORD, "void"),
+                new Token(ID, "main"),
+                new Token(SPECIAL_SYMBOL, "("),
+                new Token(SPECIAL_SYMBOL, ")"),
+        };
+
+        Lexer lexer = new Lexer(source);
+        Token[] actual = lexer.getTokens();
+
+        assertEquals(Arrays.asList(expected), Arrays.asList(actual));
     }
 }
