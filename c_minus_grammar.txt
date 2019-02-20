@@ -1,0 +1,3 @@
+program          -> declaration-list
+declaration-list -> declaration declaration-list-prime
+declaration-list-prime -> declaration declaration-list-prime | epsilon
