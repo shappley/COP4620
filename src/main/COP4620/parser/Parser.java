@@ -22,11 +22,11 @@ public class Parser {
     //declaration-list -> declaration declaration-list-prime
     //declaration-list-prime -> declaration declaration-list-prime | empty
     public boolean declarationList() {
-        return save() && declaration() && declarationListPrime();
+        return (save() && declaration() && declarationListPrime());
     }
 
     private boolean declarationListPrime() {
-        return save() && declaration() && declarationListPrime();
+        return (save() && declaration() && declarationListPrime()) || (backtrack() && save());
     }
 
     //Rule #3
@@ -70,127 +70,157 @@ public class Parser {
     //param-list -> param param-list-prime
     //param-list-prime -> , param param-list-prime | empty
     public boolean paramList() {
-        return false;
+        return save() && param() && paramListPrime();
+    }
+
+    private boolean paramListPrime() {
+        return (save() && match(",") && param() && paramListPrime()) || (backtrack() && save());
     }
 
     //param -> type-specifier ID | type-specifier ID [ ]
     public boolean param() {
-        return false;
+        return (save() && typeSpecifier() && match(TokenType.ID))
+                || (backtrack() && save() && typeSpecifier() && match(TokenType.ID) && match("[") && match("]"));
     }
 
     //compound-stmt -> { local-declarations statement-list }
     public boolean compoundStmt() {
-        return false;
+        return save() && match("{") && localDeclarations() && statementList() && match("}");
     }
 
-    //local-declarations -> var-declarations local-declarations | empty
+    //local-declarations -> var-declaration local-declarations | empty
     public boolean localDeclarations() {
-        return false;
+        return (save() && varDeclaration() && localDeclarations()) || (backtrack() && save());
     }
 
     //statement-list -> statement statement-list | empty
     public boolean statementList() {
-        return false;
+        return (save() && statement() && statementList()) || (backtrack() && save());
     }
 
     //statement -> expression-stmt | compound-stmt | selection-stmt | iteration-stmt | return-stmt
     public boolean statement() {
-        return false;
+        return (save() && expressionStmt())
+                || (backtrack() && save() && compoundStmt())
+                || (backtrack() && save() && selectionStmt())
+                || (backtrack() && save() && selectionStmt())
+                || (backtrack() && save() && iterationStmt())
+                || (backtrack() && save() && returnStmt());
     }
 
     //expression-stmt -> expression ; | ;
     public boolean expressionStmt() {
-        return false;
+        return (save() && expression() && match(";"))
+                || (backtrack() && save() && match(";"));
     }
 
     //selection-stmt -> if ( expression ) statement | if ( expression ) statement else statement
     public boolean selectionStmt() {
-        return false;
+        return (save() && match("if") && match("(") && expression() && match(")") && statement())
+                || (backtrack() && save() && match("if") && match("(") && expression() && match(")") && statement() && match("else") && statement());
     }
 
     //iteration-stmt -> while ( expression ) statement
     public boolean iterationStmt() {
-        return false;
+        return save() && match("while") && match("(") && expression() && match(")") && statement();
     }
 
     //return-stmt -> return ; | return expression ;
     public boolean returnStmt() {
-        return false;
+        return (save() && match("return") && match(";"))
+                || (backtrack() && save() && match("return") && expression() && match(";"));
     }
 
     //expression -> var = expression | simple-expression
     public boolean expression() {
-        return false;
+        return (save() && var() && match("=") && expression())
+                || (backtrack() && save() && simpleExpression());
     }
 
     //var -> ID | ID [ expression ]
     public boolean var() {
-        return false;
+        return (save() && match(TokenType.ID))
+                || (backtrack() && save() && match("[") && expression() && match("]"));
     }
 
     //simple-expression -> additive-expression relop additive-expression | additive-expression
     public boolean simpleExpression() {
-        return false;
+        return (save() && additiveExpression() && relop() && additiveExpression())
+                || (backtrack() && save() && additiveExpression());
     }
 
     //relop -> <= | < | > | >= | == | !=
     public boolean relop() {
-        return false;
+        return (save() && match("<="))
+                || (backtrack() && save() && match("<"))
+                || (backtrack() && save() && match(">"))
+                || (backtrack() && save() && match(">="))
+                || (backtrack() && save() && match("=="))
+                || (backtrack() && save() && match("!="));
     }
 
     //additive-expression -> term additive-expression-prime
     //additive-expression-prime -> addop term additive-expression-prime | empty
     public boolean additiveExpression() {
-        return false;
+        return save() && term() && additiveExpressionPrime();
     }
 
     private boolean additiveExpressionPrime() {
-        return false;
+        return (save() && addop() && term() && additiveExpressionPrime())
+                || (backtrack() && save());
     }
 
     //term -> factor term-prime
     //term-prime -> mulop factor term-prime | empty
     public boolean term() {
-        return false;
+        return save() && factor() && termPrime();
     }
 
     private boolean termPrime() {
-        return false;
+        return (save() && mulop() && factor() && termPrime())
+                || (backtrack() && save());
     }
 
     //addop -> + | -
     public boolean addop() {
-        return false;
+        return (save() && match("+"))
+                || (backtrack() && save() && match("-"));
     }
 
     //mulop -> * | /
     public boolean mulop() {
-        return false;
+        return (save() && match("*"))
+                || (backtrack() && save() && match("/"));
     }
 
     //factor -> ( expression ) | var | call | NUM
     public boolean factor() {
-        return false;
+        return (save() && match("(") && expression() && match(")"))
+                || (backtrack() && save() && var())
+                || (backtrack() && save() && call())
+                || (backtrack() && save() && match(TokenType.NUM));
     }
 
     //call -> ID ( args )
     public boolean call() {
-        return false;
+        return save() && match(TokenType.ID) && match("(") && args() && match(")");
     }
 
     //args -> arg-list | empty
     public boolean args() {
-        return false;
+        return (save() && argList())
+                || (backtrack() && save());
     }
 
     //arg-list -> expression arg-list-prime
     //arg-list-prime -> , expression arg-list-prime | empty
     public boolean argList() {
-        return false;
+        return save() && expression() && argListPrime();
     }
 
     private boolean argListPrime() {
-        return false;
+        return (save() && match(",") && expression() && argListPrime())
+                || (backtrack() || save());
     }
 
     private boolean save() {
