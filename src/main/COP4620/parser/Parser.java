@@ -13,6 +13,10 @@ public class Parser {
         this.tokens = tokens;
     }
 
+    public boolean isValid() {
+        return program();
+    }
+
     //Rule #1
     public boolean program() {
         return save() && declarationList();
