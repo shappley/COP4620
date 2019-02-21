@@ -1,5 +1,6 @@
 package COP4620.parser;
 
+import COP4620.lexer.Lexer;
 import COP4620.lexer.Token;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import java.util.stream.Stream;
 
 import static COP4620.lexer.TokenType.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class ParserTest {
@@ -20,11 +22,23 @@ class ParserTest {
     }
 
     @Test
+    @DisplayName("declarationList (Rule #2)")
     void declarationList() {
+        Lexer lexer = new Lexer("int main(void){int i;i=5;}");
+        Token[] tokens = lexer.getTokens();
+        Parser parser = new Parser(tokens);
+        assertTrue(parser.declarationList());
     }
 
     @Test
+    @DisplayName("declaration (Rule #3)")
     void declaration() {
+        Stream<Arguments> concat = Stream.concat(varDecArgs(), funDecArgs());
+        concat.forEach(e -> {
+            Parser parser = new Parser((Token[]) e.get()[0]);
+            boolean actual = parser.declaration();
+            assertEquals((Boolean) e.get()[0], actual);
+        });
     }
 
     @ParameterizedTest
@@ -77,8 +91,30 @@ class ParserTest {
         );
     }
 
-    @Test
-    void funDeclaration() {
+    @ParameterizedTest
+    @DisplayName("funDeclaration (Rule #6)")
+    @MethodSource("funDecArgs")
+    void funDeclaration(Token[] tokens, boolean expected) {
+        Parser parser = new Parser(tokens);
+        boolean actual = parser.funDeclaration();
+        assertEquals(expected, actual);
+    }
+
+    private static Stream<Arguments> funDecArgs() {
+        return Stream.of(
+                arguments(
+                        new Token[]{
+                                new Token(KEYWORD, "int"),
+                                new Token(ID, "n"),
+                                new Token(SPECIAL_SYMBOL, "("),
+                                new Token(SPECIAL_SYMBOL, "void"),
+                                new Token(SPECIAL_SYMBOL, ")"),
+                                new Token(SPECIAL_SYMBOL, "{"),
+                                new Token(SPECIAL_SYMBOL, "}")
+                        },
+                        true
+                )
+        );
     }
 
     @Test
