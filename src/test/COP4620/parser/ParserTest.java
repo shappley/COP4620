@@ -10,241 +10,341 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static COP4620.lexer.TokenType.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class ParserTest {
 
-    @Test
-    void isValid() {
-    }
-
-    @Test
-    @DisplayName("declarationList (Rule #2)")
-    void declarationList() {
-        Lexer lexer = new Lexer("int main(void){int i;i=5;}");
+    private Parser getParser(String source) {
+        Lexer lexer = new Lexer(source);
         Token[] tokens = lexer.getTokens();
-        Parser parser = new Parser(tokens);
-        assertTrue(parser.declarationList());
-    }
-
-    @Test
-    @DisplayName("declaration (Rule #3)")
-    void declaration() {
-        Stream<Arguments> concat = Stream.concat(varDecArgs(), funDecArgs());
-        concat.forEach(e -> {
-            Parser parser = new Parser((Token[]) e.get()[0]);
-            boolean actual = parser.declaration();
-            assertEquals((Boolean) e.get()[0], actual);
-        });
+        return new Parser(tokens);
     }
 
     @ParameterizedTest
-    @DisplayName("varDeclaration (Rule #4)")
+    @DisplayName("Rule #2: declaration-list")
+    @MethodSource("declarationListArgs")
+    void declarationList(String source, boolean valid) {
+        assertEquals(valid, getParser(source).declarationList());
+    }
+
+    private static Stream<Arguments> declarationListArgs() {
+        return Stream.of(arguments("int main(void){int i;i=5;}", true));
+    }
+
+    @ParameterizedTest
+    @DisplayName("Rule #3: declaration")
+    @MethodSource("declarationArgs")
+    void declaration(String source, boolean valid) {
+        assertEquals(valid, getParser(source).declaration());
+    }
+
+    private static Stream<Arguments> declarationArgs() {
+        return Stream.of(
+                arguments("int main;", true),
+                arguments("int main(void){}", true),
+                arguments("int main[1];", true)
+        );
+    }
+
+    @ParameterizedTest
+    @DisplayName("Rule #4: var-declaration")
     @MethodSource("varDecArgs")
-    void varDeclaration(Token[] tokens, boolean expected) {
-        Parser parser = new Parser(tokens);
-        boolean actual = parser.varDeclaration();
-        assertEquals(expected, actual);
+    void varDeclaration(String source, boolean valid) {
+        assertEquals(valid, getParser(source).varDeclaration());
     }
 
     private static Stream<Arguments> varDecArgs() {
         return Stream.of(
-                arguments(
-                        new Token[]{
-                                new Token(KEYWORD, "int"),
-                                new Token(ID, "n"),
-                                new Token(SPECIAL_SYMBOL, ";")
-                        },
-                        true
-                ),
-                arguments(
-                        new Token[]{
-                                new Token(KEYWORD, "int"),
-                                new Token(ID, "n"),
-                                new Token(SPECIAL_SYMBOL, "["),
-                                new Token(NUM, "1"),
-                                new Token(SPECIAL_SYMBOL, "]"),
-                                new Token(SPECIAL_SYMBOL, ";")
-                        },
-                        true
-                )
+                arguments("int main;", true),
+                arguments("int main[1];", true),
+                arguments("int main[];", false)
         );
     }
 
     @ParameterizedTest
-    @DisplayName("typeSpecifier (Rule #5)")
+    @DisplayName("Rule #5: type-specifier")
     @MethodSource("typeSpecArgs")
-    void typeSpecifier(Token token) {
-        Parser parser = new Parser(new Token[]{token});
-        boolean actual = parser.typeSpecifier();
-        assertEquals(true, actual);
+    void typeSpecifier(String source, boolean valid) {
+        assertEquals(valid, getParser(source).typeSpecifier());
     }
 
     private static Stream<Arguments> typeSpecArgs() {
         return Stream.of(
-                arguments(new Token(KEYWORD, "int")),
-                arguments(new Token(KEYWORD, "float")),
-                arguments(new Token(KEYWORD, "void"))
+                arguments("int", true),
+                arguments("float", true),
+                arguments("void", true),
+                arguments("double", false)
         );
     }
 
     @ParameterizedTest
-    @DisplayName("funDeclaration (Rule #6)")
+    @DisplayName("Rule #6: fun-declaration")
     @MethodSource("funDecArgs")
-    void funDeclaration(Token[] tokens, boolean expected) {
-        Parser parser = new Parser(tokens);
-        boolean actual = parser.funDeclaration();
-        assertEquals(expected, actual);
+    void funDeclaration(String source, boolean valid) {
+        assertEquals(valid, getParser(source).funDeclaration());
     }
 
     private static Stream<Arguments> funDecArgs() {
         return Stream.of(
-                arguments(
-                        new Token[]{
-                                new Token(KEYWORD, "int"),
-                                new Token(ID, "n"),
-                                new Token(SPECIAL_SYMBOL, "("),
-                                new Token(SPECIAL_SYMBOL, "void"),
-                                new Token(SPECIAL_SYMBOL, ")"),
-                                new Token(SPECIAL_SYMBOL, "{"),
-                                new Token(SPECIAL_SYMBOL, "}")
-                        },
-                        true
-                )
+                arguments("int main(void){}", true),
+                arguments("int main(int i){}", true),
+                arguments("int main(int i, int j){}", true),
+                arguments("int main(int i int j){}", false),
+                arguments("int main(int i, int j){", false)
         );
     }
 
-    @Test
-    void params() {
+    @ParameterizedTest
+    @DisplayName("Rule #7: params")
+    @MethodSource("paramsArgs")
+    void params(String source, boolean valid) {
+        assertEquals(valid, getParser(source).params());
     }
 
-    @Test
-    void paramList() {
-    }
-
-    @Test
-    void param() {
-    }
-
-    @Test
-    void compoundStmt() {
-    }
-
-    @Test
-    void localDeclarations() {
-    }
-
-    @Test
-    void statementList() {
-    }
-
-    @Test
-    void statement() {
-    }
-
-    @Test
-    void expressionStmt() {
-    }
-
-    @Test
-    void selectionStmt() {
-    }
-
-    @Test
-    void iterationStmt() {
-    }
-
-    @Test
-    void returnStmt() {
-    }
-
-    @Test
-    void expression() {
+    private static Stream<Arguments> paramsArgs() {
+        return Stream.of(
+                arguments("void", true),
+                arguments("int i", true),
+                arguments("int i[]", true),
+                arguments("int i[3]", false)
+        );
     }
 
     @ParameterizedTest
-    @DisplayName("var (Rule #19)")
+    @DisplayName("Rule #8: param-list")
+    @MethodSource("paramListArgs")
+    void paramList(String source, boolean valid) {
+        assertEquals(valid, getParser(source).paramList());
+    }
+
+    private static Stream<Arguments> paramListArgs() {
+        return Stream.of(
+                arguments("int i, float j, int k", true)
+        );
+    }
+
+
+    @ParameterizedTest
+    @DisplayName("Rule #9: param")
+    @MethodSource("paramArgs")
+    void param(String source, boolean valid) {
+        assertEquals(valid, getParser(source).paramList());
+    }
+
+    private static Stream<Arguments> paramArgs() {
+        return Stream.of(
+                arguments("int i", true),
+                arguments("int i[]", true)
+        );
+    }
+
+    @ParameterizedTest
+    @DisplayName("Rule #10: compound-stmt")
+    @MethodSource("compoundStmtArgs")
+    void compoundStmt(String source, boolean valid) {
+        assertEquals(valid, getParser(source).compoundStmt());
+    }
+
+    private static Stream<Arguments> compoundStmtArgs() {
+        return Stream.of(
+                arguments("{}", true),
+                arguments("{int i; i=5;}", true),
+                arguments("{int i; i=5;", false)
+        );
+    }
+
+    @ParameterizedTest
+    @DisplayName("Rule #11: local-declarations")
+    @MethodSource("localDeclarationsArgs")
+    void localDeclarations(String source, boolean valid) {
+        assertEquals(valid, getParser(source).localDeclarations());
+    }
+
+    private static Stream<Arguments> localDeclarationsArgs() {
+        return Stream.concat(Stream.of(arguments("", true)), varDecArgs());
+    }
+
+    @Test
+    @DisplayName("Rule #12: statement-list")
+    void statementList() {
+        throw new UnsupportedOperationException();
+    }
+
+    @ParameterizedTest
+    @DisplayName("Rule #13: statement")
+    @MethodSource("statementArgs")
+    void statement(String source, boolean valid) {
+        assertEquals(valid, getParser(source).statement());
+    }
+
+    private static Stream<Arguments> statementArgs() {
+        Stream<Arguments> stream = expressionArgs();
+        stream = Stream.concat(stream, compoundStmtArgs());
+        stream = Stream.concat(stream, selectionStmtArgs());
+        stream = Stream.concat(stream, iterationStmtArgs());
+        stream = Stream.concat(stream, returnStmtArgs());
+        return stream;
+    }
+
+    @ParameterizedTest
+    @DisplayName("Rule #14: expression-stmt")
+    @MethodSource("expressionStmtArgs")
+    void expressionStmt(String source, boolean valid) {
+        assertEquals(valid, getParser(source).expressionStmt());
+    }
+
+    private static Stream<Arguments> expressionStmtArgs() {
+        return Stream.of(arguments("i=5;", true), arguments("i[3]=5;", true));
+    }
+
+    @ParameterizedTest
+    @DisplayName("Rule #15: selection-stmt")
+    @MethodSource("selectionStmtArgs")
+    void selectionStmt(String source, boolean valid) {
+        assertEquals(valid, getParser(source).selectionStmt());
+    }
+
+    private static Stream<Arguments> selectionStmtArgs() {
+        return Stream.of(arguments("if(1>2){}", true));
+    }
+
+    @ParameterizedTest
+    @DisplayName("Rule #16: iteration-stmt")
+    @MethodSource("iterationStmtArgs")
+    void iterationStmt(String source, boolean valid) {
+        assertEquals(valid, getParser(source).iterationStmt());
+    }
+
+    private static Stream<Arguments> iterationStmtArgs() {
+        return Stream.of(arguments("while(1>2){}", true));
+    }
+
+    @ParameterizedTest
+    @DisplayName("Rule #17: return-stmt")
+    @MethodSource("returnStmtArgs")
+    void returnStmt(String source, boolean valid) {
+        assertEquals(valid, getParser(source).returnStmt());
+    }
+
+    private static Stream<Arguments> returnStmtArgs() {
+        return Stream.of(
+                arguments("return;", true),
+                arguments("return 5;", true),
+                arguments("return 5<3;", true)
+        );
+    }
+
+    @ParameterizedTest
+    @DisplayName("Rule #18: expression")
+    @MethodSource("expressionArgs")
+    void expression(String source, boolean valid) {
+        assertEquals(valid, getParser(source).expression());
+    }
+
+    private static Stream<Arguments> expressionArgs() {
+        return Stream.of(
+                arguments("i=5+3", true),
+                arguments("i[3]=5", true)
+        );
+    }
+
+    @ParameterizedTest
+    @DisplayName("Rule #19: var")
     @MethodSource("varArgs")
-    void var(Token token) {
-        Parser parser = new Parser(new Token[]{token});
-        boolean actual = parser.var();
-        assertEquals(true, actual);
+    void var(String source, boolean valid) {
+        assertEquals(valid, getParser(source).var());
     }
 
     private static Stream<Arguments> varArgs() {
-        return Stream.of(
-                arguments(new Token(ID, "hello"))
-        );
-    }
-
-    @Test
-    void simpleExpression() {
+        return Stream.of(arguments("i", true), arguments("i[3]", true));
     }
 
     @ParameterizedTest
-    @DisplayName("relop (Rule #21)")
+    @DisplayName("Rule #20: simple-expression")
+    @MethodSource("simpleExpressionArgs")
+    void simpleExpression(String source, boolean valid) {
+        assertEquals(valid, getParser(source).simpleExpression());
+    }
+
+    private static Stream<Arguments> simpleExpressionArgs() {
+        return Stream.of(arguments("i+3>2", true));
+    }
+
+    @ParameterizedTest
+    @DisplayName("Rule #21: relop")
     @MethodSource("relopArgs")
-    void relop(Token token) {
-        Parser parser = new Parser(new Token[]{token});
-        boolean actual = parser.relop();
-        assertEquals(true, actual);
+    void relop(String source, boolean valid) {
+        assertEquals(valid, getParser(source).relop());
     }
 
     private static Stream<Arguments> relopArgs() {
         return Stream.of(
-                arguments(new Token(SPECIAL_SYMBOL, "<=")),
-                arguments(new Token(SPECIAL_SYMBOL, "<")),
-                arguments(new Token(SPECIAL_SYMBOL, ">")),
-                arguments(new Token(SPECIAL_SYMBOL, ">=")),
-                arguments(new Token(SPECIAL_SYMBOL, "==")),
-                arguments(new Token(SPECIAL_SYMBOL, "!="))
+                arguments("<=", true),
+                arguments("<", true),
+                arguments(">", true),
+                arguments(">=", true),
+                arguments("==", true),
+                arguments("!=", true),
+                arguments("!", false)
         );
     }
 
     @Test
+    @DisplayName("Rule# 22: additive-expression")
     void additiveExpression() {
-    }
-
-    @Test
-    void term() {
+        throw new UnsupportedOperationException();
     }
 
     @ParameterizedTest
-    @DisplayName("addop (Rule #23)")
+    @DisplayName("Rule #23: addop")
     @MethodSource("addopArgs")
-    void addop(Token token) {
-        Parser parser = new Parser(new Token[]{token});
-        boolean actual = parser.addop();
-        assertEquals(true, actual);
+    void addop(String source, boolean valid) {
+        assertEquals(valid, getParser(source).addop());
     }
 
     private static Stream<Arguments> addopArgs() {
-        return Stream.of(
-                arguments(new Token(SPECIAL_SYMBOL, "+")),
-                arguments(new Token(SPECIAL_SYMBOL, "-"))
-        );
+        return Stream.of(arguments("+", true), arguments("-", true), arguments("*", false));
     }
 
     @Test
-    void mulop() {
+    @DisplayName("Rule #24: term")
+    void term() {
+        throw new UnsupportedOperationException();
+    }
+
+    @ParameterizedTest
+    @DisplayName("Rule #25: mulop")
+    @MethodSource("mulopArgs")
+    void mulop(String source, boolean valid) {
+        assertEquals(valid, getParser(source).mulop());
+    }
+
+    private static Stream<Arguments> mulopArgs() {
+        return Stream.of(arguments("*", true), arguments("/", true), arguments("+", false));
     }
 
     @Test
+    @DisplayName("Rule #26: factor")
     void factor() {
+        throw new UnsupportedOperationException();
     }
 
     @Test
+    @DisplayName("Rule #27: call")
     void call() {
+        throw new UnsupportedOperationException();
     }
 
     @Test
+    @DisplayName("Rule #28: args")
     void args() {
+        throw new UnsupportedOperationException();
     }
 
     @Test
+    @DisplayName("Rule #29: arg-list")
     void argList() {
+        throw new UnsupportedOperationException();
     }
 }
