@@ -224,7 +224,7 @@ public class Parser {
 
     private boolean argListPrime() {
         return (save() && match(",") && expression() && argListPrime())
-                || (backtrack() || save());
+                || (backtrack() && save());
     }
 
     private boolean save() {
