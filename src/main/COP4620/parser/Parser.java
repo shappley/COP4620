@@ -5,7 +5,6 @@ import COP4620.lexer.TokenType;
 
 public class Parser {
     private int cursor = 0;
-    private int backtrack = 0;
 
     private Token[] tokens;
 
@@ -14,7 +13,11 @@ public class Parser {
     }
 
     public boolean isValid() {
-        return program();
+        return program() && isDone();
+    }
+
+    public boolean isDone() {
+        return cursor == tokens.length;
     }
 
     //Rule #1
@@ -121,7 +124,6 @@ public class Parser {
         return (expressionStmt())
                 || (backtrack(save) && compoundStmt())
                 || (backtrack(save) && selectionStmt())
-                || (backtrack(save) && selectionStmt())
                 || (backtrack(save) && iterationStmt())
                 || (backtrack(save) && returnStmt());
     }
@@ -129,8 +131,8 @@ public class Parser {
     //expression-stmt -> expression ; | ;
     public boolean expressionStmt() {
         int save = cursor;
-        return (expression() && match(";"))
-                || (backtrack(save) && match(";"));
+        return (match(";"))
+                || (backtrack(save) && expression() && match(";"));
     }
 
     //selection-stmt -> if ( expression ) statement | if ( expression ) statement else statement
@@ -226,8 +228,8 @@ public class Parser {
     public boolean factor() {
         int save = cursor;
         return (match("(") && expression() && match(")"))
-                || (backtrack(save) && var())
                 || (backtrack(save) && call())
+                || (backtrack(save) && var())
                 || (backtrack(save) && match(TokenType.NUM));
     }
 
@@ -261,6 +263,11 @@ public class Parser {
     }
 
     private boolean empty() {
+        return true;
+    }
+
+    private boolean print(String state) {
+        System.out.println(state + ", at " + cursor);
         return true;
     }
 

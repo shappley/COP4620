@@ -226,11 +226,16 @@ class ParserTest {
     @DisplayName("Rule #15: selection-stmt")
     @MethodSource("selectionStmtArgs")
     void selectionStmt(String source, boolean valid) {
-        assertEquals(valid, getParser(source).selectionStmt());
+        Parser p = getParser(source);
+        assertEquals(valid, p.selectionStmt() && p.isDone());
     }
 
     private static Stream<Arguments> selectionStmtArgs() {
-        return Stream.of(arguments("if(x){}", true));
+        return Stream.of(
+                arguments("if(x){}", true),
+                arguments("if(v == 0){return u;}else{return p;}", true),
+                arguments("if(v == 0) return u; else return gcd(v, u-u/v*v);", true)
+        );
     }
 
     @ParameterizedTest
