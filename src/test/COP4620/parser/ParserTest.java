@@ -29,7 +29,11 @@ class ParserTest {
     @ParameterizedTest
     @DisplayName("Rule #0: Test Files")
     @CsvSource(value = {
-            "test_files/p2_1.txt, true"
+            "test_files/p2_1.txt, true",
+            "test_files/p2_2.txt, true",
+            "test_files/p2_MEGATEST.txt, true",
+            "test_files/p2_simple.txt, true",
+            "test_files/p2_simple_broken.txt, false"
     })
     void isValid(String filename, boolean valid) throws IOException {
         String source = getSource(filename);
