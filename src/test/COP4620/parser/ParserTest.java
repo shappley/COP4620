@@ -12,7 +12,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -24,15 +23,13 @@ class ParserTest {
     private Parser getParser(String source) {
         Lexer lexer = new Lexer(source);
         Token[] tokens = lexer.getTokens();
-        System.out.println(Arrays.toString(tokens));
         return new Parser(tokens);
     }
 
     @ParameterizedTest
-    @DisplayName("Rule #0: isValid")
+    @DisplayName("Rule #0: Test Files")
     @CsvSource(value = {
-            "test_files/p2_simple.txt, true",
-            //"test_files/p2_1.txt, true"
+            "test_files/p2_1.txt, true"
     })
     void isValid(String filename, boolean valid) throws IOException {
         String source = getSource(filename);
@@ -49,7 +46,8 @@ class ParserTest {
     @DisplayName("Rule #2: declaration-list")
     @MethodSource("declarationListArgs")
     void declarationList(String source, boolean valid) {
-        assertEquals(valid, getParser(source).declarationList());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.declarationList() && p.isDone());
     }
 
     private static Stream<Arguments> declarationListArgs() {
@@ -60,7 +58,8 @@ class ParserTest {
     @DisplayName("Rule #3: declaration")
     @MethodSource("declarationArgs")
     void declaration(String source, boolean valid) {
-        assertEquals(valid, getParser(source).declaration());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.declaration() && p.isDone());
     }
 
     private static Stream<Arguments> declarationArgs() {
@@ -76,7 +75,7 @@ class ParserTest {
     @MethodSource("varDecArgs")
     void varDeclaration(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.varDeclaration());
+        assertEquals(valid, p.varDeclaration() && p.isDone());
     }
 
     private static Stream<Arguments> varDecArgs() {
@@ -91,7 +90,8 @@ class ParserTest {
     @DisplayName("Rule #5: type-specifier")
     @MethodSource("typeSpecArgs")
     void typeSpecifier(String source, boolean valid) {
-        assertEquals(valid, getParser(source).typeSpecifier());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.typeSpecifier() && p.isDone());
     }
 
     private static Stream<Arguments> typeSpecArgs() {
@@ -107,7 +107,8 @@ class ParserTest {
     @DisplayName("Rule #6: fun-declaration")
     @MethodSource("funDecArgs")
     void funDeclaration(String source, boolean valid) {
-        assertEquals(valid, getParser(source).funDeclaration());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.funDeclaration() && p.isDone());
     }
 
     private static Stream<Arguments> funDecArgs() {
@@ -124,7 +125,8 @@ class ParserTest {
     @DisplayName("Rule #7: params")
     @MethodSource("paramsArgs")
     void params(String source, boolean valid) {
-        assertEquals(valid, getParser(source).params());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.params() && p.isDone());
     }
 
     private static Stream<Arguments> paramsArgs() {
@@ -139,7 +141,8 @@ class ParserTest {
     @DisplayName("Rule #8: param-list")
     @MethodSource("paramListArgs")
     void paramList(String source, boolean valid) {
-        assertEquals(valid, getParser(source).paramList());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.paramList() && p.isDone());
     }
 
     private static Stream<Arguments> paramListArgs() {
@@ -153,7 +156,8 @@ class ParserTest {
     @DisplayName("Rule #9: param")
     @MethodSource("paramArgs")
     void param(String source, boolean valid) {
-        assertEquals(valid, getParser(source).paramList());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.param() && p.isDone());
     }
 
     private static Stream<Arguments> paramArgs() {
@@ -167,7 +171,8 @@ class ParserTest {
     @DisplayName("Rule #10: compound-stmt")
     @MethodSource("compoundStmtArgs")
     void compoundStmt(String source, boolean valid) {
-        assertEquals(valid, getParser(source).compoundStmt());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.compoundStmt() && p.isDone());
     }
 
     private static Stream<Arguments> compoundStmtArgs() {
@@ -182,28 +187,31 @@ class ParserTest {
     @DisplayName("Rule #11: local-declarations")
     @MethodSource("localDeclarationsArgs")
     void localDeclarations(String source, boolean valid) {
-        assertEquals(valid, getParser(source).localDeclarations());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.localDeclarations() && p.isDone());
     }
 
     private static Stream<Arguments> localDeclarationsArgs() {
         return Stream.concat(Stream.of(arguments("", true)), varDecArgs());
     }
 
-    @Test
+    @ParameterizedTest
     @DisplayName("Rule #12: statement-list")
-    void statementList() {
-        throw new UnsupportedOperationException();
+    @MethodSource("statementArgs")
+    void statementList(String source, boolean valid) {
+        statement(source, valid);//statementList is just a bunch of statements
     }
 
     @ParameterizedTest
     @DisplayName("Rule #13: statement")
     @MethodSource("statementArgs")
     void statement(String source, boolean valid) {
-        assertEquals(valid, getParser(source).statement());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.statement() && p.isDone());
     }
 
     private static Stream<Arguments> statementArgs() {
-        Stream<Arguments> stream = expressionArgs();
+        Stream<Arguments> stream = expressionStmtArgs();
         stream = Stream.concat(stream, compoundStmtArgs());
         stream = Stream.concat(stream, selectionStmtArgs());
         stream = Stream.concat(stream, iterationStmtArgs());
@@ -215,7 +223,8 @@ class ParserTest {
     @DisplayName("Rule #14: expression-stmt")
     @MethodSource("expressionStmtArgs")
     void expressionStmt(String source, boolean valid) {
-        assertEquals(valid, getParser(source).expressionStmt());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.expressionStmt() && p.isDone());
     }
 
     private static Stream<Arguments> expressionStmtArgs() {
@@ -242,7 +251,8 @@ class ParserTest {
     @DisplayName("Rule #16: iteration-stmt")
     @MethodSource("iterationStmtArgs")
     void iterationStmt(String source, boolean valid) {
-        assertEquals(valid, getParser(source).iterationStmt());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.iterationStmt() && p.isDone());
     }
 
     private static Stream<Arguments> iterationStmtArgs() {
@@ -253,14 +263,15 @@ class ParserTest {
     @DisplayName("Rule #17: return-stmt")
     @MethodSource("returnStmtArgs")
     void returnStmt(String source, boolean valid) {
-        assertEquals(valid, getParser(source).returnStmt());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.returnStmt() && p.isDone());
     }
 
     private static Stream<Arguments> returnStmtArgs() {
         return Stream.of(
-                //arguments("return;", true),
-                arguments("return 5;", true)
-                //arguments("return 5<3;", true)
+                arguments("return;", true),
+                arguments("return 5;", true),
+                arguments("return 5<3;", true)
         );
     }
 
@@ -268,7 +279,8 @@ class ParserTest {
     @DisplayName("Rule #18: expression")
     @MethodSource("expressionArgs")
     void expression(String source, boolean valid) {
-        assertEquals(valid, getParser(source).expression());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.expression() && p.isDone());
     }
 
     private static Stream<Arguments> expressionArgs() {
@@ -282,7 +294,8 @@ class ParserTest {
     @DisplayName("Rule #19: var")
     @MethodSource("varArgs")
     void var(String source, boolean valid) {
-        assertEquals(valid, getParser(source).var());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.var() && p.isDone());
     }
 
     private static Stream<Arguments> varArgs() {
@@ -293,7 +306,8 @@ class ParserTest {
     @DisplayName("Rule #20: simple-expression")
     @MethodSource("simpleExpressionArgs")
     void simpleExpression(String source, boolean valid) {
-        assertEquals(valid, getParser(source).simpleExpression());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.simpleExpression() && p.isDone());
     }
 
     private static Stream<Arguments> simpleExpressionArgs() {
@@ -304,7 +318,8 @@ class ParserTest {
     @DisplayName("Rule #21: relop")
     @MethodSource("relopArgs")
     void relop(String source, boolean valid) {
-        assertEquals(valid, getParser(source).relop());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.relop() && p.isDone());
     }
 
     private static Stream<Arguments> relopArgs() {
@@ -320,10 +335,11 @@ class ParserTest {
     }
 
     @ParameterizedTest
-    @DisplayName("Rule# 22: additive-expression")
+    @DisplayName("Rule #22: additive-expression")
     @MethodSource("additiveExpArgs")
     void additiveExpression(String source, boolean valid) {
-        assertEquals(valid, getParser(source).additiveExpression());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.additiveExpression() && p.isDone());
     }
 
     private static Stream<Arguments> additiveExpArgs() {
@@ -338,7 +354,8 @@ class ParserTest {
     @DisplayName("Rule #23: addop")
     @MethodSource("addopArgs")
     void addop(String source, boolean valid) {
-        assertEquals(valid, getParser(source).addop());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.addop() && p.isDone());
     }
 
     private static Stream<Arguments> addopArgs() {
@@ -348,7 +365,7 @@ class ParserTest {
     @Test
     @DisplayName("Rule #24: term")
     void term() {
-        throw new UnsupportedOperationException();
+        //TODO
     }
 
     @ParameterizedTest
@@ -365,24 +382,24 @@ class ParserTest {
     @Test
     @DisplayName("Rule #26: factor")
     void factor() {
-        throw new UnsupportedOperationException();
+        //TODO
     }
 
     @Test
     @DisplayName("Rule #27: call")
     void call() {
-        throw new UnsupportedOperationException();
+        //TODO
     }
 
     @Test
     @DisplayName("Rule #28: args")
     void args() {
-        throw new UnsupportedOperationException();
+        //TODO
     }
 
     @Test
     @DisplayName("Rule #29: arg-list")
     void argList() {
-        throw new UnsupportedOperationException();
+        //TODO
     }
 }
