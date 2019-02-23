@@ -95,8 +95,8 @@ public class Parser {
     //param -> type-specifier ID | type-specifier ID [ ]
     public boolean param() {
         int save = cursor;
-        return (typeSpecifier() && match(TokenType.ID))
-                || (backtrack(save) && typeSpecifier() && match(TokenType.ID) && match("[") && match("]"));
+        return (typeSpecifier() && match(TokenType.ID) && match("[") && match("]"))
+                || (backtrack(save) && typeSpecifier() && match(TokenType.ID));
     }
 
     //compound-stmt -> { local-declarations statement-list }
