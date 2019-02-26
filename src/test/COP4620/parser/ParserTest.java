@@ -33,7 +33,37 @@ class ParserTest {
             "test_files/p2_2.txt, true",
             "test_files/p2_MEGATEST.txt, true",
             "test_files/p2_simple.txt, true",
-            "test_files/p2_simple_broken.txt, false"
+            "test_files/p2_simple_broken.txt, false",
+            //------------------------------\\
+            "test_files/ACCEPT/1.txt, true",
+            "test_files/ACCEPT/2.txt, true",
+            "test_files/ACCEPT/3.txt, true",
+            "test_files/ACCEPT/4.txt, true",
+            "test_files/ACCEPT/5.txt, true",
+            "test_files/ACCEPT/6.txt, true",
+            "test_files/ACCEPT/7.txt, true",
+            "test_files/ACCEPT/8.txt, true",
+            "test_files/ACCEPT/9.txt, true",
+            "test_files/ACCEPT/10.txt, true",
+            //-----------------------------\\
+            "test_files/REJECT/1.txt, false",
+            "test_files/REJECT/2.txt, false",
+            "test_files/REJECT/3.txt, false",
+            "test_files/REJECT/4.txt, false",
+            "test_files/REJECT/5.txt, false",
+            "test_files/REJECT/6.txt, false",
+            "test_files/REJECT/7.txt, false",
+            "test_files/REJECT/8.txt, false",
+            "test_files/REJECT/9.txt, false",
+            "test_files/REJECT/10.txt, false",
+            "test_files/REJECT/11.txt, false",
+            "test_files/REJECT/12.txt, false",
+            "test_files/REJECT/13.txt, false",
+            "test_files/REJECT/14.txt, false",
+            "test_files/REJECT/15.txt, false",
+            "test_files/REJECT/16.txt, false",
+            "test_files/REJECT/17.txt, false",
+            "test_files/REJECT/18.txt, false",
     })
     void isValid(String filename, boolean valid) throws IOException {
         String source = getSource(filename);

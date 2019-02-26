@@ -5,8 +5,9 @@ Dr. Roger Eggen
 31 January 2019
 
 Running the program:
-1. Execute `make` to compile the program
-2. Execute `p1` script to execute the program
+1. Execute `make` to compile the program.
+2. `make run file=[file name]` to run the application with the specified input file
+3. Execute `p1` script to execute the program
 
 Input:
 The application accepts a file name as argument 0 to be processed.
