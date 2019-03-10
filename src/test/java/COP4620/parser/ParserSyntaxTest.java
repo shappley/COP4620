@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -29,50 +30,52 @@ class ParserSyntaxTest {
     @ParameterizedTest
     @DisplayName("Rule #0: Test Files")
     @CsvSource(value = {
-            "test_files/p2_1.txt, true",
-            "test_files/p2_2.txt, true",
-            "test_files/p2_MEGATEST.txt, true",
-            "test_files/p2_simple.txt, true",
-            "test_files/p2_simple_broken.txt, false",
+            "syntax/p2_1.txt, true",
+            "syntax/p2_2.txt, true",
+            "syntax/p2_MEGATEST.txt, true",
+            "syntax/p2_simple.txt, true",
+            "syntax/p2_simple_broken.txt, false",
             //------------------------------\\
-            "test_files/ACCEPT/1.txt, true",
-            "test_files/ACCEPT/2.txt, true",
-            "test_files/ACCEPT/3.txt, true",
-            "test_files/ACCEPT/4.txt, true",
-            "test_files/ACCEPT/5.txt, true",
-            "test_files/ACCEPT/6.txt, true",
-            "test_files/ACCEPT/7.txt, true",
-            "test_files/ACCEPT/8.txt, true",
-            "test_files/ACCEPT/9.txt, true",
-            "test_files/ACCEPT/10.txt, true",
+            "syntax/ACCEPT/1.txt, true",
+            "syntax/ACCEPT/2.txt, true",
+            "syntax/ACCEPT/3.txt, true",
+            "syntax/ACCEPT/4.txt, true",
+            "syntax/ACCEPT/5.txt, true",
+            "syntax/ACCEPT/6.txt, true",
+            "syntax/ACCEPT/7.txt, true",
+            "syntax/ACCEPT/8.txt, true",
+            "syntax/ACCEPT/9.txt, true",
+            "syntax/ACCEPT/10.txt, true",
             //-----------------------------\\
-            "test_files/REJECT/1.txt, false",
-            "test_files/REJECT/2.txt, false",
-            "test_files/REJECT/3.txt, false",
-            "test_files/REJECT/4.txt, false",
-            "test_files/REJECT/5.txt, false",
-            "test_files/REJECT/6.txt, false",
-            "test_files/REJECT/7.txt, false",
-            "test_files/REJECT/8.txt, false",
-            "test_files/REJECT/9.txt, false",
-            "test_files/REJECT/10.txt, false",
-            "test_files/REJECT/11.txt, false",
-            "test_files/REJECT/12.txt, false",
-            "test_files/REJECT/13.txt, false",
-            "test_files/REJECT/14.txt, false",
-            "test_files/REJECT/15.txt, false",
-            "test_files/REJECT/16.txt, false",
-            "test_files/REJECT/17.txt, false",
-            "test_files/REJECT/18.txt, false",
+            "syntax/REJECT/1.txt, false",
+            "syntax/REJECT/2.txt, false",
+            "syntax/REJECT/3.txt, false",
+            "syntax/REJECT/4.txt, false",
+            "syntax/REJECT/5.txt, false",
+            "syntax/REJECT/6.txt, false",
+            "syntax/REJECT/7.txt, false",
+            "syntax/REJECT/8.txt, false",
+            "syntax/REJECT/9.txt, false",
+            "syntax/REJECT/10.txt, false",
+            "syntax/REJECT/11.txt, false",
+            "syntax/REJECT/12.txt, false",
+            "syntax/REJECT/13.txt, false",
+            "syntax/REJECT/14.txt, false",
+            "syntax/REJECT/15.txt, false",
+            "syntax/REJECT/16.txt, false",
+            "syntax/REJECT/17.txt, false",
+            "syntax/REJECT/18.txt, false",
     })
-    void program(String filename, boolean valid) throws IOException {
+    void program(String filename, boolean valid) throws Exception {
         String source = getSource(filename);
         Parser parser = getParser(source);
         assertEquals(valid, parser.program() && parser.isDone());
     }
 
-    private static String getSource(String filename) throws IOException {
-        List<String> lines = Files.readAllLines(Paths.get(filename));
+    private String getSource(String filename) throws Exception {
+        final ClassLoader classLoader = this.getClass().getClassLoader();
+        final URI path = classLoader.getResource(filename).toURI();
+        List<String> lines = Files.readAllLines(Paths.get(path));
         return String.join("\n", lines);
     }
 

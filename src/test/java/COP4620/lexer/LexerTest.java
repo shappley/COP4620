@@ -7,6 +7,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -153,8 +154,10 @@ class LexerTest {
 
     @Test
     @DisplayName("Eggman Test")
-    void eggmanTest() throws IOException {
-        List<String> input = Files.readAllLines(Paths.get("test_files/p1_test_1.txt"));
+    void eggmanTest() throws Exception {
+        final ClassLoader classLoader = this.getClass().getClassLoader();
+        final URI path = classLoader.getResource("lexer/eggman_test.txt").toURI();
+        List<String> input = Files.readAllLines(Paths.get(path));
         String source = String.join("\n", input);
         Token[] expected = {
                 new Token(SPECIAL_SYMBOL, "*"),
