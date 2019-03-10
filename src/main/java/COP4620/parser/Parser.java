@@ -15,11 +15,18 @@ public class Parser {
     }
 
     public boolean isValid() {
-        return program() && isDone() && semanticExceptions.isEmpty();
+        return program() && isDone() && isSemanticallyCorrect();
     }
 
     public boolean isDone() {
         return cursor == tokens.length;
+    }
+
+    public boolean isSemanticallyCorrect() {
+        if (semanticExceptions.isEmpty()) {
+            return true;
+        }
+        return false;
     }
 
     //Rule #1
