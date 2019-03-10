@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-class ParserTest {
+class ParserSyntaxTest {
 
     private Parser getParser(String source) {
         Lexer lexer = new Lexer(source);
@@ -65,10 +65,10 @@ class ParserTest {
             "test_files/REJECT/17.txt, false",
             "test_files/REJECT/18.txt, false",
     })
-    void isValid(String filename, boolean valid) throws IOException {
+    void program(String filename, boolean valid) throws IOException {
         String source = getSource(filename);
         Parser parser = getParser(source);
-        assertEquals(valid, parser.isValid());
+        assertEquals(valid, parser.program() && parser.isDone());
     }
 
     private static String getSource(String filename) throws IOException {
