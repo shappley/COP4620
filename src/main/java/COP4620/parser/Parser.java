@@ -3,17 +3,19 @@ package COP4620.parser;
 import COP4620.lexer.Token;
 import COP4620.lexer.TokenType;
 
-public class Parser {
-    private int cursor = 0;
+import java.util.Stack;
 
+public class Parser {
     private Token[] tokens;
+    private int cursor = 0;
+    private Stack<SemanticException> semanticExceptions = new Stack<>();
 
     public Parser(Token[] tokens) {
         this.tokens = tokens;
     }
 
     public boolean isValid() {
-        return program() && isDone();
+        return program() && isDone() && semanticExceptions.isEmpty();
     }
 
     public boolean isDone() {
