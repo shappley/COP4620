@@ -53,7 +53,10 @@ class ParserSemanticsTest {
     @CsvSource({
             "void main(void){int x;}, true",
             "void main(void){float x;}, true",
-            "void main(void){void x;}, false"
+            "void main(void){int x[0];}, true",
+            "void main(void){float x[0];}, true",
+            "void main(void){void x;}, false",
+            "void main(void){void x[0];}, false",
     })
     void variableDeclarationTypes(String source, boolean valid) {
         test(source, valid);
@@ -115,15 +118,11 @@ class ParserSemanticsTest {
     @ParameterizedTest
     @CsvSource({
             "void main(void) { int x[1]; x[1] = 5;}, true",
-            "int size(void) {return 1;} void main(void) { int x[size()]; x[0] = 5;}, true",
-            "int size(void) {return 1;} void main(void) { int x[size()+1]; x[0] = 5;}, true",
             "int size(void) {return 1;} void main(void) { int x[1]; x[size()] = 5;}, true",
             "int size(void) {return 1;} void main(void) { int x[1]; x[size()+1] = 5;}, true",
             "void main(void) { int x[1.0]; x[1] = 5;}, false",
             "void main(void) { int x[1]; x[1.0] = 5;}, false",
-            "float size(void) {return 1.0;} void main(void) { int x[size()]; x[0] = 5;}, false",
             "float size(void) {return 1.0;} void main(void) { int x[1]; x[size()] = 5;}, false",
-            "float size(void) {return 1.0;} void main(void) { int x[size()+1.0]; x[0] = 5;}, false",
             "float size(void) {return 1.0;} void main(void) { int x[1]; x[size()+1.0] = 5;}, false"
     })
     void arrayIndexes(String source, boolean valid) {
