@@ -6,7 +6,7 @@ public class SemanticException {
     private String message;
 
     public SemanticException(String error, Token... tokens) {
-        this.message = ("Error: " + error + " for statement \"" + stringify(tokens) + "\"");
+        this.message = ("Error \"" + error + "\" for statement \"" + stringify(tokens) + "\"");
     }
 
     public String getMessage() {
