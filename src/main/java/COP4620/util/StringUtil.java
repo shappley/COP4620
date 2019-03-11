@@ -8,4 +8,13 @@ public class StringUtil {
         }
         return lastIndexLessThan(string.substring(0, index), search, maxIndex);
     }
+
+    public static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 }

@@ -1,14 +1,17 @@
 package COP4620.parser;
 
+import COP4620.lexer.Keyword;
 import COP4620.lexer.Token;
 import COP4620.lexer.TokenType;
+import COP4620.util.StringUtil;
 
-import java.util.Stack;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Parser {
     private Token[] tokens;
     private int cursor = 0;
-    private Stack<SemanticException> semanticExceptions = new Stack<>();
+    private List<SemanticException> semanticExceptions = new ArrayList<>();
 
     public Parser(Token[] tokens) {
         this.tokens = tokens;
@@ -26,6 +29,7 @@ public class Parser {
         if (semanticExceptions.isEmpty()) {
             return true;
         }
+        System.out.println(semanticExceptions);
         return false;
     }
 
@@ -59,17 +63,37 @@ public class Parser {
     //var-declaration -> type-specifier ID ; | type-specifier ID [ NUM ] ;
     public boolean varDeclaration() {
         int save = cursor;
-        return (typeSpecifier() && match(TokenType.ID) && match(";"))
-                || (backtrack(save) && typeSpecifier() && match(TokenType.ID) && match("[") && match(TokenType.NUM) && match("]") && match(";"));
+        if (typeSpecifier() && check(0, TokenType.ID) && check(1, ";")) {
+            Token type = lookahead(-1);
+            Token id = nextToken();
+            Token semi = nextToken();
+            if (type.getValue().equals(Keyword.VOID.getValue())) {
+                semanticExceptions.add(new SemanticException("Cannot declare variable of type void", type, id, semi));
+            }
+            return true;
+        } else if (backtrack(save) && typeSpecifier() && check(0, TokenType.ID) && check(1, "[") && check(2, TokenType.NUM) && check(3, "]") && check(4, ";")) {
+            Token[] match = {lookahead(-1), nextToken(), nextToken(), nextToken(), nextToken(), nextToken()};
+            Token type = match[0];
+            Token id = match[1];
+            Token size = match[3];
+            if (type.getValue().equals(Keyword.VOID.getValue())) {
+                semanticExceptions.add(new SemanticException("Cannot declare variable of type void", match));
+            } else if (!StringUtil.isInteger(size.getValue())) {
+                semanticExceptions.add(new SemanticException("Array size must be an integer", match));
+            }
+            return true;
+        }
+        return false;
     }
 
     //Rule #5
     //type-specifier -> int | float | void
     public boolean typeSpecifier() {
-        int save = cursor;
-        return (match("int"))
-                || (backtrack(save) && match("float"))
-                || (backtrack(save) && match("void"));
+        if (check("int") || check("float") || check("void")) {
+            nextToken();
+            return true;
+        }
+        return false;
     }
 
     //Rule #6
@@ -280,6 +304,24 @@ public class Parser {
         return true;
     }
 
+    private boolean check(String expected) {
+        return check(0, expected);
+    }
+
+    private boolean check(int offset, String expected) {
+        return cursor + offset < tokens.length
+                && expected.equals(tokens[cursor + offset].getValue());
+    }
+
+    private boolean check(TokenType expected) {
+        return check(0, expected);
+    }
+
+    private boolean check(int offset, TokenType expected) {
+        return cursor + offset < tokens.length
+                && expected == tokens[cursor + offset].getType();
+    }
+
     private boolean match(String expected) {
         final Token token = nextToken();
         return token != null && expected.equals(token.getValue());
@@ -290,10 +332,18 @@ public class Parser {
         return token != null && expected == token.getType();
     }
 
-    private Token nextToken() {
-        if (cursor == tokens.length) {
+    private Token token(int index) {
+        if (index >= tokens.length) {
             return null;
         }
-        return tokens[cursor++];
+        return tokens[index];
+    }
+
+    private Token lookahead(int offset) {
+        return token(cursor + offset);
+    }
+
+    private Token nextToken() {
+        return token(cursor++);
     }
 }
