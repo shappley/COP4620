@@ -1,104 +1,107 @@
 package COP4620.parser;
 
-import COP4620.lexer.Keyword;
 import COP4620.lexer.Token;
 import COP4620.lexer.TokenType;
-import COP4620.util.StringUtil;
-
-import java.util.ArrayList;
-import java.util.List;
+import COP4620.parser.semantics.Node;
+import COP4620.parser.semantics.nodes.ArrayDeclaration;
+import COP4620.parser.semantics.nodes.VariableDeclaration;
 
 public class Parser {
     private Token[] tokens;
     private int cursor = 0;
-    private List<SemanticException> semanticExceptions = new ArrayList<>();
 
     public Parser(Token[] tokens) {
         this.tokens = tokens;
     }
 
     public boolean isValid() {
-        return program() && isDone() && isSemanticallyCorrect();
+        return program() != null && isDone();
     }
 
     public boolean isDone() {
         return cursor == tokens.length;
     }
 
-    public boolean isSemanticallyCorrect() {
-        if (semanticExceptions.isEmpty()) {
-            return true;
-        }
-        System.out.println(semanticExceptions);
-        return false;
-    }
-
     //Rule #1
-    public boolean program() {
-        return declarationList();
+    public Node program() {
+        Node declarationList = declarationList();
+        if (declarationList != null) {
+            return new Node(declarationList);
+        }
+        return null;
     }
 
     //Rule #2
     //declaration-list -> declaration declaration-list-prime
     //declaration-list-prime -> declaration declaration-list-prime | empty
-    public boolean declarationList() {
-        return (declaration() && declarationListPrime());
+    public Node declarationList() {
+        Node dec, decListPrime;
+        if ((dec = declaration()) != null && (decListPrime = declarationListPrime()) != null) {
+            return new Node(dec, decListPrime);
+        }
+        return null;
     }
 
-    private boolean declarationListPrime() {
+    private Node declarationListPrime() {
         int save = cursor;
-        return (declaration() && declarationListPrime())
-                || (backtrack(save) && empty());
+        Node dec, decListPrime;
+        if ((dec = declaration()) != null && (decListPrime = declarationListPrime()) != null) {
+            return new Node(dec, decListPrime);
+        }
+        backtrack(save);
+        return empty();
     }
 
     //Rule #3
     //declaration -> var-declaration | fun-declaration
-    public boolean declaration() {
+    public Node declaration() {
         int save = cursor;
-        return (varDeclaration())
-                || (backtrack(save) && funDeclaration());
+        Node varDec, funDec;
+        if ((varDec = varDeclaration()) != null) {
+            return new Node(varDec);
+        } else if (backtrack(save) && (funDec = funDeclaration()) != null) {
+            return new Node(funDec);
+        }
+        return null;
     }
 
     //Rule #4
     //var-declaration -> type-specifier ID ; | type-specifier ID [ NUM ] ;
-    public boolean varDeclaration() {
+    public VariableDeclaration varDeclaration() {
         int save = cursor;
-        if (typeSpecifier() && check(0, TokenType.ID) && check(1, ";")) {
-            Token type = lookahead(-1);
+        Node typeSpec;
+        if ((typeSpec = typeSpecifier()) != null && check(0, TokenType.ID) && check(1, ";")) {
             Token id = nextToken();
-            Token semi = nextToken();
-            if (type.getValue().equals(Keyword.VOID.getValue())) {
-                semanticExceptions.add(new SemanticException("Cannot declare variable of type void", type, id, semi));
-            }
-            return true;
-        } else if (backtrack(save) && typeSpecifier() && check(0, TokenType.ID) && check(1, "[") && check(2, TokenType.NUM) && check(3, "]") && check(4, ";")) {
-            Token[] match = {lookahead(-1), nextToken(), nextToken(), nextToken(), nextToken(), nextToken()};
-            Token type = match[0];
-            Token id = match[1];
-            Token size = match[3];
-            if (type.getValue().equals(Keyword.VOID.getValue())) {
-                semanticExceptions.add(new SemanticException("Cannot declare variable of type void", match));
-            } else if (!StringUtil.isInteger(size.getValue())) {
-                semanticExceptions.add(new SemanticException("Array size must be an integer", match));
-            }
-            return true;
+            nextToken();
+            return new VariableDeclaration(typeSpec, id.getValue());
+        } else if (backtrack(save) && (typeSpec = typeSpecifier()) != null
+                && check(0, TokenType.ID) && check(1, "[")
+                && check(2, TokenType.NUM) && check(3, "]")
+                && check(4, ";")) {
+            Token id = nextToken();
+            nextToken();
+            Token size = nextToken();
+            nextToken();
+            nextToken();
+            return new ArrayDeclaration(typeSpec, id.getValue(), size.getValue());
         }
-        return false;
+        return null;
     }
 
     //Rule #5
     //type-specifier -> int | float | void
-    public boolean typeSpecifier() {
+    public Node typeSpecifier() {
         if (check("int") || check("float") || check("void")) {
-            nextToken();
-            return true;
+            return new Node(nextToken());
         }
-        return false;
+        return null;
     }
 
     //Rule #6
     //fun-declaration -> type-specifier ID ( params ) compound-stmt
-    public boolean funDeclaration() {
+    public Node funDeclaration() {
+        Node type, params, compound;
+        if((type=typeSpecifier())!=null&&check(0,TokenType.ID)&&check(1,TokenType.ID))
         return typeSpecifier()
                 && match(TokenType.ID) && match("(")
                 && params() && match(")") && compoundStmt();
@@ -106,7 +109,7 @@ public class Parser {
 
     //Rule #7
     //params -> param-list | void
-    public boolean params() {
+    public Node params() {
         int save = cursor;
         return (paramList())
                 || (backtrack(save) && match("void"));
@@ -115,44 +118,44 @@ public class Parser {
     //Rule #8
     //param-list -> param param-list-prime
     //param-list-prime -> , param param-list-prime | empty
-    public boolean paramList() {
+    public Node paramList() {
         return param() && paramListPrime();
     }
 
-    private boolean paramListPrime() {
+    private Node paramListPrime() {
         int save = cursor;
         return (match(",") && param() && paramListPrime())
                 || (backtrack(save) && empty());
     }
 
     //param -> type-specifier ID | type-specifier ID [ ]
-    public boolean param() {
+    public Node param() {
         int save = cursor;
         return (typeSpecifier() && match(TokenType.ID) && match("[") && match("]"))
                 || (backtrack(save) && typeSpecifier() && match(TokenType.ID));
     }
 
     //compound-stmt -> { local-declarations statement-list }
-    public boolean compoundStmt() {
+    public Node compoundStmt() {
         return match("{") && localDeclarations() && statementList() && match("}");
     }
 
     //local-declarations -> var-declaration local-declarations | empty
-    public boolean localDeclarations() {
+    public Node localDeclarations() {
         int save = cursor;
         return (varDeclaration() && localDeclarations())
                 || (backtrack(save) && empty());
     }
 
     //statement-list -> statement statement-list | empty
-    public boolean statementList() {
+    public Node statementList() {
         int save = cursor;
         return (statement() && statementList())
                 || (backtrack(save) && empty());
     }
 
     //statement -> expression-stmt | compound-stmt | selection-stmt | iteration-stmt | return-stmt
-    public boolean statement() {
+    public Node statement() {
         int save = cursor;
         return (expressionStmt())
                 || (backtrack(save) && compoundStmt())
@@ -162,54 +165,54 @@ public class Parser {
     }
 
     //expression-stmt -> expression ; | ;
-    public boolean expressionStmt() {
+    public Node expressionStmt() {
         int save = cursor;
         return (match(";"))
                 || (backtrack(save) && expression() && match(";"));
     }
 
     //selection-stmt -> if ( expression ) statement | if ( expression ) statement else statement
-    public boolean selectionStmt() {
+    public Node selectionStmt() {
         int save = cursor;
         return (match("if") && match("(") && expression() && match(")") && statement() && match("else") && statement())
                 || (backtrack(save) && match("if") && match("(") && expression() && match(")") && statement());
     }
 
     //iteration-stmt -> while ( expression ) statement
-    public boolean iterationStmt() {
+    public Node iterationStmt() {
         return match("while") && match("(") && expression() && match(")") && statement();
     }
 
     //return-stmt -> return ; | return expression ;
-    public boolean returnStmt() {
+    public Node returnStmt() {
         int save = cursor;
         return (match("return") && match(";"))
                 || (backtrack(save) && match("return") && expression() && match(";"));
     }
 
     //expression -> var = expression | simple-expression
-    public boolean expression() {
+    public Node expression() {
         int save = cursor;
         return (var() && match("=") && expression())
                 || (backtrack(save) && simpleExpression());
     }
 
     //var -> ID | ID [ expression ]
-    public boolean var() {
+    public Node var() {
         int save = cursor;
         return (match(TokenType.ID) && match("[") && expression() && match("]"))
                 || (backtrack(save) && match(TokenType.ID));
     }
 
     //simple-expression -> additive-expression relop additive-expression | additive-expression
-    public boolean simpleExpression() {
+    public Node simpleExpression() {
         int save = cursor;
         return (additiveExpression() && relop() && additiveExpression())
                 || (backtrack(save) && additiveExpression());
     }
 
     //relop -> <= | < | > | >= | == | !=
-    public boolean relop() {
+    public Node relop() {
         int save = cursor;
         return (match("<="))
                 || (backtrack(save) && match("<"))
@@ -221,11 +224,11 @@ public class Parser {
 
     //additive-expression -> term additive-expression-prime
     //additive-expression-prime -> addop term additive-expression-prime | empty
-    public boolean additiveExpression() {
+    public Node additiveExpression() {
         return term() && additiveExpressionPrime();
     }
 
-    private boolean additiveExpressionPrime() {
+    private Node additiveExpressionPrime() {
         int save = cursor;
         return (addop() && term() && additiveExpressionPrime())
                 || (backtrack(save) && empty());
@@ -233,32 +236,32 @@ public class Parser {
 
     //term -> factor term-prime
     //term-prime -> mulop factor term-prime | empty
-    public boolean term() {
+    public Node term() {
         return factor() && termPrime();
     }
 
-    private boolean termPrime() {
+    private Node termPrime() {
         int save = cursor;
         return (mulop() && factor() && termPrime())
                 || (backtrack(save) && empty());
     }
 
     //addop -> + | -
-    public boolean addop() {
+    public Node addop() {
         int save = cursor;
         return (match("+"))
                 || (backtrack(save) && match("-"));
     }
 
     //mulop -> * | /
-    public boolean mulop() {
+    public Node mulop() {
         int save = cursor;
         return (match("*"))
                 || (backtrack(save) && match("/"));
     }
 
     //factor -> ( expression ) | var | call | NUM
-    public boolean factor() {
+    public Node factor() {
         int save = cursor;
         return (match("(") && expression() && match(")"))
                 || (backtrack(save) && call())
@@ -267,12 +270,12 @@ public class Parser {
     }
 
     //call -> ID ( args )
-    public boolean call() {
+    public Node call() {
         return match(TokenType.ID) && match("(") && args() && match(")");
     }
 
     //args -> arg-list | empty
-    public boolean args() {
+    public Node args() {
         int save = cursor;
         return (argList())
                 || (backtrack(save) && empty());
@@ -280,11 +283,11 @@ public class Parser {
 
     //arg-list -> expression arg-list-prime
     //arg-list-prime -> , expression arg-list-prime | empty
-    public boolean argList() {
+    public Node argList() {
         return expression() && argListPrime();
     }
 
-    private boolean argListPrime() {
+    private Node argListPrime() {
         int save = cursor;
         return (match(",") && expression() && argListPrime())
                 || (backtrack(save) && empty());
@@ -295,8 +298,8 @@ public class Parser {
         return true;
     }
 
-    private boolean empty() {
-        return true;
+    private Node empty() {
+        return new Node();
     }
 
     private boolean print(String state) {
