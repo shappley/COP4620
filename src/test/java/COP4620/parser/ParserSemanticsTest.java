@@ -2,20 +2,18 @@ package COP4620.parser;
 
 import COP4620.lexer.Lexer;
 import COP4620.lexer.Token;
-import COP4620.parser.semantics.SemanticAnalyzer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ParserSemanticsTest {
     private static void test(String source, boolean valid) {
         Lexer lexer = new Lexer(source);
         Token[] tokens = lexer.getTokens();
         Parser parser = new Parser(tokens);
-        SemanticAnalyzer analyzer = new SemanticAnalyzer(parser.program());
-        assertEquals(valid, analyzer.isValid());
+        assertTrue(false);
     }
 
     //1. All variables and functions must be declared before they are used.
