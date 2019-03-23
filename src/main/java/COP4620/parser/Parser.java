@@ -3,20 +3,7 @@ package COP4620.parser;
 import COP4620.lexer.Token;
 import COP4620.lexer.TokenType;
 import COP4620.parser.semantics.Node;
-import COP4620.parser.semantics.nodes.CompoundStmt;
-import COP4620.parser.semantics.nodes.Declaration;
-import COP4620.parser.semantics.nodes.DeclarationList;
-import COP4620.parser.semantics.nodes.FunDeclaration;
-import COP4620.parser.semantics.nodes.LocalDeclarations;
-import COP4620.parser.semantics.nodes.Param;
-import COP4620.parser.semantics.nodes.ParamList;
-import COP4620.parser.semantics.nodes.ParamListPrime;
-import COP4620.parser.semantics.nodes.Params;
-import COP4620.parser.semantics.nodes.Program;
-import COP4620.parser.semantics.nodes.Statement;
-import COP4620.parser.semantics.nodes.StatementList;
-import COP4620.parser.semantics.nodes.TypeSpecifier;
-import COP4620.parser.semantics.nodes.VarDeclaration;
+import COP4620.parser.semantics.nodes.*;
 
 import static COP4620.util.ArrayUtil.addArrays;
 import static COP4620.util.ArrayUtil.asArray;
@@ -217,53 +204,116 @@ public class Parser {
     }
 
     //statement -> expression-stmt | compound-stmt | selection-stmt | iteration-stmt | return-stmt
-    public boolean statement() {
+    public Node statement() {
         int save = cursor;
-        return (expressionStmt())
-                || (backtrack(save) && compoundStmt())
-                || (backtrack(save) && selectionStmt())
-                || (backtrack(save) && iterationStmt())
-                || (backtrack(save) && returnStmt());
+        Node statement = expressionStmt();
+        if (statement != null) {
+            return statement;
+        } else if (backtrack(save) && (statement = compoundStmt()) != null) {
+            return statement;
+        } else if (backtrack(save) && (statement = selectionStmt()) != null) {
+            return statement;
+        } else if (backtrack(save) && (statement = iterationStmt()) != null) {
+            return statement;
+        } else if (backtrack(save) && (statement = returnStmt()) != null) {
+            return statement;
+        }
+        return null;
     }
 
     //expression-stmt -> expression ; | ;
-    public boolean expressionStmt() {
+    public ExpressionStmt expressionStmt() {
         int save = cursor;
-        return (match(";"))
-                || (backtrack(save) && expression() && match(";"));
+        if (match(";")) {
+            return new ExpressionStmt();
+        } else if (backtrack(save)) {
+            Expression expression = expression();
+            if (expression != null && match(";")) {
+                return new ExpressionStmt(expression);
+            }
+        }
+        return null;
     }
 
     //selection-stmt -> if ( expression ) statement | if ( expression ) statement else statement
-    public boolean selectionStmt() {
-        int save = cursor;
-        return (match("if") && match("(") && expression() && match(")") && statement() && match("else") && statement())
-                || (backtrack(save) && match("if") && match("(") && expression() && match(")") && statement());
+    public SelectionStmt selectionStmt() {
+        if (match("if") && match("(")) {
+            Expression expression = expression();
+            if (expression != null && match(")")) {
+                Statement statement = statement();
+                if (statement != null && check("else")) {
+                    nextToken();
+                    Statement elseStatement = statement();
+                    if (elseStatement != null) {
+                        return new SelectionStmt(statement, elseStatement);
+                    }
+                } else {
+                    return new SelectionStmt(statement);
+                }
+            }
+        }
+        return null;
     }
 
     //iteration-stmt -> while ( expression ) statement
-    public boolean iterationStmt() {
-        return match("while") && match("(") && expression() && match(")") && statement();
+    public IterationStmt iterationStmt() {
+        if (match("while") && match("(")) {
+            Expression expression = expression();
+            if (expression != null && match(")")) {
+                Statement statement = statement();
+                if (statement != null) {
+                    return new IterationStmt(statement);
+                }
+            }
+        }
+        return null;
     }
 
     //return-stmt -> return ; | return expression ;
-    public boolean returnStmt() {
-        int save = cursor;
-        return (match("return") && match(";"))
-                || (backtrack(save) && match("return") && expression() && match(";"));
+    public ReturnStmt returnStmt() {
+        if (match("return")) {
+            if (match(";")) {
+                return new ReturnStmt();
+            }
+            Expression expression = expression();
+            if (expression != null && match(";")) {
+                return new ReturnStmt(expression);
+            }
+        }
+        return null;
     }
 
     //expression -> var = expression | simple-expression
-    public boolean expression() {
+    public Expression expression() {
         int save = cursor;
-        return (var() && match("=") && expression())
-                || (backtrack(save) && simpleExpression());
+        Var var = var();
+        if (var != null && match("=")) {
+            Expression expression = expression();
+            if (expression != null) {
+                return new Expression(var, expression);
+            }
+        } else if (backtrack(save)) {
+            SimpleExpression expression = simpleExpression();
+            if (expression != null) {
+                return new Expression(expression);
+            }
+        }
+        return null;
     }
 
     //var -> ID | ID [ expression ]
-    public boolean var() {
-        int save = cursor;
-        return (match(TokenType.ID) && match("[") && expression() && match("]"))
-                || (backtrack(save) && match(TokenType.ID));
+    public Var var() {
+        if (check(TokenType.ID)) {
+            Token id = nextToken();
+            if (match("[")) {
+                Expression expression = expression();
+                if (expression != null && match("]")) {
+                    return new Var(id.getValue(), expression);
+                }
+            }
+            return new Var(id.getValue());
+        }
+        return null;
     }
 
     //simple-expression -> additive-expression relop additive-expression | additive-expression
