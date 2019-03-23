@@ -3,7 +3,39 @@ package COP4620.parser;
 import COP4620.lexer.Token;
 import COP4620.lexer.TokenType;
 import COP4620.parser.semantics.Node;
-import COP4620.parser.semantics.nodes.*;
+import COP4620.parser.semantics.TerminalNode;
+import COP4620.parser.semantics.nodes.AdditiveExpression;
+import COP4620.parser.semantics.nodes.AdditiveExpressionPrime;
+import COP4620.parser.semantics.nodes.Addop;
+import COP4620.parser.semantics.nodes.ArgList;
+import COP4620.parser.semantics.nodes.Args;
+import COP4620.parser.semantics.nodes.Call;
+import COP4620.parser.semantics.nodes.CompoundStmt;
+import COP4620.parser.semantics.nodes.Declaration;
+import COP4620.parser.semantics.nodes.DeclarationList;
+import COP4620.parser.semantics.nodes.Expression;
+import COP4620.parser.semantics.nodes.ExpressionStmt;
+import COP4620.parser.semantics.nodes.Factor;
+import COP4620.parser.semantics.nodes.FunDeclaration;
+import COP4620.parser.semantics.nodes.IterationStmt;
+import COP4620.parser.semantics.nodes.LocalDeclarations;
+import COP4620.parser.semantics.nodes.Mulop;
+import COP4620.parser.semantics.nodes.Param;
+import COP4620.parser.semantics.nodes.ParamList;
+import COP4620.parser.semantics.nodes.ParamListPrime;
+import COP4620.parser.semantics.nodes.Params;
+import COP4620.parser.semantics.nodes.Program;
+import COP4620.parser.semantics.nodes.Relop;
+import COP4620.parser.semantics.nodes.ReturnStmt;
+import COP4620.parser.semantics.nodes.SelectionStmt;
+import COP4620.parser.semantics.nodes.SimpleExpression;
+import COP4620.parser.semantics.nodes.Statement;
+import COP4620.parser.semantics.nodes.StatementList;
+import COP4620.parser.semantics.nodes.Term;
+import COP4620.parser.semantics.nodes.TermPrime;
+import COP4620.parser.semantics.nodes.TypeSpecifier;
+import COP4620.parser.semantics.nodes.Var;
+import COP4620.parser.semantics.nodes.VarDeclaration;
 
 import static COP4620.util.ArrayUtil.addArrays;
 import static COP4620.util.ArrayUtil.asArray;
@@ -195,7 +227,7 @@ public class Parser {
     //statement-list -> statement statement-list | empty
     public StatementList statementList() {
         int save = cursor;
-        Statement statement = statement();
+        Node statement = statement();
         if (statement != null) {
             return new StatementList(statement, statementList());
         }
@@ -204,9 +236,9 @@ public class Parser {
     }
 
     //statement -> expression-stmt | compound-stmt | selection-stmt | iteration-stmt | return-stmt
-    public Node statement() {
+    public Statement statement() {
         int save = cursor;
-        Node statement = expressionStmt();
+        Statement statement = expressionStmt();
         if (statement != null) {
             return statement;
         } else if (backtrack(save) && (statement = compoundStmt()) != null) {
@@ -317,92 +349,150 @@ public class Parser {
     }
 
     //simple-expression -> additive-expression relop additive-expression | additive-expression
-    public boolean simpleExpression() {
-        int save = cursor;
-        return (additiveExpression() && relop() && additiveExpression())
-                || (backtrack(save) && additiveExpression());
+    public SimpleExpression simpleExpression() {
+        AdditiveExpression left = additiveExpression();
+        if (left != null) {
+            Relop relop = relop();
+            if (relop != null) {
+                AdditiveExpression right = additiveExpression();
+                if (right != null) {
+                    return new SimpleExpression(left, relop, right);
+                }
+            }
+            return new SimpleExpression(left);
+        }
+        return null;
     }
 
     //relop -> <= | < | > | >= | == | !=
-    public boolean relop() {
-        int save = cursor;
-        return (match("<="))
-                || (backtrack(save) && match("<"))
-                || (backtrack(save) && match(">"))
-                || (backtrack(save) && match(">="))
-                || (backtrack(save) && match("=="))
-                || (backtrack(save) && match("!="));
+    public Relop relop() {
+        if (check("<") || check(">") || check(">=") || check("==") || check("!=")) {
+            return new Relop(nextToken().getValue());
+        }
+        return null;
     }
 
     //additive-expression -> term additive-expression-prime
     //additive-expression-prime -> addop term additive-expression-prime | empty
-    public boolean additiveExpression() {
-        return term() && additiveExpressionPrime();
+    public AdditiveExpression additiveExpression() {
+        Term term = term();
+        if (term != null) {
+            return new AdditiveExpression(term, additiveExpressionPrime());
+        }
+        return null;
     }
 
-    private boolean additiveExpressionPrime() {
+    private AdditiveExpressionPrime additiveExpressionPrime() {
         int save = cursor;
-        return (addop() && term() && additiveExpressionPrime())
-                || (backtrack(save) && empty());
+        Addop addop = addop();
+        if (addop != null) {
+            Term term = term();
+            if (term != null) {
+                return new AdditiveExpressionPrime(addop, term, additiveExpressionPrime());
+            }
+        }
+        backtrack(save);
+        return null;
     }
 
     //term -> factor term-prime
     //term-prime -> mulop factor term-prime | empty
-    public boolean term() {
-        return factor() && termPrime();
+    public Term term() {
+        Factor factor = factor();
+        if (factor != null) {
+            return new Term(factor, termPrime());
+        }
+        return null;
     }
 
-    private boolean termPrime() {
+    private TermPrime termPrime() {
         int save = cursor;
-        return (mulop() && factor() && termPrime())
-                || (backtrack(save) && empty());
+        Mulop mulop = mulop();
+        if (mulop != null) {
+            Factor factor = factor();
+            if (factor != null) {
+                return new TermPrime(mulop, factor, termPrime());
+            }
+        }
+        backtrack(save);
+        return null;
     }
 
     //addop -> + | -
-    public boolean addop() {
-        int save = cursor;
-        return (match("+"))
-                || (backtrack(save) && match("-"));
+    public Addop addop() {
+        if (check("+") || check("-")) {
+            return new Addop(nextToken().getValue());
+        }
+        return null;
     }
 
     //mulop -> * | /
-    public boolean mulop() {
-        int save = cursor;
-        return (match("*"))
-                || (backtrack(save) && match("/"));
+    public Mulop mulop() {
+        if (check("*") || check("/")) {
+            return new Mulop(nextToken().getValue());
+        }
+        return null;
     }
 
     //factor -> ( expression ) | var | call | NUM
-    public boolean factor() {
+    public Factor factor() {
         int save = cursor;
-        return (match("(") && expression() && match(")"))
-                || (backtrack(save) && call())
-                || (backtrack(save) && var())
-                || (backtrack(save) && match(TokenType.NUM));
+        Node node;
+        if (match("(") && ((node = expression()) != null) && match(")")) {
+            return new Factor(node);
+        } else if (backtrack(save) && (node = call()) != null) {
+            return new Factor(node);
+        } else if (backtrack(save) && (node = var()) != null) {
+            return new Factor(node);
+        } else if (backtrack(save) && check(TokenType.NUM)) {
+            return new Factor(new TerminalNode(nextToken().getValue()));
+        }
+        return null;
     }
 
     //call -> ID ( args )
-    public boolean call() {
-        return match(TokenType.ID) && match("(") && args() && match(")");
+    public Call call() {
+        if (check(TokenType.ID)) {
+            Token id = nextToken();
+            if (match("(")) {
+                Args args = args();
+                if (match(")")) {
+                    return new Call(id.getValue(), args);
+                }
+            }
+        }
+        return null;
     }
 
     //args -> arg-list | empty
-    public boolean args() {
+    public Args args() {
         int save = cursor;
-        return (argList())
-                || (backtrack(save) && empty());
+        ArgList args = argList();
+        if (args != null) {
+            return new Args(args);
+        }
+        backtrack(save);
+        return null;
     }
 
     //arg-list -> expression arg-list-prime
     //arg-list-prime -> , expression arg-list-prime | empty
-    public boolean argList() {
-        return expression() && argListPrime();
+    public ArgList argList() {
+        Expression expression = expression();
+        if (expression != null) {
+            return new ArgList(expression, argListPrime());
+        }
+        return null;
     }
 
-    private boolean argListPrime() {
+    private ArgList argListPrime() {
         int save = cursor;
-        return (match(",") && expression() && argListPrime())
-                || (backtrack(save) && empty());
+        Expression expression;
+        if (match(",") && (expression = expression()) != null) {
+            return new ArgList(expression, argListPrime());
+        }
+        backtrack(save);
+        return null;
     }
 
     private boolean backtrack(int backtrack) {
