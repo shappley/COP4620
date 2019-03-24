@@ -1,0 +1,6 @@
+//REJECT
+/* empty params */
+int main()
+{
+	print(helloWorld);
+}

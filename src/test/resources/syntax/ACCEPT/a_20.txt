@@ -1,0 +1,4 @@
+// ACCEPT
+int main(void)
+{
+}

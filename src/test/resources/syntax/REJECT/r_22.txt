@@ -1,0 +1,5 @@
+// REJECT
+int main()    /* e */
+{
+
+}

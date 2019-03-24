@@ -1,0 +1,9 @@
+// REJECT
+void main(void)
+{
+if (this==10) {
+ that = 10 = this;
+}
+
+
+}

@@ -1,0 +1,11 @@
+// ACCEPT
+int sub (int x)
+{
+   return(x);
+}
+int main(void)
+{
+   int a[10];
+   int w;
+   a[sub(w)] = 5;
+}

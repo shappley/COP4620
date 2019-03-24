@@ -1,0 +1,11 @@
+// ACCEPT
+void main(void)
+{
+
+int a[15];
+int b;
+int c;
+
+b = c * x + a[b] / c;
+
+}

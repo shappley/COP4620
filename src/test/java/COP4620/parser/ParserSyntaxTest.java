@@ -3,15 +3,17 @@ package COP4620.parser;
 import COP4620.lexer.Lexer;
 import COP4620.lexer.Token;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.net.URI;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -20,60 +22,44 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class ParserSyntaxTest {
 
+    @TestFactory
+    @DisplayName("Rule #0: Test Files")
+    List<DynamicTest> testFiles() throws Exception {
+        List<DynamicTest> tests = buildFileTestsForDirectory("syntax/ACCEPT", true);
+        tests.addAll(buildFileTestsForDirectory("syntax/REJECT", false));
+        return tests;
+    }
+
+    private List<DynamicTest> buildFileTestsForDirectory(String dir, boolean expected) throws Exception {
+        List<DynamicTest> tests = new ArrayList<>();
+        File[] files = getResourceFilesInDirectory(dir);
+        for (File f : files) {
+            tests.add(DynamicTest.dynamicTest(
+                    "File " + f.getName() + ", expected " + expected,
+                    () -> {
+                        String source = getSource(f.getAbsolutePath());
+                        Parser parser = getParser(source);
+                        assertEquals(expected, parser.program() != null && parser.isDone());
+                    }
+            ));
+        }
+        return tests;
+    }
+
     private Parser getParser(String source) {
         Lexer lexer = new Lexer(source);
         Token[] tokens = lexer.getTokens();
         return new Parser(tokens);
     }
 
-    @ParameterizedTest
-    @DisplayName("Rule #0: Test Files")
-    @CsvSource(value = {
-            "syntax/p2_1.txt, true",
-            "syntax/p2_2.txt, true",
-            "syntax/p2_MEGATEST.txt, true",
-            "syntax/p2_simple.txt, true",
-            "syntax/p2_simple_broken.txt, false",
-            //------------------------------\\
-            "syntax/ACCEPT/1.txt, true",
-            "syntax/ACCEPT/2.txt, true",
-            "syntax/ACCEPT/3.txt, true",
-            "syntax/ACCEPT/4.txt, true",
-            "syntax/ACCEPT/5.txt, true",
-            "syntax/ACCEPT/6.txt, true",
-            "syntax/ACCEPT/7.txt, true",
-            "syntax/ACCEPT/8.txt, true",
-            "syntax/ACCEPT/9.txt, true",
-            "syntax/ACCEPT/10.txt, true",
-            //-----------------------------\\
-            "syntax/REJECT/1.txt, false",
-            "syntax/REJECT/2.txt, false",
-            "syntax/REJECT/3.txt, false",
-            "syntax/REJECT/4.txt, false",
-            "syntax/REJECT/5.txt, false",
-            "syntax/REJECT/6.txt, false",
-            "syntax/REJECT/7.txt, false",
-            "syntax/REJECT/8.txt, false",
-            "syntax/REJECT/9.txt, false",
-            "syntax/REJECT/10.txt, false",
-            "syntax/REJECT/11.txt, false",
-            "syntax/REJECT/13.txt, false",
-            "syntax/REJECT/14.txt, false",
-            "syntax/REJECT/15.txt, false",
-            "syntax/REJECT/16.txt, false",
-            "syntax/REJECT/17.txt, false",
-            "syntax/REJECT/18.txt, false",
-    })
-    void program(String filename, boolean valid) throws Exception {
-        String source = getSource(filename);
-        Parser parser = getParser(source);
-        assertEquals(valid, parser.program() != null && parser.isDone());
+    private File[] getResourceFilesInDirectory(String dir) {
+        final ClassLoader classLoader = this.getClass().getClassLoader();
+        final String path = classLoader.getResource(dir).getPath();
+        return new File(path).listFiles();
     }
 
     private String getSource(String filename) throws Exception {
-        final ClassLoader classLoader = this.getClass().getClassLoader();
-        final URI path = classLoader.getResource(filename).toURI();
-        List<String> lines = Files.readAllLines(Paths.get(path));
+        List<String> lines = Files.readAllLines(Paths.get(filename));
         return String.join("\n", lines);
     }
 

@@ -1,0 +1,2 @@
+// ACCEPT
+int main[5];

@@ -1,0 +1,7 @@
+// ACCEPT
+int main(int b)
+{
+
+   x(a,b,c);
+
+}

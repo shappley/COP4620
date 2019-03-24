@@ -1,0 +1,11 @@
+// REJECT
+/* declaring function inside another function */
+
+int main(void)
+{
+	float n;
+	
+	void function(int x, float z) { }
+	
+	return 0;
+}

@@ -1,0 +1,11 @@
+// ACCEPT
+int main(int x)
+{
+
+   int a;
+   int b;
+   int c;
+
+   a = b = c;
+
+}

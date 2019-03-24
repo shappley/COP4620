@@ -1,0 +1,10 @@
+// ACCEPT
+
+void main(void) {
+   int x;
+   float y;
+   if (x > y)
+   { 
+      x = 5;
+   }
+}

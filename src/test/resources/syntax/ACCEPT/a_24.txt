@@ -1,0 +1,5 @@
+// ACCEPT
+int main(int x)
+{
+   return ;
+}
