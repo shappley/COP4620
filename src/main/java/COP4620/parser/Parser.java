@@ -37,9 +37,6 @@ import COP4620.parser.semantics.nodes.TypeSpecifier;
 import COP4620.parser.semantics.nodes.Var;
 import COP4620.parser.semantics.nodes.VarDeclaration;
 
-import static COP4620.util.ArrayUtil.addArrays;
-import static COP4620.util.ArrayUtil.asArray;
-
 public class Parser {
     private Token[] tokens;
     private int cursor = 0;
@@ -68,15 +65,10 @@ public class Parser {
     //Rule #2
     //declaration-list -> declaration declaration-list | declaration
     public DeclarationList declarationList() {
-        int save = cursor;
         Declaration declaration = declaration();
         if (declaration != null) {
-            DeclarationList declarationList = declarationList();
-            if (declarationList != null) {
-                return new DeclarationList(addArrays(asArray(declaration), declarationList.getDeclarations()));
-            }
+            return new DeclarationList(declaration, declarationList());
         }
-        backtrack(save);
         return null;
     }
 
@@ -167,8 +159,7 @@ public class Parser {
     public ParamList paramList() {
         Param param = param();
         if (param != null) {
-            ParamListPrime prime = paramListPrime();
-            return new ParamList(param, prime);
+            return new ParamList(param, paramListPrime());
         }
         return null;
     }
@@ -178,8 +169,7 @@ public class Parser {
         if (match(",")) {
             Param param = param();
             if (param != null) {
-                ParamListPrime prime = paramListPrime();
-                return new ParamListPrime(param, prime);
+                return new ParamListPrime(param, paramListPrime());
             }
         }
         backtrack(save);
@@ -192,6 +182,7 @@ public class Parser {
         TypeSpecifier type = typeSpecifier();
         if (type != null && check(TokenType.ID)) {
             Token id = nextToken();
+            save = cursor;
             if (match("[") && match("]")) {
                 return new Param(type, id.getValue(), Param.Type.ARRAY);
             }
@@ -304,7 +295,8 @@ public class Parser {
     //return-stmt -> return ; | return expression ;
     public ReturnStmt returnStmt() {
         if (match("return")) {
-            if (match(";")) {
+            if (check(";")) {
+                nextToken();
                 return new ReturnStmt();
             }
             Expression expression = expression();
@@ -335,9 +327,11 @@ public class Parser {
 
     //var -> ID | ID [ expression ]
     public Var var() {
+        int save = cursor;
         if (check(TokenType.ID)) {
             Token id = nextToken();
-            if (match("[")) {
+            if (check("[")) {
+                nextToken();
                 Expression expression = expression();
                 if (expression != null && match("]")) {
                     return new Var(id.getValue(), expression);
@@ -366,7 +360,7 @@ public class Parser {
 
     //relop -> <= | < | > | >= | == | !=
     public Relop relop() {
-        if (check("<") || check(">") || check(">=") || check("==") || check("!=")) {
+        if (check("<=") || check("<") || check(">") || check(">=") || check("==") || check("!=")) {
             return new Relop(nextToken().getValue());
         }
         return null;

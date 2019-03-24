@@ -57,7 +57,6 @@ class ParserSyntaxTest {
             "syntax/REJECT/9.txt, false",
             "syntax/REJECT/10.txt, false",
             "syntax/REJECT/11.txt, false",
-            "syntax/REJECT/12.txt, false",
             "syntax/REJECT/13.txt, false",
             "syntax/REJECT/14.txt, false",
             "syntax/REJECT/15.txt, false",
@@ -224,7 +223,11 @@ class ParserSyntaxTest {
     @MethodSource("localDeclarationsArgs")
     void localDeclarations(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.localDeclarations() != null && p.isDone());
+        if (source.isEmpty()) {
+            assertEquals(valid, p.localDeclarations() == null && p.isDone());
+        } else {
+            assertEquals(valid, p.localDeclarations() != null && p.isDone());
+        }
     }
 
     private static Stream<Arguments> localDeclarationsArgs() {
@@ -278,8 +281,10 @@ class ParserSyntaxTest {
     private static Stream<Arguments> selectionStmtArgs() {
         return Stream.of(
                 arguments("if(x){}", true),
+                arguments("if(x){}else{}", true),
                 arguments("if(v == 0){return u;}else{return p;}", true),
-                arguments("if(v == 0) return u; else return gcd(v, u-u/v*v);", true)
+                arguments("if(v == 0) return u; else return gcd(v, u-u/v*v);", true),
+                arguments("if(v != 0) return u else return gcd(v, u-u/v*v);", false)
         );
     }
 
@@ -307,7 +312,10 @@ class ParserSyntaxTest {
         return Stream.of(
                 arguments("return;", true),
                 arguments("return 5;", true),
-                arguments("return 5<3;", true)
+                arguments("return 5<3;", true),
+                arguments("return x;", true),
+                arguments("return 5", false),
+                arguments("return x", false)
         );
     }
 
