@@ -9,7 +9,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -69,7 +68,7 @@ class ParserSyntaxTest {
     void program(String filename, boolean valid) throws Exception {
         String source = getSource(filename);
         Parser parser = getParser(source);
-        assertEquals(valid, parser.program() && parser.isDone());
+        assertEquals(valid, parser.program() != null && parser.isDone());
     }
 
     private String getSource(String filename) throws Exception {
@@ -84,7 +83,7 @@ class ParserSyntaxTest {
     @MethodSource("declarationListArgs")
     void declarationList(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.declarationList() && p.isDone());
+        assertEquals(valid, p.declarationList() != null && p.isDone());
     }
 
     private static Stream<Arguments> declarationListArgs() {
@@ -96,7 +95,7 @@ class ParserSyntaxTest {
     @MethodSource("declarationArgs")
     void declaration(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.declaration() && p.isDone());
+        assertEquals(valid, p.declaration() != null && p.isDone());
     }
 
     private static Stream<Arguments> declarationArgs() {
@@ -112,7 +111,7 @@ class ParserSyntaxTest {
     @MethodSource("varDecArgs")
     void varDeclaration(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.varDeclaration() && p.isDone());
+        assertEquals(valid, p.varDeclaration() != null && p.isDone());
     }
 
     private static Stream<Arguments> varDecArgs() {
@@ -128,7 +127,7 @@ class ParserSyntaxTest {
     @MethodSource("typeSpecArgs")
     void typeSpecifier(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.typeSpecifier() && p.isDone());
+        assertEquals(valid, p.typeSpecifier() != null && p.isDone());
     }
 
     private static Stream<Arguments> typeSpecArgs() {
@@ -145,7 +144,7 @@ class ParserSyntaxTest {
     @MethodSource("funDecArgs")
     void funDeclaration(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.funDeclaration() && p.isDone());
+        assertEquals(valid, p.funDeclaration() != null && p.isDone());
     }
 
     private static Stream<Arguments> funDecArgs() {
@@ -163,7 +162,7 @@ class ParserSyntaxTest {
     @MethodSource("paramsArgs")
     void params(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.params() && p.isDone());
+        assertEquals(valid, p.params() != null && p.isDone());
     }
 
     private static Stream<Arguments> paramsArgs() {
@@ -179,7 +178,7 @@ class ParserSyntaxTest {
     @MethodSource("paramListArgs")
     void paramList(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.paramList() && p.isDone());
+        assertEquals(valid, p.paramList() != null && p.isDone());
     }
 
     private static Stream<Arguments> paramListArgs() {
@@ -194,7 +193,7 @@ class ParserSyntaxTest {
     @MethodSource("paramArgs")
     void param(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.param() && p.isDone());
+        assertEquals(valid, p.param() != null && p.isDone());
     }
 
     private static Stream<Arguments> paramArgs() {
@@ -209,7 +208,7 @@ class ParserSyntaxTest {
     @MethodSource("compoundStmtArgs")
     void compoundStmt(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.compoundStmt() && p.isDone());
+        assertEquals(valid, p.compoundStmt() != null && p.isDone());
     }
 
     private static Stream<Arguments> compoundStmtArgs() {
@@ -225,7 +224,7 @@ class ParserSyntaxTest {
     @MethodSource("localDeclarationsArgs")
     void localDeclarations(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.localDeclarations() && p.isDone());
+        assertEquals(valid, p.localDeclarations() != null && p.isDone());
     }
 
     private static Stream<Arguments> localDeclarationsArgs() {
@@ -244,7 +243,7 @@ class ParserSyntaxTest {
     @MethodSource("statementArgs")
     void statement(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.statement() && p.isDone());
+        assertEquals(valid, p.statement() != null && p.isDone());
     }
 
     private static Stream<Arguments> statementArgs() {
@@ -261,7 +260,7 @@ class ParserSyntaxTest {
     @MethodSource("expressionStmtArgs")
     void expressionStmt(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.expressionStmt() && p.isDone());
+        assertEquals(valid, p.expressionStmt() != null && p.isDone());
     }
 
     private static Stream<Arguments> expressionStmtArgs() {
@@ -273,7 +272,7 @@ class ParserSyntaxTest {
     @MethodSource("selectionStmtArgs")
     void selectionStmt(String source, boolean valid) {
         Parser p = getParser(source);
-        assertEquals(valid, p.selectionStmt() && p.isDone());
+        assertEquals(valid, p.selectionStmt() != null && p.isDone());
     }
 
     private static Stream<Arguments> selectionStmtArgs() {
@@ -289,7 +288,7 @@ class ParserSyntaxTest {
     @MethodSource("iterationStmtArgs")
     void iterationStmt(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.iterationStmt() && p.isDone());
+        assertEquals(valid, p.iterationStmt() != null && p.isDone());
     }
 
     private static Stream<Arguments> iterationStmtArgs() {
@@ -301,7 +300,7 @@ class ParserSyntaxTest {
     @MethodSource("returnStmtArgs")
     void returnStmt(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.returnStmt() && p.isDone());
+        assertEquals(valid, p.returnStmt() != null && p.isDone());
     }
 
     private static Stream<Arguments> returnStmtArgs() {
@@ -317,7 +316,7 @@ class ParserSyntaxTest {
     @MethodSource("expressionArgs")
     void expression(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.expression() && p.isDone());
+        assertEquals(valid, p.expression() != null && p.isDone());
     }
 
     private static Stream<Arguments> expressionArgs() {
@@ -332,7 +331,7 @@ class ParserSyntaxTest {
     @MethodSource("varArgs")
     void var(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.var() && p.isDone());
+        assertEquals(valid, p.var() != null && p.isDone());
     }
 
     private static Stream<Arguments> varArgs() {
@@ -344,7 +343,7 @@ class ParserSyntaxTest {
     @MethodSource("simpleExpressionArgs")
     void simpleExpression(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.simpleExpression() && p.isDone());
+        assertEquals(valid, p.simpleExpression() != null && p.isDone());
     }
 
     private static Stream<Arguments> simpleExpressionArgs() {
@@ -356,7 +355,7 @@ class ParserSyntaxTest {
     @MethodSource("relopArgs")
     void relop(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.relop() && p.isDone());
+        assertEquals(valid, p.relop() != null && p.isDone());
     }
 
     private static Stream<Arguments> relopArgs() {
@@ -376,7 +375,7 @@ class ParserSyntaxTest {
     @MethodSource("additiveExpArgs")
     void additiveExpression(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.additiveExpression() && p.isDone());
+        assertEquals(valid, p.additiveExpression() != null && p.isDone());
     }
 
     private static Stream<Arguments> additiveExpArgs() {
@@ -392,7 +391,7 @@ class ParserSyntaxTest {
     @MethodSource("addopArgs")
     void addop(String source, boolean valid) {
         final Parser p = getParser(source);
-        assertEquals(valid, p.addop() && p.isDone());
+        assertEquals(valid, p.addop() != null && p.isDone());
     }
 
     private static Stream<Arguments> addopArgs() {
@@ -409,7 +408,8 @@ class ParserSyntaxTest {
     @DisplayName("Rule #25: mulop")
     @MethodSource("mulopArgs")
     void mulop(String source, boolean valid) {
-        assertEquals(valid, getParser(source).mulop());
+        final Parser p = getParser(source);
+        assertEquals(valid, p.mulop() != null && p.isDone());
     }
 
     private static Stream<Arguments> mulopArgs() {
