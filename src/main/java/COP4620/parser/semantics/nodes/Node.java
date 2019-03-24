@@ -1,4 +1,4 @@
-package COP4620.parser.semantics;
+package COP4620.parser.semantics.nodes;
 
 public abstract class Node {
     public boolean isValid() {

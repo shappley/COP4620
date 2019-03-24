@@ -1,7 +1,5 @@
 package COP4620.parser.semantics.nodes;
 
-import COP4620.parser.semantics.Node;
-
 public class Declaration extends Node {
     private Type type;
     private Node value;

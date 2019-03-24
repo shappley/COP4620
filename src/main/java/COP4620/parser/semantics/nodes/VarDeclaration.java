@@ -1,6 +1,6 @@
 package COP4620.parser.semantics.nodes;
 
-import COP4620.parser.semantics.Node;
+import static COP4620.util.StringUtil.isInteger;
 
 public class VarDeclaration extends Node {
     private TypeSpecifier typeSpecifier;
@@ -24,5 +24,10 @@ public class VarDeclaration extends Node {
 
     public enum Type {
         SINGLE, ARRAY
+    }
+
+    @Override
+    public boolean isValid() {
+        return typeSpecifier.isValid() && (type == Type.SINGLE || (size != null && isInteger(size)));
     }
 }

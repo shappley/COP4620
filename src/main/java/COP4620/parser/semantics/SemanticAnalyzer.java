@@ -1,5 +1,7 @@
 package COP4620.parser.semantics;
 
+import COP4620.parser.semantics.nodes.Node;
+
 public class SemanticAnalyzer {
     private Node root;
 
@@ -8,6 +10,6 @@ public class SemanticAnalyzer {
     }
 
     public boolean isValid() {
-        return root.isValid();
+        return root != null && root.isValid();
     }
 }

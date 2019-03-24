@@ -2,8 +2,8 @@ package COP4620.parser;
 
 import COP4620.lexer.Token;
 import COP4620.lexer.TokenType;
-import COP4620.parser.semantics.Node;
-import COP4620.parser.semantics.TerminalNode;
+import COP4620.parser.semantics.nodes.Node;
+import COP4620.parser.semantics.nodes.TerminalNode;
 import COP4620.parser.semantics.nodes.AdditiveExpression;
 import COP4620.parser.semantics.nodes.AdditiveExpressionPrime;
 import COP4620.parser.semantics.nodes.Addop;
