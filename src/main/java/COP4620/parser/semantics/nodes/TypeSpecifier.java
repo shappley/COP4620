@@ -9,6 +9,14 @@ public class TypeSpecifier extends Node {
         this.value = value;
     }
 
+    public Type getType() {
+        return type;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
     public enum Type {
         FLOAT, INT, VOID
     }

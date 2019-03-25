@@ -1,5 +1,7 @@
 package COP4620.parser.semantics.nodes;
 
+import COP4620.parser.Scope;
+
 public class Declaration extends Node {
     private Type type;
     private Node value;
@@ -19,5 +21,10 @@ public class Declaration extends Node {
 
     public enum Type {
         VARIABLE, FUNCTION
+    }
+
+    @Override
+    public boolean isValid(Scope scope) {
+        return value.isValid(scope);
     }
 }
