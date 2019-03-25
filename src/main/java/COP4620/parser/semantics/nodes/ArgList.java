@@ -1,7 +1,19 @@
 package COP4620.parser.semantics.nodes;
 
-public class ArgList extends Node {
-    public ArgList(Expression expression, ArgList argList) {
+import COP4620.parser.Scope;
+import COP4620.parser.SymbolTable;
 
+public class ArgList extends Node {
+    private Expression expression;
+    private ArgList argList;
+
+    public ArgList(Expression expression, ArgList argList) {
+        this.expression = expression;
+        this.argList = argList;
+    }
+
+    @Override
+    public boolean isValid(Scope scope) {
+        return expression.isValid(scope) && (argList == null || argList.isValid(scope));
     }
 }

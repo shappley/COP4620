@@ -2,8 +2,6 @@ package COP4620.parser;
 
 import COP4620.lexer.Token;
 import COP4620.lexer.TokenType;
-import COP4620.parser.semantics.nodes.Node;
-import COP4620.parser.semantics.nodes.TerminalNode;
 import COP4620.parser.semantics.nodes.AdditiveExpression;
 import COP4620.parser.semantics.nodes.AdditiveExpressionPrime;
 import COP4620.parser.semantics.nodes.Addop;
@@ -20,9 +18,9 @@ import COP4620.parser.semantics.nodes.FunDeclaration;
 import COP4620.parser.semantics.nodes.IterationStmt;
 import COP4620.parser.semantics.nodes.LocalDeclarations;
 import COP4620.parser.semantics.nodes.Mulop;
+import COP4620.parser.semantics.nodes.Node;
 import COP4620.parser.semantics.nodes.Param;
 import COP4620.parser.semantics.nodes.ParamList;
-import COP4620.parser.semantics.nodes.ParamListPrime;
 import COP4620.parser.semantics.nodes.Params;
 import COP4620.parser.semantics.nodes.Program;
 import COP4620.parser.semantics.nodes.Relop;
@@ -33,6 +31,7 @@ import COP4620.parser.semantics.nodes.Statement;
 import COP4620.parser.semantics.nodes.StatementList;
 import COP4620.parser.semantics.nodes.Term;
 import COP4620.parser.semantics.nodes.TermPrime;
+import COP4620.parser.semantics.nodes.TerminalNode;
 import COP4620.parser.semantics.nodes.TypeSpecifier;
 import COP4620.parser.semantics.nodes.Var;
 import COP4620.parser.semantics.nodes.VarDeclaration;
@@ -164,12 +163,12 @@ public class Parser {
         return null;
     }
 
-    private ParamListPrime paramListPrime() {
+    private ParamList paramListPrime() {
         int save = cursor;
         if (match(",")) {
             Param param = param();
             if (param != null) {
-                return new ParamListPrime(param, paramListPrime());
+                return new ParamList(param, paramListPrime());
             }
         }
         backtrack(save);
@@ -218,7 +217,7 @@ public class Parser {
     //statement-list -> statement statement-list | empty
     public StatementList statementList() {
         int save = cursor;
-        Node statement = statement();
+        Statement statement = statement();
         if (statement != null) {
             return new StatementList(statement, statementList());
         }
@@ -285,7 +284,7 @@ public class Parser {
             if (expression != null && match(")")) {
                 Statement statement = statement();
                 if (statement != null) {
-                    return new IterationStmt(statement);
+                    return new IterationStmt(expression, statement);
                 }
             }
         }
