@@ -1,7 +1,18 @@
 package COP4620.parser.semantics.nodes;
 
-public class IterationStmt extends Statement{
-    public IterationStmt(Statement statement){
+import COP4620.parser.Scope;
 
+public class IterationStmt extends Statement {
+    private Expression expression;
+    private Statement statement;
+
+    public IterationStmt(Expression expression, Statement statement) {
+        this.expression = expression;
+        this.statement = statement;
+    }
+
+    @Override
+    public boolean isValid(Scope scope) {
+        return expression.isValid(scope) && statement.isValid(scope);
     }
 }

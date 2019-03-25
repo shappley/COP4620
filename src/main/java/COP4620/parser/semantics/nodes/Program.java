@@ -1,5 +1,8 @@
 package COP4620.parser.semantics.nodes;
 
+import COP4620.parser.Scope;
+import COP4620.parser.SymbolTable;
+
 public class Program extends Node {
     private DeclarationList declarationList;
 
@@ -12,7 +15,7 @@ public class Program extends Node {
     }
 
     @Override
-    public boolean isValid() {
-        return declarationList != null && declarationList.isValid();
+    public boolean isValid(Scope scope) {
+        return declarationList != null && declarationList.isValid(scope);
     }
 }
