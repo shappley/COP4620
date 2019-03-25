@@ -22,7 +22,6 @@ public class Factor extends Node {
     public Symbol.Type evaluateType(Scope scope) {
         if (child instanceof TerminalNode) {
             Token token = ((TerminalNode) child).getToken();
-            System.out.println(token);
             return isInteger(token.getValue()) ? Symbol.Type.INT : Symbol.Type.FLOAT;
         }
         return child.evaluateType(scope);
