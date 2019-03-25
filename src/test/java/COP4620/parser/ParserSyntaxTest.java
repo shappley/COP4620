@@ -1,5 +1,6 @@
 package COP4620.parser;
 
+import COP4620.BaseTest;
 import COP4620.lexer.Lexer;
 import COP4620.lexer.Token;
 import org.junit.jupiter.api.DisplayName;
@@ -11,8 +12,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -20,7 +19,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-class ParserSyntaxTest {
+class ParserSyntaxTest extends BaseTest {
 
     @TestFactory
     @DisplayName("Rule #0: Test Files")
@@ -30,18 +29,15 @@ class ParserSyntaxTest {
         return tests;
     }
 
-    private List<DynamicTest> buildFileTestsForDirectory(String dir, boolean expected) throws Exception {
+    private List<DynamicTest> buildFileTestsForDirectory(String dir, boolean expected) {
         List<DynamicTest> tests = new ArrayList<>();
         File[] files = getResourceFilesInDirectory(dir);
         for (File f : files) {
-            tests.add(DynamicTest.dynamicTest(
-                    "File " + f.getName() + ", expected " + expected,
-                    () -> {
-                        String source = getSource(f.getAbsolutePath());
-                        Parser parser = getParser(source);
-                        assertEquals(expected, parser.program() != null && parser.isDone());
-                    }
-            ));
+            tests.add(DynamicTest.dynamicTest("File " + f.getName() + ", expected " + expected, () -> {
+                String source = getSource(f.getAbsolutePath());
+                Parser parser = getParser(source);
+                assertEquals(expected, parser.program() != null && parser.isDone());
+            }));
         }
         return tests;
     }
@@ -50,17 +46,6 @@ class ParserSyntaxTest {
         Lexer lexer = new Lexer(source);
         Token[] tokens = lexer.getTokens();
         return new Parser(tokens);
-    }
-
-    private File[] getResourceFilesInDirectory(String dir) {
-        final ClassLoader classLoader = this.getClass().getClassLoader();
-        final String path = classLoader.getResource(dir).getPath();
-        return new File(path).listFiles();
-    }
-
-    private String getSource(String filename) throws Exception {
-        List<String> lines = Files.readAllLines(Paths.get(filename));
-        return String.join("\n", lines);
     }
 
     @ParameterizedTest

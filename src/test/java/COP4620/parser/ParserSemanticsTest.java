@@ -1,15 +1,22 @@
 package COP4620.parser;
 
+import COP4620.BaseTest;
 import COP4620.lexer.Lexer;
 import COP4620.lexer.Token;
 import COP4620.parser.semantics.SemanticAnalyzer;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ParserSemanticsTest {
+class ParserSemanticsTest extends BaseTest {
     private static void test(String source, boolean valid) {
         Lexer lexer = new Lexer(source);
         Token[] tokens = lexer.getTokens();
@@ -150,5 +157,25 @@ class ParserSemanticsTest {
     })
     void functionArguments(String source, boolean valid) {
         test(source, valid);
+    }
+
+    @TestFactory
+    @DisplayName("10. Test Files")
+    List<DynamicTest> testFiles() {
+        List<DynamicTest> tests = buildFileTestsForDirectory("semantics/ACCEPT", true);
+        tests.addAll(buildFileTestsForDirectory("semantics/REJECT", false));
+        return tests;
+    }
+
+    private List<DynamicTest> buildFileTestsForDirectory(String dir, boolean expected) {
+        List<DynamicTest> tests = new ArrayList<>();
+        File[] files = getResourceFilesInDirectory(dir);
+        for (File f : files) {
+            tests.add(DynamicTest.dynamicTest("File " + f.getName() + ", expected " + expected, () -> {
+                String source = getSource(f.getAbsolutePath());
+                test(source, expected);
+            }));
+        }
+        return tests;
     }
 }
