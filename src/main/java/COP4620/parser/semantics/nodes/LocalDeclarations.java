@@ -13,6 +13,7 @@ public class LocalDeclarations extends Node {
 
     @Override
     public boolean isValid(Scope scope) {
-        return varDeclaration.isValid(scope) && localDeclarations.isValid(scope);
+        return varDeclaration.isValid(scope)
+                && (localDeclarations == null || localDeclarations.isValid(scope));
     }
 }
