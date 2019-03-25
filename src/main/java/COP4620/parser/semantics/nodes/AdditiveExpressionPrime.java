@@ -1,7 +1,7 @@
 package COP4620.parser.semantics.nodes;
 
 import COP4620.parser.Scope;
-import COP4620.parser.SymbolTable;
+import COP4620.parser.Symbol;
 
 public class AdditiveExpressionPrime extends Node {
     private Addop addop;
@@ -16,7 +16,12 @@ public class AdditiveExpressionPrime extends Node {
 
     @Override
     public boolean isValid(Scope scope) {
-        return addop.isValid(scope) && term.isValid(scope)
+        return evaluateType(scope) != null && addop.isValid(scope) && term.isValid(scope)
                 && (additiveExpressionPrime == null || additiveExpressionPrime.isValid(scope));
+    }
+
+    @Override
+    public Symbol.Type evaluateType(Scope scope) {
+        return evaluateType(scope, term, additiveExpressionPrime);
     }
 }

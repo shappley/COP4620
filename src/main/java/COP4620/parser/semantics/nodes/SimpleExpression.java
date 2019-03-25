@@ -1,6 +1,7 @@
 package COP4620.parser.semantics.nodes;
 
 import COP4620.parser.Scope;
+import COP4620.parser.Symbol;
 
 public class SimpleExpression extends Node {
     private AdditiveExpression left, right;
@@ -18,6 +19,14 @@ public class SimpleExpression extends Node {
 
     @Override
     public boolean isValid(Scope scope) {
+        if (right != null && left.evaluateType(scope) != right.evaluateType(scope)) {
+            return false;
+        }
         return left.isValid(scope) && (right == null || right.isValid(scope));
+    }
+
+    @Override
+    public Symbol.Type evaluateType(Scope scope) {
+        return evaluateType(scope,left, right);
     }
 }

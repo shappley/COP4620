@@ -1,6 +1,7 @@
 package COP4620.parser.semantics.nodes;
 
 import COP4620.parser.Scope;
+import COP4620.parser.Symbol;
 
 public class TermPrime extends Node {
     private Mulop mulop;
@@ -16,5 +17,10 @@ public class TermPrime extends Node {
     @Override
     public boolean isValid(Scope scope) {
         return factor.isValid(scope) && (termPrime == null || termPrime.isValid(scope));
+    }
+
+    @Override
+    public Symbol.Type evaluateType(Scope scope) {
+        return evaluateType(scope, factor, termPrime);
     }
 }

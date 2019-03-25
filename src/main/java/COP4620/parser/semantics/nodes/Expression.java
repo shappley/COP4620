@@ -1,6 +1,7 @@
 package COP4620.parser.semantics.nodes;
 
 import COP4620.parser.Scope;
+import COP4620.parser.Symbol;
 
 public class Expression extends Node {
     private Var var;
@@ -18,10 +19,19 @@ public class Expression extends Node {
 
     @Override
     public boolean isValid(Scope scope) {
-        //TODO evaluate expressions for type checking
         if (var != null) {
-            return var.isValid(scope) && expression.isValid(scope);
+            return var.isValid(scope)
+                    && scope.getTypeOf(var.getId()) == expression.evaluateType(scope)
+                    && expression.isValid(scope);
         }
         return simpleExpression.isValid(scope);
+    }
+
+    @Override
+    public Symbol.Type evaluateType(Scope scope) {
+        if (var != null) {
+            return expression.evaluateType(scope);
+        }
+        return simpleExpression.evaluateType(scope);
     }
 }
