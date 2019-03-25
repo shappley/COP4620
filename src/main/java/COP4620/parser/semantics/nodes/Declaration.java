@@ -25,6 +25,6 @@ public class Declaration extends Node {
 
     @Override
     public boolean isValid(Scope scope) {
-        return value.isValid(scope);
+        return (scope.depth() <= 1 || !scope.hasFunction("main")) && value.isValid(scope);
     }
 }

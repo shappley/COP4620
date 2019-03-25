@@ -14,6 +14,6 @@ public class Call extends Node {
     @Override
     public boolean isValid(Scope scope) {
         //TODO check function args = params
-        return scope.isFunction(id) && (args == null || args.isValid(scope));
+        return scope.hasFunction(id) && (args == null || args.isValid(scope));
     }
 }

@@ -41,8 +41,20 @@ public class Scope {
         return null;
     }
 
-    public boolean isFunction(String id) {
+    public boolean hasFunction(String id) {
         Symbol s = this.scope.peekLast().getSymbol(id);
         return s != null && s instanceof FunctionSymbol;
+    }
+
+    public boolean addFunctionDeclaration(String id, Symbol.Type type, Symbol[] parameters) {
+        SymbolTable newTable = new SymbolTable();
+        for (Symbol s : parameters) {
+            newTable.add(s);
+        }
+        return this.scope.peekLast().add(new FunctionSymbol(id, type, newTable));
+    }
+
+    public int depth(){
+        return this.scope.size();
     }
 }
