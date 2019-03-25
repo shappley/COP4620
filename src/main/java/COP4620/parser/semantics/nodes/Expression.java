@@ -18,6 +18,10 @@ public class Expression extends Node {
 
     @Override
     public boolean isValid(Scope scope) {
-        return (var == null || (var.isValid(scope) && expression.isValid(scope))) || simpleExpression.isValid(scope);
+        //TODO evaluate expressions for type checking
+        if (var != null) {
+            return var.isValid(scope) && expression.isValid(scope);
+        }
+        return simpleExpression.isValid(scope);
     }
 }

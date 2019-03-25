@@ -17,8 +17,6 @@ public class Var extends Node {
 
     @Override
     public boolean isValid(Scope scope) {
-        //TODO check scope for this variable reference
-        //and that expression resolves to an int
-        return (expression == null || expression.isValid(scope));
+        return scope.isInScope(id) && (expression == null || expression.isValid(scope));
     }
 }

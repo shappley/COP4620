@@ -25,7 +25,7 @@ class ParserSemanticsTest {
             "void main(void){ int x; x=5;}, true",
             "int fun(void){return 1;} void main(void){ int x; x=fun();}, true",
             "void main(void){x=5;}, false",
-            "void main(void){x=fun();}, false"
+            "void main(void){int x; x=fun();}, false"
     })
     void referencesDeclared(String source, boolean valid) {
         test(source, valid);
