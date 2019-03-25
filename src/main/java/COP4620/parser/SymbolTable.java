@@ -8,7 +8,7 @@ public class SymbolTable {
     }
 
     public SymbolTable() {
-        this(256);
+        this(16);
     }
 
     public boolean add(Symbol symbol) {
@@ -22,6 +22,14 @@ public class SymbolTable {
 
     public boolean contains(String id) {
         return indexOf(id) >= 0;
+    }
+
+    public Symbol getSymbol(String id) {
+        final int index = indexOf(id);
+        if (index >= 0) {
+            return this.table[index];
+        }
+        return null;
     }
 
     private int indexOf(String id) {
