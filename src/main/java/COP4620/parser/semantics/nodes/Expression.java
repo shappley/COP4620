@@ -21,7 +21,7 @@ public class Expression extends Node {
     public boolean isValid(Scope scope) {
         if (var != null) {
             return var.isValid(scope)
-                    && scope.getTypeOf(var.getId()) == expression.evaluateType(scope)
+                    && var.evaluateType(scope) == expression.evaluateType(scope)
                     && expression.isValid(scope);
         }
         return simpleExpression.isValid(scope);
@@ -29,9 +29,12 @@ public class Expression extends Node {
 
     @Override
     public Symbol.Type evaluateType(Scope scope) {
+        Symbol.Type type;
         if (var != null) {
-            return expression.evaluateType(scope);
+            type = expression.evaluateType(scope);
+        } else {
+            type = simpleExpression.evaluateType(scope);
         }
-        return simpleExpression.evaluateType(scope);
+        return type;
     }
 }

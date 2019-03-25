@@ -1,9 +1,15 @@
 package COP4620.parser.semantics.nodes;
 
-public class TerminalNode extends Node {
-    private String value;
+import COP4620.lexer.Token;
 
-    public TerminalNode(String value) {
-        this.value = value;
+public class TerminalNode extends Node {
+    private Token token;
+
+    public TerminalNode(Token token) {
+        this.token = token;
+    }
+
+    public Token getToken() {
+        return token;
     }
 }

@@ -438,7 +438,7 @@ public class Parser {
         } else if (backtrack(save) && (node = var()) != null) {
             return new Factor(node);
         } else if (backtrack(save) && check(TokenType.NUM)) {
-            return new Factor(new TerminalNode(nextToken().getValue()));
+            return new Factor(new TerminalNode(nextToken()));
         }
         return null;
     }

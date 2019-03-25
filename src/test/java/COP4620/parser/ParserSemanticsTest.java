@@ -99,12 +99,13 @@ class ParserSemanticsTest {
     @DisplayName("7. Mixed Arithmetic")
     @ParameterizedTest
     @CsvSource({
+            "void main(void) { int x; x=1+2; },true",
             "void main(void){ int x; x=1+2+3; }, true",
             "void main(void){ float x; x=1.0+2.0+3.0; }, true",
             "void main(void){ int a; int b; int c; a=5; b=11; c=a+b; }, true",
-            "void main(void){ float a; float b; float c; a=5; b=11; c=a+b; }, true",
+            "void main(void){ float a; float b; float c; a=5.0; b=11.0; c=a+b; }, true",
             "int b(void) { return 1; } void main(void){ int a; int c; a=5; c=a+b(); }, true",
-            "float b(void) { return 1.0; } void main(void){ float a; float c; a=5; c=a+b(); }, true",
+            "float b(void) { return 1.0; } void main(void){ float a; float c; a=5.0; c=a+b(); }, true",
             "void main(void){ int x; x=1+2+3.0; }, false",
             "void main(void){ float x; x=1.0+2.0+3; }, false",
             "void main(void){ int a; float b; int c; a=5; b=11; c=a+b; }, false",
