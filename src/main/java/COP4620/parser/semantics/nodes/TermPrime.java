@@ -16,7 +16,8 @@ public class TermPrime extends Node {
 
     @Override
     public boolean isValid(Scope scope) {
-        return factor.isValid(scope) && (termPrime == null || termPrime.isValid(scope));
+        return evaluateType(scope) != null && factor.isValid(scope)
+                && (termPrime == null || termPrime.isValid(scope));
     }
 
     @Override

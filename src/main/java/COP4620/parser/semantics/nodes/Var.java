@@ -1,6 +1,7 @@
 package COP4620.parser.semantics.nodes;
 
 import COP4620.parser.Scope;
+import COP4620.parser.Symbol;
 import COP4620.parser.Symbol.Type;
 
 public class Var extends Node {
@@ -23,12 +24,16 @@ public class Var extends Node {
     @Override
     public boolean isValid(Scope scope) {
         return scope.isInScope(id)
-                && (expression == null || this.evaluateType(scope) == expression.evaluateType(scope))
+                && (expression == null || expression.evaluateType(scope) == Type.INT)
                 && (expression == null || expression.isValid(scope));
     }
 
     @Override
     public Type evaluateType(Scope scope) {
-        return scope.getTypeOf(getId());
+        Symbol.Type type = scope.getTypeOf(getId());
+        if (expression != null) {
+            return type == Type.INT_ARRAY ? Type.INT : Type.FLOAT;
+        }
+        return type;
     }
 }

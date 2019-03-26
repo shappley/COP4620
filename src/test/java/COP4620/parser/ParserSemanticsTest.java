@@ -127,7 +127,7 @@ class ParserSemanticsTest extends BaseTest {
     @DisplayName("8. Array indexes")
     @ParameterizedTest
     @CsvSource({
-            "void main(void) { int x[1]; x[1] = 5;}, true",
+            "void main(void) { int x[0]; x[1] = 5;}, true",
             "int size(void) {return 1;} void main(void) { int x[1]; x[size()] = 5;}, true",
             "int size(void) {return 1;} void main(void) { int x[1]; x[size()+1] = 5;}, true",
             "void main(void) { int x[1.0]; x[1] = 5;}, false",
