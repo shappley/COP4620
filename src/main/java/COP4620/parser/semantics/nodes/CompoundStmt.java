@@ -1,5 +1,6 @@
 package COP4620.parser.semantics.nodes;
 
+import COP4620.parser.FunctionSymbol;
 import COP4620.parser.Scope;
 
 public class CompoundStmt extends Statement {
@@ -13,6 +14,9 @@ public class CompoundStmt extends Statement {
 
     @Override
     public boolean isValid(Scope scope) {
+        if(statements!=null){
+            statements.forFunction(getFunction());
+        }
         return (declarations == null || declarations.isValid(scope))
                 && (statements == null || statements.isValid(scope));
     }

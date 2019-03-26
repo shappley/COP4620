@@ -13,6 +13,10 @@ public class StatementList extends Node {
 
     @Override
     public boolean isValid(Scope scope) {
+        statement.forFunction(getFunction());
+        if (statementList != null) {
+            statementList.forFunction(getFunction());
+        }
         return statement.isValid(scope) && (statementList == null || statementList.isValid(scope));
     }
 }

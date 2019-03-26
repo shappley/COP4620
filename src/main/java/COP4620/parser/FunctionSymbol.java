@@ -7,6 +7,7 @@ import java.util.List;
 public class FunctionSymbol extends Symbol {
     private List<Symbol> parameters;
     private int paramIndex = 0;
+    private boolean hasReturn;
 
     public FunctionSymbol(String id, Type type, List<Symbol> parameters) {
         super(id, type);
@@ -30,6 +31,14 @@ public class FunctionSymbol extends Symbol {
     public boolean matchParameter(Type type) {
         return paramIndex < parameters.size()
                 && parameters.get(paramIndex++).getType() == type;
+    }
+
+    public void hasReturn(boolean hasReturn) {
+        this.hasReturn = hasReturn;
+    }
+
+    public boolean hasReturn() {
+        return hasReturn;
     }
 
     public FunctionSymbol copy() {

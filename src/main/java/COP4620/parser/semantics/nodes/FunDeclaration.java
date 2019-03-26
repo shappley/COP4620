@@ -26,9 +26,10 @@ public class FunDeclaration extends Node {
         scope.addScope();
         FunctionSymbol function = scope.addFunctionDeclaration(id, getType(), new Symbol[0]);
         params.forFunction(function);
+        body.forFunction(function);
         if (params.isValid(scope) && body.isValid(scope)) {
             scope.removeScope();
-            return true;
+            return getType() == Symbol.Type.VOID || function.hasReturn();
         }
         return false;
     }

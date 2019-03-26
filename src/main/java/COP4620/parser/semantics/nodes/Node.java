@@ -1,11 +1,22 @@
 package COP4620.parser.semantics.nodes;
 
+import COP4620.parser.FunctionSymbol;
 import COP4620.parser.Scope;
 import COP4620.parser.Symbol;
 
 public abstract class Node {
+    private FunctionSymbol function;
+
     public boolean isValid(Scope scope) {
         return true;
+    }
+
+    public FunctionSymbol getFunction() {
+        return function;
+    }
+
+    public void forFunction(FunctionSymbol function) {
+        this.function = function;
     }
 
     public Symbol.Type evaluateType(Scope scope) {
