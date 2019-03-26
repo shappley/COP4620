@@ -13,6 +13,7 @@ public class ParamList extends Node {
 
     @Override
     public boolean isValid(Scope scope) {
-        return param.isValid(scope) && (paramList == null || paramList.isValid(scope));
+        return param.isValid(scope) && scope.addDeclaration(param.getId(), param.getSymbolType())
+                && (paramList == null || paramList.isValid(scope));
     }
 }

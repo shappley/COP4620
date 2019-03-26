@@ -1,5 +1,7 @@
 package COP4620.parser.semantics.nodes;
 
+import COP4620.parser.Symbol;
+
 public class Param extends Node {
     private TypeSpecifier typeSpecifier;
     private String id;
@@ -25,5 +27,22 @@ public class Param extends Node {
 
     public Type getType() {
         return type;
+    }
+
+    public Symbol.Type getSymbolType() {
+        if (getType() == Type.SINGLE) {
+            if (getTypeSpecifier().getType() == TypeSpecifier.Type.INT) {
+                return Symbol.Type.INT;
+            } else if (getTypeSpecifier().getType() == TypeSpecifier.Type.FLOAT) {
+                return Symbol.Type.FLOAT;
+            }
+        } else if (getType() == Type.ARRAY) {
+            if (getTypeSpecifier().getType() == TypeSpecifier.Type.INT) {
+                return Symbol.Type.INT_ARRAY;
+            } else if (getTypeSpecifier().getType() == TypeSpecifier.Type.FLOAT) {
+                return Symbol.Type.FLOAT_ARRAY;
+            }
+        }
+        return null;
     }
 }
