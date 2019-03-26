@@ -13,6 +13,8 @@ public class DeclarationList extends Node {
 
     @Override
     public boolean isValid(Scope scope) {
-        return declaration.isValid(scope) && (declarationList == null || declarationList.isValid(scope));
+        return declaration.isValid(scope)
+                && (declarationList == null || declarationList.isValid(scope))
+                && (declarationList != null || scope.hasFunction("main"));
     }
 }
