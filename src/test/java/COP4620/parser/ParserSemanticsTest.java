@@ -36,12 +36,16 @@ class ParserSemanticsTest extends BaseTest {
             "void main(void){ while(0) { int x; x=5; } }, true",
             "void main(void) { int x; while(1){int x;} }, true",
             "void main(void) { int x; if(1){int x;} }, true",
+            "int x(void){return 1;} void main(void){int x;x=x();}, true",
+            "int x(void){int x; return 1;} void main(void){int x;x=x();}, true",
             "void main(void){x=5;}, false",
             "void main(void){int x; int x;}, false",
             "void main(void){int x; float x;}, false",
             "void main(void){int x; x=fun();}, false",
             "void main(void){ if(0) { int x; } x=5; }, false",
             "void main(void){ while(0) { int x; } x=5; }, false",
+            "int x(void){int x; return 1;} void main(void){x=x();}, false",
+            "int x(int x){int x; return x;} void main(void){int x;x=x();}, false",
     })
     void scopeResolution(String source, boolean valid) {
         test(source, valid);
