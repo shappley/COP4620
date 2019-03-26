@@ -12,4 +12,5 @@ int main(void) {
     y = 1 - 2 - 3;
     z = 1 * 2 * 3;
     value = a() + b() * c() / x * 1 + y * 2 / 3 - z;
+    return value;
 }

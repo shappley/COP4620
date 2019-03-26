@@ -25,34 +25,45 @@ class ParserSemanticsTest extends BaseTest {
         assertEquals(valid, semantics.isValid());
     }
 
-    //1. All variables and functions must be declared before they are used.
-    @DisplayName("1. References declared before use")
+    //All variables and functions must be declared before they are used.
+    @DisplayName("1. Scope resolution")
     @ParameterizedTest
     @CsvSource({
             "void main(void){ int x; x=5;}, true",
+            "int x; void main(void){ x=5;}, true",
             "int fun(void){return 1;} void main(void){ int x; x=fun();}, true",
+            "void main(void){ if(0) { int x; x=5; } }, true",
+            "void main(void){ while(0) { int x; x=5; } }, true",
+            "void main(void) { int x; while(1){int x;} }, true",
+            "void main(void) { int x; if(1){int x;} }, true",
             "void main(void){x=5;}, false",
-            "void main(void){int x; x=fun();}, false"
+            "void main(void){int x; int x;}, false",
+            "void main(void){int x; float x;}, false",
+            "void main(void){int x; x=fun();}, false",
+            "void main(void){ if(0) { int x; } x=5; }, false",
+            "void main(void){ while(0) { int x; } x=5; }, false",
     })
-    void referencesDeclared(String source, boolean valid) {
+    void scopeResolution(String source, boolean valid) {
         test(source, valid);
     }
 
-    //2. The last declaration in a program must be a function declaration with the name `main`
+    //The last declaration in a program must be a function declaration with the name `main`
     @DisplayName("2. Main is last declaration")
     @ParameterizedTest
     @CsvSource({
+            "int x; void main(void){}, true",
             "void main(void){}, true",
             "void main(void){ int x; x=5; }, true",
             "void x(void){} void main(void){}, true",
             "void main(void){} int x;, false",
-            "void main(void){} void x(void){}, false"
+            "void main(void){} void x(void){}, false",
+            "void fun(void){}, false"
     })
     void mainLastDeclaration(String source, boolean valid) {
         test(source, valid);
     }
 
-    //3. In a variable declaration, only type specifier `int` and `float` can be used.
+    //In a variable declaration, only type specifier `int` and `float` can be used.
     @DisplayName("3. Variable declaration types")
     @ParameterizedTest
     @CsvSource({
@@ -67,18 +78,22 @@ class ParserSemanticsTest extends BaseTest {
         test(source, valid);
     }
 
-    //4. Functions not declared `void` must return values of the correct type (`int`, `float`).
-    //   If the return type of the function is `void`, then the function returns no value.
+    //Functions not declared `void` must return values of the correct type (`int`, `float`).
+    //If the return type of the function is `void`, then the function returns no value.
     @DisplayName("4. Correct return type")
     @ParameterizedTest
     @CsvSource({
             "void main(void) {}, true",
             "void main(void) { return; }, true",
             "int main(void) { return 4; }, true",
+            "int main(void) { int x[0]; return x[0]; }, true",
             "float main(void) { return 4.0E-13; }, true",
+            "int main(void){return main();}, true",
+            "int main(void){return main()+1*main();}, true",
             "int main(void) { return 4.0E-13; }, false",
             "float main(void) { return 4; }, false",
             "void main(void) { return 2; }, false",
+            "int main(void) { int x[0]; return x; }, false",
             "int main(void) { return; }, false",
             "int main(void) {}, false"
     })
@@ -86,18 +101,8 @@ class ParserSemanticsTest extends BaseTest {
         test(source, valid);
     }
 
-    //5. There are no parameters of type function (can't pass a `void` type as an argument).
-    @DisplayName("5. Void parameters")
-    @ParameterizedTest
-    @CsvSource({
-            "void fun(void){} void main(void){fun(main());}, false"
-    })
-    void voidParameters(String source, boolean valid) {
-        test(source, valid);
-    }
-
-    //6. No mixed arithmetic (if one operand is `int`, all are `int`; same for `float`).
-    @DisplayName("6. Mixed Arithmetic")
+    //No mixed arithmetic (if one operand is `int`, all are `int`; same for `float`).
+    @DisplayName("5. Arithmetic")
     @ParameterizedTest
     @CsvSource({
             "void main(void) { int x; x=1+2; },true",
@@ -112,13 +117,15 @@ class ParserSemanticsTest extends BaseTest {
             "void main(void){ int a; float b; int c; a=5; b=11; c=a+b; }, false",
             "void main(void){ int a; int b; float c; a=5; b=11; c=a+b; }, false",
             "float b(void) { return 1.0; } void main(void){ int a; int c; a=5; c=a+b(); }, false",
+            "void b(void){} void main(void){ int a; a=1+b(); }, false",
+            "void a(void){} void main(void) { a() + a(); }, false"
     })
     void mixedArithmetic(String source, boolean valid) {
         test(source, valid);
     }
 
-    //7. Array indexes must be type `int`.
-    @DisplayName("7. Array indexes")
+    //Array indexes must be type `int`.
+    @DisplayName("6. Array indexes")
     @ParameterizedTest
     @CsvSource({
             "void main(void) { int x[0]; x[1] = 5;}, true",
@@ -133,8 +140,8 @@ class ParserSemanticsTest extends BaseTest {
         test(source, valid);
     }
 
-    //8. Function parameters and arguments must agree in number and type.
-    @DisplayName("8. Function arguments")
+    //Function parameters and arguments must agree in number and type.
+    @DisplayName("7. Function arguments")
     @ParameterizedTest
     @CsvSource({
             "'int fun(void){return 1;} void main(void){fun();}', true",
@@ -148,13 +155,14 @@ class ParserSemanticsTest extends BaseTest {
             "'int fun(float x){return 1;} void main(void){fun(1);}', false",
             "'int fun(int x, float y){return 1;} void main(void){fun(1.0, 1);}', false",
             "'int fun(int x, int y){return 1;} void main(void){fun(1, 2, 3);}', false",
+            "void fun(void){} void main(void){fun(main());}, false"
     })
     void functionArguments(String source, boolean valid) {
         test(source, valid);
     }
 
     @TestFactory
-    @DisplayName("9. Test Files")
+    @DisplayName("8. Test Files")
     List<DynamicTest> testFiles() {
         List<DynamicTest> tests = buildFileTestsForDirectory("semantics/ACCEPT", true);
         tests.addAll(buildFileTestsForDirectory("semantics/REJECT", false));
