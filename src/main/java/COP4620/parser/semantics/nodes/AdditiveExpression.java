@@ -14,7 +14,9 @@ public class AdditiveExpression extends Node {
 
     @Override
     public boolean isValid(Scope scope) {
-        return evaluateType(scope) != null && term.isValid(scope)
+        Symbol.Type type = evaluateType(scope);
+        return (type == Symbol.Type.INT || type == Symbol.Type.FLOAT)
+                && term.isValid(scope)
                 && (additiveExpressionPrime == null || additiveExpressionPrime.isValid(scope));
     }
 
