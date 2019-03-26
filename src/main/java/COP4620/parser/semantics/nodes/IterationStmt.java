@@ -13,6 +13,9 @@ public class IterationStmt extends Statement {
 
     @Override
     public boolean isValid(Scope scope) {
-        return expression.isValid(scope) && statement.isValid(scope);
+        scope.addScope();
+        boolean b = expression.isValid(scope) && statement.isValid(scope);
+        scope.removeScope();
+        return b;
     }
 }

@@ -16,6 +16,9 @@ public class SelectionStmt extends Statement {
 
     @Override
     public boolean isValid(Scope scope) {
-        return body.isValid(scope) && (elseBody == null || elseBody.isValid(scope));
+        scope.addScope();
+        boolean b = body.isValid(scope) && (elseBody == null || elseBody.isValid(scope));
+        scope.removeScope();
+        return b;
     }
 }
