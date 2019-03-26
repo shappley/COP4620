@@ -4,10 +4,11 @@ int f(int x) {
     return x;
 }
 
-int main(void) {
+void main(void) {
     int x[1];
+    int value;
     x[x[x[x[x[x[x[x[x[x[x[x[x[x[x[x[x[x[x[x[0]]]]]]]]]]]]]]]]]]]]
     =
     f(f(f(f(f(f(f(f(f(f(f(f(f(f(f(f(f(f(f(f(0))))))))))))))))))));
-    return x[f(x[f(x[f(x[f(x[f(0)])])])])];
+    value = x[f(x[f(x[f(x[f(x[f(0)])])])])];
 }

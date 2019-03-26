@@ -1,6 +1,5 @@
 package COP4620.parser.semantics.nodes;
 
-import COP4620.parser.FunctionSymbol;
 import COP4620.parser.Scope;
 import COP4620.parser.Symbol;
 
@@ -18,7 +17,9 @@ public class ParamList extends Node {
         if (paramList != null) {
             paramList.forFunction(getFunction());
         }
-        return param.isValid(scope) && scope.addDeclaration(param.getId(), param.getSymbolType())
+        return param.isValid(scope)
+                && (!getFunction().getId().equals("main") || param.getSymbolType() == Symbol.Type.VOID)
+                && scope.addDeclaration(param.getId(), param.getSymbolType())
                 && getFunction().addParameter(new Symbol(param.getId(), param.getSymbolType()))
                 && (paramList == null || paramList.isValid(scope));
     }

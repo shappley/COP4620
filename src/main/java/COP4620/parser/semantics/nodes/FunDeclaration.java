@@ -22,6 +22,8 @@ public class FunDeclaration extends Node {
         if (scope.hasFunction("main") || scope.hasFunction(id)) {
             //main must be last declaration, and this function can't have been declared before
             return false;
+        } else if (id.equals("main") && getType() != Symbol.Type.VOID) {
+            return false;
         }
         scope.addScope();
         FunctionSymbol function = scope.addFunctionDeclaration(id, getType(), new Symbol[0]);

@@ -52,7 +52,7 @@ class ParserSemanticsTest extends BaseTest {
     }
 
     //The last declaration in a program must be a function declaration with the name `main`
-    @DisplayName("2. Main is last declaration")
+    @DisplayName("2. Main declarations")
     @ParameterizedTest
     @CsvSource({
             "int x; void main(void){}, true",
@@ -61,7 +61,10 @@ class ParserSemanticsTest extends BaseTest {
             "void x(void){} void main(void){}, true",
             "void main(void){} int x;, false",
             "void main(void){} void x(void){}, false",
-            "void fun(void){}, false"
+            "void fun(void){}, false",
+            "void main(void){} void main(void){}, false",
+            "int main(void){return 1;}, false",
+            "void main(int x){}, false"
     })
     void mainLastDeclaration(String source, boolean valid) {
         test(source, valid);

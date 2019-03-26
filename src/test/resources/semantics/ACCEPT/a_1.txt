@@ -3,7 +3,7 @@
 int a(void) { return 1; }
 int b(void) { return 2; }
 int c(void) { return 3; }
-int main(void) {
+void main(void) {
     int x;
     int y;
     int z;
@@ -12,5 +12,4 @@ int main(void) {
     y = 1 - 2 - 3;
     z = 1 * 2 * 3;
     value = a() + b() * c() / x * 1 + y * 2 / 3 - z;
-    return value;
 }
