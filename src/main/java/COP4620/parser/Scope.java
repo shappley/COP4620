@@ -22,6 +22,10 @@ public class Scope {
         return this.scope.peekFirst().add(new Symbol(id, type));
     }
 
+    public boolean isInLocalScope(String id) {
+        return this.scope.peekFirst().contains(id);
+    }
+
     public boolean isInScope(String id) {
         for (SymbolTable table : this.scope) {
             if (table.contains(id)) {

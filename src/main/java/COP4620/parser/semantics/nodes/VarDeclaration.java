@@ -50,7 +50,7 @@ public class VarDeclaration extends Node {
         if (type == Type.ARRAY && !isInteger(size)) {
             //can't declare array variable with anything except an integer
             return false;
-        } else if (scope.isInScope(getId())) {
+        } else if (scope.isInLocalScope(getId())) {
             //already declared
             return false;
         } else if (getTypeSpecifier().getType() == TypeSpecifier.Type.VOID) {
