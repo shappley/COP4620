@@ -89,17 +89,17 @@ class ParserSemanticsTest extends BaseTest {
     @CsvSource({
             "void main(void) {}, true",
             "void main(void) { return; }, true",
-            "int main(void) { return 4; }, true",
-            "int main(void) { int x[0]; return x[0]; }, true",
-            "float main(void) { return 4.0E-13; }, true",
-            "int main(void){return main();}, true",
-            "int main(void){return main()+1*main();}, true",
-            "int main(void) { return 4.0E-13; }, false",
-            "float main(void) { return 4; }, false",
+            "int f(void){return 4;} void main(void){}, true",
+            "int f(void){int x[0]; return x[0];} void main(void){}, true",
+            "float f(void){return 4.0E-13;} void main(void){}, true",
+            "int f(void) {return f();} void main(void){}, true",
+            "int f(void){return f()+1*f();} void main(void){}, true",
+            "int f(void) { return 4.0E-13; } void main(void){}, false",
+            "float f(void) { return 4; } void main(void){}, false",
             "void main(void) { return 2; }, false",
-            "int main(void) { int x[0]; return x; }, false",
-            "int main(void) { return; }, false",
-            "int main(void) {}, false"
+            "int f(void) { int x[0]; return x; } void main(void){}, false",
+            "int f(void) { return; } void main(void){}, false",
+            "int f(void) {} void main(void){}, false"
     })
     void correctReturnType(String source, boolean valid) {
         test(source, valid);
