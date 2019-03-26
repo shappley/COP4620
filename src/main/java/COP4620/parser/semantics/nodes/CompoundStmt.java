@@ -13,7 +13,10 @@ public class CompoundStmt extends Statement {
 
     @Override
     public boolean isValid(Scope scope) {
-        return (declarations == null || declarations.isValid(scope))
+        scope.addScope();
+        boolean b = (declarations == null || declarations.isValid(scope))
                 && (statements == null || statements.isValid(scope));
+        scope.removeScope();
+        return b;
     }
 }
