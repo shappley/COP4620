@@ -8,6 +8,7 @@ public class Scope {
     public Scope() {
         this.scope = new LinkedList<>();
         addScope();
+        addScope();
     }
 
     public void addScope() {
@@ -27,7 +28,11 @@ public class Scope {
     }
 
     public boolean isInScope(String id) {
+        int index = 0;
         for (SymbolTable table : this.scope) {
+            if (index++ == this.scope.size() - 1) {
+                break;
+            }
             if (table.contains(id)) {
                 return true;
             }
