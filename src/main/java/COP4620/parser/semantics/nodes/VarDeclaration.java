@@ -56,6 +56,9 @@ public class VarDeclaration extends Node {
         } else if (getTypeSpecifier().getType() == TypeSpecifier.Type.VOID) {
             //can't declare void variables
             return false;
+        } else if (scope.depth() == 1 && scope.hasFunction("main")) {
+            //can't declare anything after main
+            return false;
         }
         //looks good, add it to the symbol table
         scope.addDeclaration(id, getSymbolType());
