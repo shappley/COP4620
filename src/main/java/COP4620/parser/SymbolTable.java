@@ -8,7 +8,7 @@ public class SymbolTable {
     }
 
     public SymbolTable() {
-        this(16);
+        this(128);
     }
 
     public boolean add(Symbol symbol) {
