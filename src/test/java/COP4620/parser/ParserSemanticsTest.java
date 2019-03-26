@@ -67,33 +67,27 @@ class ParserSemanticsTest extends BaseTest {
         test(source, valid);
     }
 
-    //4. If the return type of the function is `void`, then the function returns no value.
-    @DisplayName("4. Void returns")
+    //4. Functions not declared `void` must return values of the correct type (`int`, `float`).
+    //   If the return type of the function is `void`, then the function returns no value.
+    @DisplayName("4. Correct return type")
     @ParameterizedTest
     @CsvSource({
             "void main(void) {}, true",
             "void main(void) { return; }, true",
-            "void main(void) { return 2; }, false"
-    })
-    void voidReturns(String source, boolean valid) {
-        test(source, valid);
-    }
-
-    //5. Functions not declared `void` must return values of the correct type (`int`, `float`).
-    @DisplayName("5. Correct return type")
-    @ParameterizedTest
-    @CsvSource({
             "int main(void) { return 4; }, true",
             "float main(void) { return 4.0E-13; }, true",
             "int main(void) { return 4.0E-13; }, false",
-            "float main(void) { return 4; }, false"
+            "float main(void) { return 4; }, false",
+            "void main(void) { return 2; }, false",
+            "int main(void) { return; }, false",
+            "int main(void) {}, false"
     })
     void correctReturnType(String source, boolean valid) {
         test(source, valid);
     }
 
-    //6. There are no parameters of type function (can't pass a `void` type as an argument).
-    @DisplayName("6. Void parameters")
+    //5. There are no parameters of type function (can't pass a `void` type as an argument).
+    @DisplayName("5. Void parameters")
     @ParameterizedTest
     @CsvSource({
             "void fun(void){} void main(void){fun(main());}, false"
@@ -102,8 +96,8 @@ class ParserSemanticsTest extends BaseTest {
         test(source, valid);
     }
 
-    //7. No mixed arithmetic (if one operand is `int`, all are `int`; same for `float`).
-    @DisplayName("7. Mixed Arithmetic")
+    //6. No mixed arithmetic (if one operand is `int`, all are `int`; same for `float`).
+    @DisplayName("6. Mixed Arithmetic")
     @ParameterizedTest
     @CsvSource({
             "void main(void) { int x; x=1+2; },true",
@@ -123,8 +117,8 @@ class ParserSemanticsTest extends BaseTest {
         test(source, valid);
     }
 
-    //8. Array indexes must be type `int`.
-    @DisplayName("8. Array indexes")
+    //7. Array indexes must be type `int`.
+    @DisplayName("7. Array indexes")
     @ParameterizedTest
     @CsvSource({
             "void main(void) { int x[0]; x[1] = 5;}, true",
@@ -139,8 +133,8 @@ class ParserSemanticsTest extends BaseTest {
         test(source, valid);
     }
 
-    //9. Function parameters and arguments must agree in number and type.
-    @DisplayName("9. Function arguments")
+    //8. Function parameters and arguments must agree in number and type.
+    @DisplayName("8. Function arguments")
     @ParameterizedTest
     @CsvSource({
             "'int fun(void){return 1;} void main(void){fun();}', true",
@@ -160,7 +154,7 @@ class ParserSemanticsTest extends BaseTest {
     }
 
     @TestFactory
-    @DisplayName("10. Test Files")
+    @DisplayName("9. Test Files")
     List<DynamicTest> testFiles() {
         List<DynamicTest> tests = buildFileTestsForDirectory("semantics/ACCEPT", true);
         tests.addAll(buildFileTestsForDirectory("semantics/REJECT", false));
