@@ -1,5 +1,6 @@
 package COP4620.parser.semantics.nodes;
 
+import COP4620.parser.FunctionSymbol;
 import COP4620.parser.Scope;
 import COP4620.parser.Symbol;
 
@@ -22,11 +23,14 @@ public class FunDeclaration extends Node {
             //main must be last declaration, and this function can't have been declared before
             return false;
         }
-        scope.addFunctionDeclaration(id, getType(), new Symbol[0]);
         scope.addScope();
-        //TODO resolve params
-        return params.isValid(scope)
-                && body.isValid(scope);
+        FunctionSymbol function = scope.addFunctionDeclaration(id, getType(), new Symbol[0]);
+        params.forFunction(function);
+        if (params.isValid(scope) && body.isValid(scope)) {
+            scope.removeScope();
+            return true;
+        }
+        return false;
     }
 
     private Symbol.Type getType() {

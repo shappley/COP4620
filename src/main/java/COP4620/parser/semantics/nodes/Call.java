@@ -1,5 +1,6 @@
 package COP4620.parser.semantics.nodes;
 
+import COP4620.parser.FunctionSymbol;
 import COP4620.parser.Scope;
 import COP4620.parser.Symbol;
 
@@ -14,8 +15,11 @@ public class Call extends Node {
 
     @Override
     public boolean isValid(Scope scope) {
-        //TODO check function args = params
-        return scope.hasFunction(id) && (args == null || args.isValid(scope));
+        FunctionSymbol function = scope.getFunction(id);
+        if (args != null) {
+            args.forFunction(function);
+        }
+        return function != null && (args == null || args.isValid(scope));
     }
 
     @Override

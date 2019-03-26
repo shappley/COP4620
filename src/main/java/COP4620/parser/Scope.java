@@ -41,20 +41,29 @@ public class Scope {
         return null;
     }
 
-    public boolean hasFunction(String id) {
+    public FunctionSymbol getFunction(String id) {
         Symbol s = this.scope.peekLast().getSymbol(id);
-        return s != null && s instanceof FunctionSymbol;
-    }
-
-    public boolean addFunctionDeclaration(String id, Symbol.Type type, Symbol[] parameters) {
-        SymbolTable newTable = new SymbolTable();
-        for (Symbol s : parameters) {
-            newTable.add(s);
+        if (s != null && s instanceof FunctionSymbol) {
+            return ((FunctionSymbol) s).copy();
         }
-        return this.scope.peekLast().add(new FunctionSymbol(id, type, newTable));
+        return null;
     }
 
-    public int depth(){
+    public boolean hasFunction(String id) {
+        return getFunction(id) != null;
+    }
+
+    public FunctionSymbol addFunctionDeclaration(String id, Symbol.Type type) {
+        return addFunctionDeclaration(id, type, new Symbol[0]);
+    }
+
+    public FunctionSymbol addFunctionDeclaration(String id, Symbol.Type type, Symbol[] parameters) {
+        FunctionSymbol function = new FunctionSymbol(id, type, parameters);
+        this.scope.peekLast().add(function);
+        return function;
+    }
+
+    public int depth() {
         return this.scope.size();
     }
 }
