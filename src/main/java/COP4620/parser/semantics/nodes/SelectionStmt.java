@@ -16,6 +16,10 @@ public class SelectionStmt extends Statement {
 
     @Override
     public boolean isValid(Scope scope) {
+        body.forFunction(getFunction());
+        if (elseBody != null) {
+            elseBody.forFunction(getFunction());
+        }
         scope.addScope();
         boolean b = body.isValid(scope) && (elseBody == null || elseBody.isValid(scope));
         scope.removeScope();
