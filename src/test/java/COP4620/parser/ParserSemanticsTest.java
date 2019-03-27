@@ -159,17 +159,20 @@ class ParserSemanticsTest extends BaseTest {
     @DisplayName("7. Function arguments")
     @ParameterizedTest
     @CsvSource({
+            "void main(void) { main(); }, true",
             "'int fun(void){return 1;} void main(void){fun();}', true",
             "'int fun(int x){return x;} void main(void){fun(5);}', true",
             "'int fun(float x){return 1;} void main(void){fun(1.0);}', true",
             "'int fun(int x, int y){return 1;} void main(void){fun(1,2);}', true",
             "'int fun(int x, float y){return 1;} void main(void){fun(1, 1.0);}', true",
             "'int fun(int x){return 1;} void main(void){fun(fun());}', true",
+            "int fun(void){return 1;} void main(void) { fun(); }, true",
             "'int fun(void){return 1;} void main(void){fun(1);}', false",
             "'int fun(int x){return 1;} void main(void){fun(1.0);}', false",
             "'int fun(float x){return 1;} void main(void){fun(1);}', false",
             "'int fun(int x, float y){return 1;} void main(void){fun(1.0, 1);}', false",
             "'int fun(int x, int y){return 1;} void main(void){fun(1, 2, 3);}', false",
+            "void main(void) { main(main()); }, false",
             "void fun(void){} void main(void){fun(main());}, false"
     })
     void functionArguments(String source, boolean valid) {

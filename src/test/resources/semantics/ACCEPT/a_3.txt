@@ -1,0 +1,38 @@
+//functions declared int or float  must have a return value of the correct type.
+int intFun(int a, float b) {
+    //operand agreement (no mixed arithmetic - all ints or all floats)
+    return a * a + a - a / a * intFun(a, b)
+        * intFun(a, b) + intFun(a, b) - intFun(a, b) / intFun(a, b)
+        + 1 + 2 + 3;
+}
+
+float floatFun(float a, int b) {
+    //operand agreement (no mixed arithmetic - all ints or all floats)
+    return a * a + a - a / a * floatFun(a, b)
+        * floatFun(a, b) + floatFun(a, b) - floatFun(a, b) / floatFun(a, b)
+        + 1.0 + 2.0 + 3.0;
+}
+
+//void functions may or may not have a return, but must not return a value.
+void test(void) {
+    //variable declaration (all variables declared once ... scope)
+    int x;
+    float y;
+    //variable declaration (all variables must be declared ... scope)
+    //parameters and arguments agree in type and number
+    x = intFun(1, 1.0); //each function should be defined
+    if(x != 1) {
+        //void functions may or may not have a return, but must not return a value.
+        return;
+    } else {
+        x = x + 1;
+        //parameters and arguments agree in type and number
+        y = floatFun(1.0, 1); //each function should be defined
+        y = y + 1.0;
+    }
+}
+
+//each program must have one main function
+void main(void) {
+    test(); //each function should be defined
+}
