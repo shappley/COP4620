@@ -1,0 +1,7 @@
+//REJECT. A global variable can't be declared of type void.
+
+void  y;
+
+void main(void)
+{
+}

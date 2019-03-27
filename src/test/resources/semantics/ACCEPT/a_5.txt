@@ -1,0 +1,13 @@
+//ACCEPT
+
+int x;
+
+void print(void){
+int z;
+}
+
+int  y;
+
+void main(void)
+{
+}

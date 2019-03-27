@@ -1,0 +1,6 @@
+//REJECT: Same variable declared in same scope.
+
+void main(void)
+{  int x;
+   int x;
+}

@@ -1,0 +1,14 @@
+//REJECT. Wrong type of args in a function call.
+
+void print(int x, int y[])
+{
+   //output(x);
+   //output(y[0]);
+}
+
+void main(void)
+{
+   int m;
+   m = 8;
+   print(m,m);
+}

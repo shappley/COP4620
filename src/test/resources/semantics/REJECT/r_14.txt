@@ -1,0 +1,11 @@
+//REJECT. Void functions may not return values.
+
+void print(void)
+{
+   return 6;
+}
+
+void main(void)
+{
+   print();
+}

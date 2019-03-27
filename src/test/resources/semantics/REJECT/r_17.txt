@@ -1,0 +1,13 @@
+//REJECT. Can't add an array.
+
+void print(void){
+}
+
+void main(void)
+{
+	print();
+	int a[5];
+	int x;
+	int y;
+	y = a + x;
+}

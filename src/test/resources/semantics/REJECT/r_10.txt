@@ -1,0 +1,13 @@
+//REJECT. Too few args in a function call.
+
+void print(int x, int y)
+{
+   //output(x);
+}
+
+void main(void)
+{
+   int m;
+   m=8;
+   print(m);
+}
