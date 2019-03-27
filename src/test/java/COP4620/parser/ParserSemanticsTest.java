@@ -170,6 +170,7 @@ class ParserSemanticsTest extends BaseTest {
             "'int fun(void){return 1;} void main(void){fun(1);}', false",
             "'int fun(int x){return 1;} void main(void){fun(1.0);}', false",
             "'int fun(float x){return 1;} void main(void){fun(1);}', false",
+            "'int fun(int x, float y){return 1;} void main(void){fun(1);}', false",
             "'int fun(int x, float y){return 1;} void main(void){fun(1.0, 1);}', false",
             "'int fun(int x, int y){return 1;} void main(void){fun(1, 2, 3);}', false",
             "void main(void) { main(main()); }, false",

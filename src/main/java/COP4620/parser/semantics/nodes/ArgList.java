@@ -1,6 +1,5 @@
 package COP4620.parser.semantics.nodes;
 
-import COP4620.parser.FunctionSymbol;
 import COP4620.parser.Scope;
 
 public class ArgList extends Node {
@@ -19,6 +18,7 @@ public class ArgList extends Node {
         }
         return expression.isValid(scope)
                 && getFunction().matchParameter(expression.evaluateType(scope))
+                && (argList != null || getFunction().allParametersMatched())
                 && (argList == null || argList.isValid(scope));
     }
 }
