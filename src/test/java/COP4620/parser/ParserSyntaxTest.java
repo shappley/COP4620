@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+@DisplayName("2. Syntactic Analysis")
 class ParserSyntaxTest extends BaseTest {
 
     @TestFactory

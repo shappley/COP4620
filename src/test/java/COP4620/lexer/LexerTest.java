@@ -22,6 +22,7 @@ import static COP4620.lexer.TokenType.SPECIAL_SYMBOL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+@DisplayName("1. Lexical Analysis")
 class LexerTest {
 
     private void getNextToken(String source, int index, Token expected) {
