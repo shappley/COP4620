@@ -39,6 +39,7 @@ class ParserSemanticsTest extends BaseTest {
             "void main(void) { int x; while(1){int x;} }, true, 'Variable of same name in while-statement'",
             "int x(void){int x; return 1;} void main(void){int x;x=x();}, true, 'Variable of same name in different function'",
             "int x(void){return 1;} void main(void){int x;x=x();}, true, 'Function and variable of same name'",
+            "void main(void){ int x; { int x; { int x; } } }, true, 'Variable of same name in nested Compound Statements'",
             "void main(void){x=5;}, false, 'Variable initialized without being declared'",
             "void main(void){x=5;int x;}, false, 'Variable initialized before being declared'",
             "void main(void){int x; int x;}, false, 'Variable of same name and type in same scope'",
@@ -46,7 +47,8 @@ class ParserSemanticsTest extends BaseTest {
             "void main(void){int x; x=fun();}, false, 'Function not declared before call'",
             "void main(void){ if(0) { int x; } x=5; }, false, 'Variable declared in if-statement initialized in outer scope'",
             "void main(void){ while(0) { int x; } x=5; }, false, 'Variable declared in while-statement initialized in outer scope'",
-            "int x(int x){int x; return x;} void main(void){int x;x=x();}, false, 'Variable declared with same name as parameter'",
+            "void main(void){ {int x;} x=5; }, false, 'Variable declared in compound statement initialized in outer scope'",
+            "void foo(int x){int x;} void main(void){}, false, 'Variable declared with same name as parameter'"
     })
     void scopeResolution(String source, boolean valid, String description) {
         test(source, valid);
@@ -108,6 +110,8 @@ class ParserSemanticsTest extends BaseTest {
             "int f(void) {return f();} void main(void){}, true, 'INT function returns INT function call'",
             "float f(void) {return f();} void main(void){}, true, 'FLOAT function returns FLOAT function call'",
             "int f(void){return f()+1*f();} void main(void){}, true, 'INT function returns mathematical expression'",
+            "int f(void){if(0){return 1;}} void main(void){f();}, true, 'Return inside if-block'",
+            "int f(void){while(0){return 1;}} void main(void){f();}, true, 'Return inside while-block'",
             "int f(void) { return 4.0E-13; } void main(void){}, false, 'INT function returns FLOAT literal'",
             "float f(void) { return 4; } void main(void){}, false, 'FLOAT function returns INT literal'",
             "void main(void) { return 2; }, false, 'VOID function returns INT'",
