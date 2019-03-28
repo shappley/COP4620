@@ -33,8 +33,12 @@ public class FunctionSymbol extends Symbol {
                 && parameters.get(paramIndex++).getType() == type;
     }
 
-    public boolean allParametersMatched(){
+    public boolean allParametersMatched() {
         return paramIndex == parameters.size();
+    }
+
+    public int parameters() {
+        return parameters.size();
     }
 
     public void hasReturn(boolean hasReturn) {

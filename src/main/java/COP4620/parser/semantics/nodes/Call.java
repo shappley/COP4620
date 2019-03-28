@@ -18,6 +18,8 @@ public class Call extends Node {
         FunctionSymbol function = scope.getFunction(id);
         if (args != null) {
             args.forFunction(function);
+        } else if (function.parameters() != 0) {
+            return false;
         }
         return function != null && (args == null || args.isValid(scope));
     }
