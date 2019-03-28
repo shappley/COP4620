@@ -91,6 +91,9 @@ class ParserSemanticsTest extends BaseTest {
             "void main(void){ float x; x=5;}, false, 'FLOAT initialized with INT literal'",
             "void main(void){ int x[0]; x=5.0;}, false, 'INT-ARRAY index initialized with FLOAT literal'",
             "void main(void){ float x; x[0]=5;}, false, 'FLOAT-ARRAY index initialized with INT literal'",
+            "void main(void) { int x; 5=x;}, false, 'INT literal on left side'",
+            "int f(void){return 1;} void main(void) { int x; f=x;}, false, 'Function on left side'",
+            "int f(void){return 1;} void main(void) { int x; f()=x;}, false, 'Function call on left side'"
     })
     void variableDeclarationTypes(String source, boolean valid, String description) {
         test(source, valid);
