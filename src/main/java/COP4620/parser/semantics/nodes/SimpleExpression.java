@@ -19,14 +19,18 @@ public class SimpleExpression extends Node {
 
     @Override
     public boolean isValid(Scope scope) {
-        if (right != null && left.evaluateType(scope) != right.evaluateType(scope)) {
-            return false;
+        if (right != null) {
+            if (left.evaluateType(scope) != right.evaluateType(scope)) {
+                return false;
+            } else if (left.evaluateType(scope) == Symbol.Type.FLOAT || right.evaluateType(scope) == Symbol.Type.FLOAT) {
+                return false;
+            }
         }
         return left.isValid(scope) && (right == null || right.isValid(scope));
     }
 
     @Override
     public Symbol.Type evaluateType(Scope scope) {
-        return evaluateType(scope,left, right);
+        return evaluateType(scope, left, right);
     }
 }
