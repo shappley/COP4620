@@ -138,6 +138,7 @@ class ParserSemanticsTest extends BaseTest {
             "float b(void) { return 1.0; } void main(void){ float a; float c; a=5.0; c=a+b(); }, true, 'FLOAT initialized with sum of FLOAT functions'",
             "void main(void) { int x; int y; if( x+y+1 < 13 ) {} }, true, 'Relational operator with FLOAT literal'",
             "void main(void){ int x; x=1+2<=3;}, true, 'INT initialized with relational operator'",
+            "void main(void) { float f; while(f < 3.1){}}, true, 'FLOAT relational operation'",
             "void main(void){ int x; x=1+2+3.0; }, false, 'INT initialized with sum of mixed literals'",
             "void main(void){ float x; x=1.0+2.0+3; }, false, 'FLOAT initialized with sum of mixed literals'",
             "void main(void){ int a; float b; int c; a=5; b=11; c=a+b; }, false, 'INT initialized with sum of mixed variables'",
