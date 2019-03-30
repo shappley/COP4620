@@ -139,6 +139,7 @@ class ParserSemanticsTest extends BaseTest {
             "void main(void) { int x; int y; if( x+y+1 < 13 ) {} }, true, 'Relational operator with FLOAT literal'",
             "void main(void){ int x; x=1+2<=3;}, true, 'INT initialized with relational operator'",
             "void main(void) { float f; while(f < 3.1){}}, true, 'FLOAT relational operation'",
+            "void main(void) { float f; while(f+f < 3.1){}}, true, 'Additive FLOAT relational operation'",
             "void main(void){ int x; x=1+2+3.0; }, false, 'INT initialized with sum of mixed literals'",
             "void main(void){ float x; x=1.0+2.0+3; }, false, 'FLOAT initialized with sum of mixed literals'",
             "void main(void){ int a; float b; int c; a=5; b=11; c=a+b; }, false, 'INT initialized with sum of mixed variables'",
@@ -146,7 +147,8 @@ class ParserSemanticsTest extends BaseTest {
             "float b(void) { return 1.0; } void main(void){ int a; int c; a=5; c=a+b(); }, false, 'INT initialized with sum of mixed functions'",
             "void b(void){} void main(void){ int a; a=1+b(); }, false, 'Sum INT and VOID'",
             "void a(void){} void main(void) { a() + a(); }, false, 'Sum VOID and VOID'",
-            "void main(void){ float f; f=1.0+2.0<=3.0;}, false, 'FLOAT initialized with relational operator'"
+            "void main(void){ float f; f=1.0+2.0<=3.0;}, false, 'FLOAT initialized with relational operator'",
+            "void main(void) { float f; while(f+2 < 3.1){}}, false, 'Mixed type relational operation'",
     })
     void operandAgreement(String source, boolean valid, String description) {
         test(source, valid);
