@@ -1,6 +1,9 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.Quadruple;
 import COP4620.parser.Scope;
+
+import java.util.List;
 
 public class Declaration extends Node {
     private Type type;
@@ -26,5 +29,10 @@ public class Declaration extends Node {
     @Override
     public boolean isValid(Scope scope) {
         return (scope.depth() <= 1 || !scope.hasFunction("main")) && value.isValid(scope);
+    }
+
+    @Override
+    public List<Quadruple> getInstructions() {
+        return value.getInstructions();
     }
 }

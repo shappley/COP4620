@@ -19,6 +19,10 @@ public class Quadruple {
         return line;
     }
 
+    public void setLine(int line) {
+        this.line = line;
+    }
+
     public Operation getOperation() {
         return operation;
     }
@@ -33,5 +37,10 @@ public class Quadruple {
 
     public String getDestination() {
         return destination;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%-5s %-8s %-8s %-8s %-8s", getLine(), getOperation(), getLeftValue(), getRightValue(), getDestination());
     }
 }

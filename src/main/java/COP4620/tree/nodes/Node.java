@@ -5,6 +5,7 @@ import COP4620.parser.FunctionSymbol;
 import COP4620.parser.Scope;
 import COP4620.parser.Symbol;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Node {
@@ -39,7 +40,7 @@ public abstract class Node {
         return leftType;
     }
 
-    public Quadruple getInstruction(List<Quadruple> instructions) {
-        return null;
+    public List<Quadruple> getInstructions() {
+        return new ArrayList<>();
     }
 }

@@ -13,8 +13,6 @@ public class CodeGenerator {
     }
 
     public List<Quadruple> getInstructions() {
-        List<Quadruple> instructions = new ArrayList<>();
-        root.getInstruction(instructions);
-        return instructions;
+        return root.getInstructions();
     }
 }

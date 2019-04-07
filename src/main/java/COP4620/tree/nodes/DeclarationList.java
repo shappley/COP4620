@@ -1,6 +1,9 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.Quadruple;
 import COP4620.parser.Scope;
+
+import java.util.List;
 
 public class DeclarationList extends Node {
     private Declaration declaration;
@@ -16,5 +19,14 @@ public class DeclarationList extends Node {
         return declaration.isValid(scope)
                 && (declarationList == null || declarationList.isValid(scope))
                 && (declarationList != null || scope.hasFunction("main"));
+    }
+
+    @Override
+    public List<Quadruple> getInstructions() {
+        List<Quadruple> instructions = declaration.getInstructions();
+        if (declarationList != null) {
+            instructions.addAll(declarationList.getInstructions());
+        }
+        return instructions;
     }
 }
