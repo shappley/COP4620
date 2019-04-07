@@ -1,8 +1,11 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.Quadruple;
 import COP4620.parser.FunctionSymbol;
 import COP4620.parser.Scope;
 import COP4620.parser.Symbol;
+
+import java.util.List;
 
 public abstract class Node {
     private FunctionSymbol function;
@@ -34,5 +37,9 @@ public abstract class Node {
             }
         }
         return leftType;
+    }
+
+    public Quadruple getInstruction(List<Quadruple> instructions) {
+        return null;
     }
 }
