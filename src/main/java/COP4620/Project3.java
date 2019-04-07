@@ -3,7 +3,7 @@ package COP4620;
 import COP4620.lexer.Lexer;
 import COP4620.lexer.Token;
 import COP4620.parser.Parser;
-import COP4620.parser.semantics.SemanticAnalyzer;
+import COP4620.parser.SemanticAnalyzer;
 
 import java.io.IOException;
 import java.nio.file.Files;

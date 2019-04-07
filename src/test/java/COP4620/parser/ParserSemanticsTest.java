@@ -3,7 +3,6 @@ package COP4620.parser;
 import COP4620.BaseTest;
 import COP4620.lexer.Lexer;
 import COP4620.lexer.Token;
-import COP4620.parser.semantics.SemanticAnalyzer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
