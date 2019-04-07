@@ -23,4 +23,11 @@ public class ParamList extends Node {
                 && getFunction().addParameter(new Symbol(param.getId(), param.getSymbolType()))
                 && (paramList == null || paramList.isValid(scope));
     }
+
+    public int getParameterCount() {
+        if (paramList == null) {
+            return 1;
+        }
+        return 1 + paramList.getParameterCount();
+    }
 }
