@@ -1,7 +1,11 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.CodeGenerator;
+import COP4620.codegen.Quadruple;
 import COP4620.parser.Scope;
 import COP4620.parser.Symbol;
+
+import java.util.List;
 
 public class SimpleExpression extends Node {
     private AdditiveExpression left, right;
@@ -33,5 +37,10 @@ public class SimpleExpression extends Node {
             return Symbol.Type.INT;
         }
         return evaluateType(scope, left, right);
+    }
+
+    @Override
+    public List<Quadruple> getInstructions(CodeGenerator gen) {
+        return super.getInstructions(gen);
     }
 }

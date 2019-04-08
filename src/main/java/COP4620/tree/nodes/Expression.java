@@ -1,7 +1,13 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.CodeGenerator;
+import COP4620.codegen.Operation;
+import COP4620.codegen.Quadruple;
 import COP4620.parser.Scope;
 import COP4620.parser.Symbol;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Expression extends Node {
     private Var var;
@@ -36,5 +42,15 @@ public class Expression extends Node {
             type = simpleExpression.evaluateType(scope);
         }
         return type;
+    }
+
+    @Override
+    public List<Quadruple> getInstructions(CodeGenerator gen) {
+        if (simpleExpression != null) {
+            return simpleExpression.getInstructions(gen);
+        }
+        List<Quadruple> list = new ArrayList<>(expression.getInstructions(gen));
+        list.add(new Quadruple(-1, Operation.ASGN, gen.getNextTempVariable(), "", var.getId()));
+        return list;
     }
 }
