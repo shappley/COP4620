@@ -1,6 +1,9 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.Quadruple;
 import COP4620.parser.Scope;
+
+import java.util.List;
 
 public class StatementList extends Node {
     private Statement statement;
@@ -18,5 +21,14 @@ public class StatementList extends Node {
             statementList.forFunction(getFunction());
         }
         return statement.isValid(scope) && (statementList == null || statementList.isValid(scope));
+    }
+
+    @Override
+    public List<Quadruple> getInstructions() {
+        List<Quadruple> list = statement.getInstructions();
+        if (statementList != null) {
+            list.addAll(statementList.getInstructions());
+        }
+        return list;
     }
 }

@@ -1,6 +1,10 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.Quadruple;
 import COP4620.parser.Scope;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CompoundStmt extends Statement {
     private LocalDeclarations declarations;
@@ -27,5 +31,17 @@ public class CompoundStmt extends Statement {
     @Override
     public boolean isValid(Scope scope) {
         return isValid(scope, true);
+    }
+
+    @Override
+    public List<Quadruple> getInstructions() {
+        List<Quadruple> list = new ArrayList<>();
+        if (declarations != null) {
+            list.addAll(declarations.getInstructions());
+        }
+        if (statements != null) {
+            list.addAll(statements.getInstructions());
+        }
+        return list;
     }
 }

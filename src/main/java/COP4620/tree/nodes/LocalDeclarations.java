@@ -1,6 +1,9 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.Quadruple;
 import COP4620.parser.Scope;
+
+import java.util.List;
 
 public class LocalDeclarations extends Node {
     private VarDeclaration varDeclaration;
@@ -15,5 +18,14 @@ public class LocalDeclarations extends Node {
     public boolean isValid(Scope scope) {
         return varDeclaration.isValid(scope)
                 && (localDeclarations == null || localDeclarations.isValid(scope));
+    }
+
+    @Override
+    public List<Quadruple> getInstructions() {
+        List<Quadruple> list = varDeclaration.getInstructions();
+        if (localDeclarations != null) {
+            list.addAll(localDeclarations.getInstructions());
+        }
+        return list;
     }
 }
