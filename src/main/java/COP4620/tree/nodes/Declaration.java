@@ -1,5 +1,6 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.CodeGenerator;
 import COP4620.codegen.Quadruple;
 import COP4620.parser.Scope;
 
@@ -32,7 +33,7 @@ public class Declaration extends Node {
     }
 
     @Override
-    public List<Quadruple> getInstructions() {
-        return value.getInstructions();
+    public List<Quadruple> getInstructions(CodeGenerator gen) {
+        return value.getInstructions(gen);
     }
 }

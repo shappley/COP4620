@@ -1,5 +1,6 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.CodeGenerator;
 import COP4620.codegen.Quadruple;
 import COP4620.parser.Scope;
 
@@ -34,13 +35,13 @@ public class CompoundStmt extends Statement {
     }
 
     @Override
-    public List<Quadruple> getInstructions() {
+    public List<Quadruple> getInstructions(CodeGenerator gen) {
         List<Quadruple> list = new ArrayList<>();
         if (declarations != null) {
-            list.addAll(declarations.getInstructions());
+            list.addAll(declarations.getInstructions(gen));
         }
         if (statements != null) {
-            list.addAll(statements.getInstructions());
+            list.addAll(statements.getInstructions(gen));
         }
         return list;
     }

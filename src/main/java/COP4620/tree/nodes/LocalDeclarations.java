@@ -1,5 +1,6 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.CodeGenerator;
 import COP4620.codegen.Quadruple;
 import COP4620.parser.Scope;
 
@@ -21,10 +22,10 @@ public class LocalDeclarations extends Node {
     }
 
     @Override
-    public List<Quadruple> getInstructions() {
-        List<Quadruple> list = varDeclaration.getInstructions();
+    public List<Quadruple> getInstructions(CodeGenerator gen) {
+        List<Quadruple> list = varDeclaration.getInstructions(gen);
         if (localDeclarations != null) {
-            list.addAll(localDeclarations.getInstructions());
+            list.addAll(localDeclarations.getInstructions(gen));
         }
         return list;
     }

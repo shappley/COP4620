@@ -1,5 +1,6 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.CodeGenerator;
 import COP4620.codegen.Quadruple;
 import COP4620.parser.FunctionSymbol;
 import COP4620.parser.Scope;
@@ -40,7 +41,7 @@ public abstract class Node {
         return leftType;
     }
 
-    public List<Quadruple> getInstructions() {
+    public List<Quadruple> getInstructions(CodeGenerator gen) {
         return new ArrayList<>();
     }
 }

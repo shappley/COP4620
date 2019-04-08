@@ -1,5 +1,6 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.CodeGenerator;
 import COP4620.codegen.Operation;
 import COP4620.codegen.Quadruple;
 import COP4620.parser.FunctionSymbol;
@@ -43,10 +44,10 @@ public class FunDeclaration extends Node {
     }
 
     @Override
-    public List<Quadruple> getInstructions() {
+    public List<Quadruple> getInstructions(CodeGenerator gen) {
         List<Quadruple> instructions = new ArrayList<>();
         instructions.add(new Quadruple(-1, Operation.FUNC, id, getType().toString(), String.valueOf(params.getParameterCount())));
-        instructions.addAll(body.getInstructions());
+        instructions.addAll(body.getInstructions(gen));
         instructions.add(new Quadruple(-1, Operation.END, Operation.FUNC.name(), id, ""));
         return instructions;
     }
