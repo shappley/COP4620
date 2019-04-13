@@ -17,10 +17,6 @@ public class CodeGenerator {
         return root.getInstructions(this);
     }
 
-    public String getPreviousTempVariable() {
-        return "t" + (tempVariable - 1);
-    }
-
     public String getLastTempVariable() {
         return "t" + tempVariable;
     }

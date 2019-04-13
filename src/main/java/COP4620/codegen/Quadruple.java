@@ -27,16 +27,32 @@ public class Quadruple {
         return operation;
     }
 
+    public void setOperation(Operation operation) {
+        this.operation = operation;
+    }
+
     public String getLeftValue() {
         return leftValue;
+    }
+
+    public void setLeftValue(String leftValue) {
+        this.leftValue = leftValue;
     }
 
     public String getRightValue() {
         return rightValue;
     }
 
+    public void setRightValue(String rightValue) {
+        this.rightValue = rightValue;
+    }
+
     public String getDestination() {
         return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
     @Override

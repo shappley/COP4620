@@ -41,7 +41,11 @@ public abstract class Node {
         return leftType;
     }
 
-    public List<Quadruple> getInstructions(CodeGenerator gen) {
+    public List<Quadruple> getInstructions(CodeGenerator gen, Quadruple instruction) {
         return new ArrayList<>();
+    }
+
+    public List<Quadruple> getInstructions(CodeGenerator gen) {
+        return getInstructions(gen, null);
     }
 }

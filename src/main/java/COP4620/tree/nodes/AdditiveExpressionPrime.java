@@ -6,6 +6,7 @@ import COP4620.codegen.Quadruple;
 import COP4620.parser.Scope;
 import COP4620.parser.Symbol;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdditiveExpressionPrime extends Node {
@@ -17,6 +18,10 @@ public class AdditiveExpressionPrime extends Node {
         this.addop = addop;
         this.term = term;
         this.additiveExpressionPrime = additiveExpressionPrime;
+    }
+
+    public String getTermLiteral() {
+        return term.getFactorLiteral();
     }
 
     @Override
@@ -31,17 +36,19 @@ public class AdditiveExpressionPrime extends Node {
     }
 
     @Override
-    public List<Quadruple> getInstructions(CodeGenerator gen) {
-        List<Quadruple> list = term.getInstructions(gen);
-        list.add(new Quadruple(
-                gen.nextLine(),
-                Operation.getAddOp(addop.getValue()),
-                gen.getPreviousTempVariable(),
-                gen.getLastTempVariable(),
-                gen.getNextTempVariable())
-        );
+    public List<Quadruple> getInstructions(CodeGenerator gen, Quadruple instruction) {
+        List<Quadruple> list = new ArrayList<>();
+        String termLiteral = getTermLiteral();
+        list.addAll(term.getInstructions(gen));
+        if (termLiteral != null && instruction != null) {
+            instruction.setLine(gen.nextLine());
+            instruction.setOperation(Operation.getAddOp(addop.getValue()));
+            instruction.setRightValue(termLiteral);
+            instruction.setDestination(gen.getNextTempVariable());
+            list.add(instruction);
+        }
         if (additiveExpressionPrime != null) {
-            list.addAll(additiveExpressionPrime.getInstructions(gen));
+            list.addAll(additiveExpressionPrime.getInstructions(gen, new Quadruple(-1, null, gen.getLastTempVariable(), null, null)));
         }
         return list;
     }

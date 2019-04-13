@@ -6,4 +6,8 @@ public class Mulop extends Node {
     public Mulop(String value) {
         this.value = value;
     }
+
+    public String getValue() {
+        return value;
+    }
 }

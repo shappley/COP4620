@@ -5,6 +5,7 @@ import COP4620.codegen.Quadruple;
 import COP4620.parser.Scope;
 import COP4620.parser.Symbol;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Term extends Node {
@@ -16,7 +17,7 @@ public class Term extends Node {
         this.termPrime = termPrime;
     }
 
-    public String getFactorValue(){
+    public String getFactorLiteral() {
         return factor.getTokenValue();
     }
 
@@ -32,9 +33,15 @@ public class Term extends Node {
 
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen) {
-        List<Quadruple> list = factor.getInstructions(gen);
+        List<Quadruple> list = new ArrayList<>();
+        String factorLiteral = getFactorLiteral();
+        Quadruple instruction = null;
+        list.addAll(factor.getInstructions(gen));
+        if (factorLiteral != null) {
+            instruction = new Quadruple(-1, null, factorLiteral, null, null);
+        }
         if (termPrime != null) {
-            list.addAll(termPrime.getInstructions(gen));
+            list.addAll(termPrime.getInstructions(gen, instruction));
         }
         return list;
     }

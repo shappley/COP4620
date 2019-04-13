@@ -5,6 +5,7 @@ import COP4620.codegen.Quadruple;
 import COP4620.parser.Scope;
 import COP4620.parser.Symbol;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdditiveExpression extends Node {
@@ -14,6 +15,10 @@ public class AdditiveExpression extends Node {
     public AdditiveExpression(Term term, AdditiveExpressionPrime additiveExpressionPrime) {
         this.term = term;
         this.additiveExpressionPrime = additiveExpressionPrime;
+    }
+
+    public String getTermLiteral() {
+        return term.getFactorLiteral();
     }
 
     @Override
@@ -33,9 +38,15 @@ public class AdditiveExpression extends Node {
 
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen) {
-        List<Quadruple> list = term.getInstructions(gen);
+        List<Quadruple> list = new ArrayList<>();
+        String termLiteral = getTermLiteral();
+        Quadruple instruction = null;
+        list.addAll(term.getInstructions(gen));
+        if (termLiteral != null) {
+            instruction = new Quadruple(-1, null, termLiteral, null, null);
+        }
         if (additiveExpressionPrime != null) {
-            list.addAll(additiveExpressionPrime.getInstructions(gen));
+            list.addAll(additiveExpressionPrime.getInstructions(gen, instruction));
         }
         return list;
     }
