@@ -10,6 +10,10 @@ public class Addop extends Node {
         this.value = value;
     }
 
+    public String getValue() {
+        return value;
+    }
+
     @Override
     public boolean isValid(Scope scope) {
         return true;

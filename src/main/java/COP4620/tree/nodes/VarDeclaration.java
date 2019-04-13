@@ -79,7 +79,7 @@ public class VarDeclaration extends Node {
         if (getType() == Type.ARRAY) {
             size = size * parseInt(getSize());
         }
-        list.add(new Quadruple(-1, Operation.ALLOC, String.valueOf(size), "", getId()));
+        list.add(new Quadruple(gen.nextLine(), Operation.ALLOC, String.valueOf(size), "", getId()));
         return list;
     }
 

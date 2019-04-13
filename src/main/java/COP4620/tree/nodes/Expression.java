@@ -50,7 +50,7 @@ public class Expression extends Node {
             return simpleExpression.getInstructions(gen);
         }
         List<Quadruple> list = new ArrayList<>(expression.getInstructions(gen));
-        list.add(new Quadruple(-1, Operation.ASGN, gen.getNextTempVariable(), "", var.getId()));
+        list.add(new Quadruple(gen.nextLine(), Operation.ASGN, gen.getLastTempVariable(), "", var.getId()));
         return list;
     }
 }

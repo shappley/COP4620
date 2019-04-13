@@ -1,6 +1,7 @@
 package COP4620.tree.nodes;
 
 import COP4620.codegen.CodeGenerator;
+import COP4620.codegen.Operation;
 import COP4620.codegen.Quadruple;
 import COP4620.parser.Scope;
 import COP4620.parser.Symbol;
@@ -41,6 +42,12 @@ public class SimpleExpression extends Node {
 
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen) {
-        return super.getInstructions(gen);
+        List<Quadruple> list = left.getInstructions(gen);
+        if (relop != null) {
+            String temp = gen.getLastTempVariable();
+            list.addAll(right.getInstructions(gen));
+            list.add(new Quadruple(gen.nextLine(), Operation.COMPR, temp, gen.getLastTempVariable(), gen.getNextTempVariable()));
+        }
+        return list;
     }
 }

@@ -1,7 +1,12 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.CodeGenerator;
+import COP4620.codegen.Operation;
+import COP4620.codegen.Quadruple;
 import COP4620.parser.Scope;
 import COP4620.parser.Symbol;
+
+import java.util.List;
 
 public class AdditiveExpressionPrime extends Node {
     private Addop addop;
@@ -23,5 +28,21 @@ public class AdditiveExpressionPrime extends Node {
     @Override
     public Symbol.Type evaluateType(Scope scope) {
         return evaluateType(scope, term, additiveExpressionPrime);
+    }
+
+    @Override
+    public List<Quadruple> getInstructions(CodeGenerator gen) {
+        List<Quadruple> list = term.getInstructions(gen);
+        list.add(new Quadruple(
+                gen.nextLine(),
+                Operation.getAddOp(addop.getValue()),
+                gen.getPreviousTempVariable(),
+                gen.getLastTempVariable(),
+                gen.getNextTempVariable())
+        );
+        if (additiveExpressionPrime != null) {
+            list.addAll(additiveExpressionPrime.getInstructions(gen));
+        }
+        return list;
     }
 }
