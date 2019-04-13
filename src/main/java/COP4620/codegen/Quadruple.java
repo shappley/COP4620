@@ -57,6 +57,18 @@ public class Quadruple {
 
     @Override
     public String toString() {
-        return String.format("%-5s %-8s %-8s %-8s %-8s", getLine(), getOperation(), getLeftValue(), getRightValue(), getDestination());
+        return String.format("%-8s%-8s%-8s%-8s%s", getLine(), getOperation(), getLeftValue(), getRightValue(), getDestination());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Quadruple) {
+            Quadruple other = (Quadruple) obj;
+            return this.getLine() == other.getLine()
+                    && this.getOperation() == other.getOperation()
+                    && this.getLeftValue().equals(other.getLeftValue())
+                    && this.getRightValue().equals(other.getRightValue());
+        }
+        return false;
     }
 }
