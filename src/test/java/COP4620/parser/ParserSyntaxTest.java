@@ -35,7 +35,7 @@ class ParserSyntaxTest extends BaseTest {
         File[] files = getResourceFilesInDirectory(dir);
         for (File f : files) {
             tests.add(DynamicTest.dynamicTest("File " + f.getName() + ", expected " + expected, () -> {
-                String source = getSource(f.getAbsolutePath());
+                String source = readFile(f.getAbsolutePath());
                 Parser parser = getParser(source);
                 assertEquals(expected, parser.program() != null && parser.isDone());
             }));
