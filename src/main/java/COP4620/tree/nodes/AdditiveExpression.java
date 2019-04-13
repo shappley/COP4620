@@ -11,10 +11,22 @@ import java.util.List;
 public class AdditiveExpression extends Node {
     private Term term;
     private AdditiveExpressionPrime additiveExpressionPrime;
+    private String expressionValue;
 
     public AdditiveExpression(Term term, AdditiveExpressionPrime additiveExpressionPrime) {
         this.term = term;
         this.additiveExpressionPrime = additiveExpressionPrime;
+    }
+
+    public String getExpressionValue(CodeGenerator gen) {
+        if (expressionValue == null) {
+            if (additiveExpressionPrime != null) {
+                expressionValue = additiveExpressionPrime.getExpressionValue(gen);
+            } else {
+                expressionValue = term.getExpressionValue(gen);
+            }
+        }
+        return expressionValue;
     }
 
     @Override
@@ -34,7 +46,11 @@ public class AdditiveExpression extends Node {
 
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen) {
-        List<Quadruple> list = new ArrayList<>();
+        List<Quadruple> list = new ArrayList<>(term.getInstructions(gen));
+        Quadruple instruction = new Quadruple(-1, null, term.getExpressionValue(gen), null, null);
+        if (additiveExpressionPrime != null) {
+            list.addAll(additiveExpressionPrime.getInstructions(gen, instruction));
+        }
         return list;
     }
 }

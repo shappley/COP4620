@@ -13,6 +13,7 @@ public class TermPrime extends Node {
     private Mulop mulop;
     private Factor factor;
     private TermPrime termPrime;
+    private String expressionValue;
 
     public TermPrime(Mulop mulop, Factor factor, TermPrime termPrime) {
         this.mulop = mulop;
@@ -20,8 +21,15 @@ public class TermPrime extends Node {
         this.termPrime = termPrime;
     }
 
-    public String getFactorLiteral() {
-        return factor.getTokenValue();
+    public String getExpressionValue(CodeGenerator gen) {
+        if (expressionValue == null) {
+            if (termPrime != null) {
+                expressionValue = gen.getNextTempVariable();
+            } else {
+                expressionValue = factor.getExpressionValue(gen);
+            }
+        }
+        return expressionValue;
     }
 
     @Override
@@ -37,16 +45,12 @@ public class TermPrime extends Node {
 
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen, Quadruple instruction) {
-        List<Quadruple> list = new ArrayList<>();
-        String factorLiteral = getFactorLiteral();
-        list.addAll(factor.getInstructions(gen));
-        if (factorLiteral != null && instruction != null) {
-            instruction.setLine(gen.nextLine());
-            instruction.setOperation(Operation.getAddOp(mulop.getValue()));
-            instruction.setRightValue(factorLiteral);
-            instruction.setDestination(gen.getNextTempVariable());
-            list.add(instruction);
-        }
+        List<Quadruple> list = new ArrayList<>(factor.getInstructions(gen));
+        instruction.setLine(gen.nextLine());
+        instruction.setOperation(Operation.getAddOp(mulop.getValue()));
+        instruction.setRightValue(getExpressionValue(gen));
+        instruction.setDestination(gen.getNextTempVariable());
+        list.add(instruction);
         if (termPrime != null) {
             list.addAll(termPrime.getInstructions(gen, new Quadruple(-1, null, gen.getLastTempVariable(), null, null)));
         }

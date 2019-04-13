@@ -13,11 +13,23 @@ public class AdditiveExpressionPrime extends Node {
     private Addop addop;
     private Term term;
     private AdditiveExpressionPrime additiveExpressionPrime;
+    private String expressionValue;
 
     public AdditiveExpressionPrime(Addop addop, Term term, AdditiveExpressionPrime additiveExpressionPrime) {
         this.addop = addop;
         this.term = term;
         this.additiveExpressionPrime = additiveExpressionPrime;
+    }
+
+    public String getExpressionValue(CodeGenerator gen) {
+        if (expressionValue == null) {
+            if (additiveExpressionPrime != null) {
+                expressionValue = gen.getNextTempVariable();
+            } else {
+                expressionValue = term.getExpressionValue(gen);
+            }
+        }
+        return expressionValue;
     }
 
     @Override
@@ -33,7 +45,15 @@ public class AdditiveExpressionPrime extends Node {
 
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen, Quadruple instruction) {
-        List<Quadruple> list = new ArrayList<>();
+        List<Quadruple> list = new ArrayList<>(term.getInstructions(gen));
+        instruction.setLine(gen.nextLine());
+        instruction.setOperation(Operation.getAddOp(addop.getValue()));
+        instruction.setRightValue(term.getExpressionValue(gen));
+        instruction.setDestination(gen.getNextTempVariable());
+        list.add(instruction);
+        if (additiveExpressionPrime != null) {
+            list.addAll(additiveExpressionPrime.getInstructions(gen, new Quadruple(-1, null, gen.getLastTempVariable(), null, null)));
+        }
         return list;
     }
 }

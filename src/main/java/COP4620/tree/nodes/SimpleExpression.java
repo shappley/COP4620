@@ -11,6 +11,7 @@ import java.util.List;
 public class SimpleExpression extends Node {
     private AdditiveExpression left, right;
     private Relop relop;
+    private String expressionValue;
 
     public SimpleExpression(AdditiveExpression expression) {
         this(expression, null, null);
@@ -20,6 +21,17 @@ public class SimpleExpression extends Node {
         this.left = left;
         this.relop = relop;
         this.right = right;
+    }
+
+    public String getExpressionValue(CodeGenerator gen) {
+        if (expressionValue == null) {
+            if (relop != null) {
+                expressionValue = gen.getNextTempVariable();
+            } else {
+                expressionValue = left.getExpressionValue(gen);
+            }
+        }
+        return expressionValue;
     }
 
     @Override
@@ -42,6 +54,11 @@ public class SimpleExpression extends Node {
 
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen) {
-        return super.getInstructions(gen);
+        List<Quadruple> list = left.getInstructions(gen);
+        if (relop != null) {
+            list.addAll(right.getInstructions(gen));
+            list.add(new Quadruple(gen.nextLine(), Operation.COMPR, null, null, null));
+        }
+        return list;
     }
 }

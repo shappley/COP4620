@@ -23,6 +23,13 @@ public class Expression extends Node {
         this.simpleExpression = expression;
     }
 
+    public String getExpressionValue(CodeGenerator gen) {
+        if (simpleExpression != null) {
+            return simpleExpression.getExpressionValue(gen);
+        }
+        return expression.getExpressionValue(gen);
+    }
+
     @Override
     public boolean isValid(Scope scope) {
         if (var != null) {
@@ -46,6 +53,11 @@ public class Expression extends Node {
 
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen) {
-        return super.getInstructions(gen);
+        if (simpleExpression != null) {
+            return simpleExpression.getInstructions(gen);
+        }
+        List<Quadruple> list = new ArrayList<>(expression.getInstructions(gen));
+        list.add(new Quadruple(gen.nextLine(), Operation.ASGN, gen.getLastTempVariable(), "", var.getId()));
+        return list;
     }
 }

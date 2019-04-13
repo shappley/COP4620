@@ -13,9 +13,23 @@ import static COP4620.util.StringUtil.isInteger;
 
 public class Factor extends Node {
     private Node child;
+    private String expressionValue;
 
     public Factor(Node child) {
         this.child = child;
+    }
+
+    public String getExpressionValue(CodeGenerator gen) {
+        if (expressionValue == null) {
+            if (child instanceof TerminalNode) {
+                expressionValue = getTokenValue();
+            } else if (child instanceof Var) {
+                expressionValue = ((Var) child).getId();
+            } else {
+                expressionValue = gen.getNextTempVariable();
+            }
+        }
+        return expressionValue;
     }
 
     @Override
@@ -42,6 +56,9 @@ public class Factor extends Node {
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen) {
         List<Quadruple> list = new ArrayList<>();
+        if (!(child instanceof TerminalNode)) {
+            list.addAll(child.getInstructions(gen));
+        }
         return list;
     }
 }
