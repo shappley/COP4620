@@ -21,8 +21,11 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @DisplayName("4. Code Generation")
 class CodeGenTest extends BaseTest {
-    private void test(String file, List<Quadruple> instructions) throws Exception {
-        Lexer lexer = new Lexer(readResourceFile(file));
+    private void test(String source, List<Quadruple> instructions) throws Exception {
+        if (source.endsWith(".txt")) {
+            source = readResourceFile("codegen/" + source);
+        }
+        Lexer lexer = new Lexer(source);
         Token[] tokens = lexer.getTokens();
         Parser parser = new Parser(tokens);
         Node root = parser.program();
@@ -45,13 +48,13 @@ class CodeGenTest extends BaseTest {
     @DisplayName("1. Function Declarations")
     @ParameterizedTest(name = "1.{index}. {0}")
     @MethodSource("functionDeclarationArgs")
-    void functionDeclaration(String file, Quadruple[] instructions) throws Exception {
-        test("codegen/" + file, Arrays.asList(instructions));
+    void functionDeclaration(String source, Quadruple[] instructions) throws Exception {
+        test(source, Arrays.asList(instructions));
     }
 
     private static Stream<Arguments> functionDeclarationArgs() {
         return Stream.of(
-                arguments("1-main-func-dec.txt", new Quadruple[]{
+                arguments("void main(void) {}", new Quadruple[]{
                         new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
                         new Quadruple(2, Operation.END, "FUNC", "main", "")
                 })
