@@ -21,7 +21,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @DisplayName("4. Code Generation")
 class CodeGenTest extends BaseTest {
-    private void test(String source, List<Quadruple> instructions) throws Exception {
+    private void test(String source, List<Quadruple> expected) throws Exception {
         if (source.endsWith(".txt")) {
             source = readResourceFile("codegen/" + source);
         }
@@ -32,9 +32,12 @@ class CodeGenTest extends BaseTest {
         SemanticAnalyzer semantics = new SemanticAnalyzer(root);
         assertTrue(semantics.isValid());
         CodeGenerator codeGenerator = new CodeGenerator(root);
-        List<Quadruple> list = codeGenerator.getInstructions();
+        List<Quadruple> actual = codeGenerator.getInstructions();
+        String actualString = quadrupleListToString(actual);
 
-        assertEquals(quadrupleListToString(instructions), quadrupleListToString(list));
+        System.out.println(actualString);
+
+        assertEquals(quadrupleListToString(expected), actualString);
     }
 
     private String quadrupleListToString(List<Quadruple> list) {
@@ -57,6 +60,28 @@ class CodeGenTest extends BaseTest {
                 arguments("void main(void) {}", new Quadruple[]{
                         new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
                         new Quadruple(2, Operation.END, "FUNC", "main", "")
+                })
+        );
+    }
+
+    @DisplayName("2. Declarations")
+    @ParameterizedTest(name = "1.{index}. {0}")
+    @MethodSource("declarationsArgs")
+    void declarations(String source, Quadruple[] instructions) throws Exception {
+        test(source, Arrays.asList(instructions));
+    }
+
+    private static Stream<Arguments> declarationsArgs() {
+        return Stream.of(
+                arguments("void main(void) {int x;}", new Quadruple[]{
+                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
+                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
+                        new Quadruple(3, Operation.END, "FUNC", "main", "")
+                }),
+                arguments("void main(void) {int x[10];}", new Quadruple[]{
+                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
+                        new Quadruple(2, Operation.ALLOC, "40", "", "x"),
+                        new Quadruple(3, Operation.END, "FUNC", "main", "")
                 })
         );
     }
