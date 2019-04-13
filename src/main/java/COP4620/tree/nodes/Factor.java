@@ -42,9 +42,6 @@ public class Factor extends Node {
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen) {
         List<Quadruple> list = new ArrayList<>();
-        if (!(child instanceof TerminalNode)) {
-            list.addAll(child.getInstructions(gen));
-        }
         return list;
     }
 }

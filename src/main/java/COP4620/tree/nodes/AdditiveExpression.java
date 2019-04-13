@@ -17,10 +17,6 @@ public class AdditiveExpression extends Node {
         this.additiveExpressionPrime = additiveExpressionPrime;
     }
 
-    public String getTermLiteral() {
-        return term.getFactorLiteral();
-    }
-
     @Override
     public boolean isValid(Scope scope) {
         Symbol.Type type = evaluateType(scope);
@@ -39,15 +35,6 @@ public class AdditiveExpression extends Node {
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen) {
         List<Quadruple> list = new ArrayList<>();
-        String termLiteral = getTermLiteral();
-        Quadruple instruction = null;
-        list.addAll(term.getInstructions(gen));
-        if (termLiteral != null) {
-            instruction = new Quadruple(-1, null, termLiteral, null, null);
-        }
-        if (additiveExpressionPrime != null) {
-            list.addAll(additiveExpressionPrime.getInstructions(gen, instruction));
-        }
         return list;
     }
 }

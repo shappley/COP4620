@@ -42,12 +42,6 @@ public class SimpleExpression extends Node {
 
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen) {
-        List<Quadruple> list = left.getInstructions(gen);
-        if (relop != null) {
-            String temp = gen.getLastTempVariable();
-            list.addAll(right.getInstructions(gen));
-            list.add(new Quadruple(gen.nextLine(), Operation.COMPR, temp, gen.getLastTempVariable(), gen.getNextTempVariable()));
-        }
-        return list;
+        return super.getInstructions(gen);
     }
 }

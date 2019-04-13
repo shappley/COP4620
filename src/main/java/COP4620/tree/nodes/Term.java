@@ -17,10 +17,6 @@ public class Term extends Node {
         this.termPrime = termPrime;
     }
 
-    public String getFactorLiteral() {
-        return factor.getTokenValue();
-    }
-
     @Override
     public boolean isValid(Scope scope) {
         return factor.isValid(scope) && (termPrime == null || termPrime.isValid(scope));
@@ -34,15 +30,6 @@ public class Term extends Node {
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen) {
         List<Quadruple> list = new ArrayList<>();
-        String factorLiteral = getFactorLiteral();
-        Quadruple instruction = null;
-        list.addAll(factor.getInstructions(gen));
-        if (factorLiteral != null) {
-            instruction = new Quadruple(-1, null, factorLiteral, null, null);
-        }
-        if (termPrime != null) {
-            list.addAll(termPrime.getInstructions(gen, instruction));
-        }
         return list;
     }
 }

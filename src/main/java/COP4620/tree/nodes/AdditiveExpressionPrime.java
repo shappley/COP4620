@@ -20,10 +20,6 @@ public class AdditiveExpressionPrime extends Node {
         this.additiveExpressionPrime = additiveExpressionPrime;
     }
 
-    public String getTermLiteral() {
-        return term.getFactorLiteral();
-    }
-
     @Override
     public boolean isValid(Scope scope) {
         return evaluateType(scope) != null && addop.isValid(scope) && term.isValid(scope)
@@ -38,18 +34,6 @@ public class AdditiveExpressionPrime extends Node {
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen, Quadruple instruction) {
         List<Quadruple> list = new ArrayList<>();
-        String termLiteral = getTermLiteral();
-        list.addAll(term.getInstructions(gen));
-        if (termLiteral != null && instruction != null) {
-            instruction.setLine(gen.nextLine());
-            instruction.setOperation(Operation.getAddOp(addop.getValue()));
-            instruction.setRightValue(termLiteral);
-            instruction.setDestination(gen.getNextTempVariable());
-            list.add(instruction);
-        }
-        if (additiveExpressionPrime != null) {
-            list.addAll(additiveExpressionPrime.getInstructions(gen, new Quadruple(-1, null, gen.getLastTempVariable(), null, null)));
-        }
         return list;
     }
 }
