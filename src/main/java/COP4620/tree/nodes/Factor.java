@@ -26,7 +26,7 @@ public class Factor extends Node {
             } else if (child instanceof Var) {
                 expressionValue = ((Var) child).getId();
             } else {
-                expressionValue = gen.getNextTempVariable();
+                expressionValue = gen.getLastTempVariable();
             }
         }
         return expressionValue;
