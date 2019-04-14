@@ -54,10 +54,14 @@ public class Expression extends Node {
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen) {
         if (simpleExpression != null) {
-            return simpleExpression.getInstructions(gen);
+            return new ArrayList<>(simpleExpression.getInstructions(gen));
         }
         List<Quadruple> list = new ArrayList<>(expression.getInstructions(gen));
-        list.add(new Quadruple(gen.nextLine(), Operation.ASGN, gen.getLastTempVariable(), "", var.getId()));
+        Quadruple instruction = new Quadruple(gen.nextLine(), Operation.ASGN, gen.getLastTempVariable(), "", var.getId());
+        if (list.isEmpty()) {
+            instruction.setLeftValue(getExpressionValue(gen));
+        }
+        list.add(instruction);
         return list;
     }
 }
