@@ -87,7 +87,7 @@ class CodeGenTest extends BaseTest {
     }
 
     @DisplayName("2. Expressions")
-    @ParameterizedTest(name = "1.{index}. {0}")
+    @ParameterizedTest(name = "2.{index}. {0}")
     @MethodSource("expressionsArgs")
     void expressions(String source, Quadruple[] instructions) throws Exception {
         test(source, Arrays.asList(instructions));
@@ -123,6 +123,23 @@ class CodeGenTest extends BaseTest {
                         new Quadruple(4, Operation.ADD, "1", "t1", "t2"),
                         new Quadruple(5, Operation.ASGN, "t2", "", "x"),
                         new Quadruple(6, Operation.END, "FUNC", "main", "")
+                }),
+                arguments("void main(void){int x; x=1*2+3;}", new Quadruple[]{
+                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
+                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
+                        new Quadruple(3, Operation.MUL, "1", "2", "t1"),
+                        new Quadruple(4, Operation.ADD, "t1", "3", "t2"),
+                        new Quadruple(5, Operation.ASGN, "t2", "", "x"),
+                        new Quadruple(6, Operation.END, "FUNC", "main", "")
+                }),
+                arguments("void main(void){int x; x=1*2+3*4;}", new Quadruple[]{
+                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
+                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
+                        new Quadruple(3, Operation.MUL, "1", "2", "t1"),
+                        new Quadruple(4, Operation.MUL, "3", "4", "t2"),
+                        new Quadruple(5, Operation.ADD, "t1", "t2", "t3"),
+                        new Quadruple(6, Operation.ASGN, "t3", "", "x"),
+                        new Quadruple(7, Operation.END, "FUNC", "main", "")
                 })
         );
     }
