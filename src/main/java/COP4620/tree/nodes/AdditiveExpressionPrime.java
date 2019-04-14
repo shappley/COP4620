@@ -45,10 +45,17 @@ public class AdditiveExpressionPrime extends Node {
 
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen, Quadruple instruction) {
-        List<Quadruple> list = new ArrayList<>(term.getInstructions(gen));
+        Quadruple termInstruction = new Quadruple(-1, null, null, null, null);
+        List<Quadruple> list = new ArrayList<>(term.getInstructions(gen, termInstruction));
         instruction.setLine(gen.nextLine());
         instruction.setOperation(Operation.getAddOp(addop.getValue()));
-        instruction.setRightValue(term.getExpressionValue(gen));
+
+        if (termInstruction.getDestination() != null) {
+            instruction.setRightValue(termInstruction.getDestination());
+        } else {
+            instruction.setRightValue(term.getExpressionValue(gen));
+        }
+
         instruction.setDestination(gen.getNextTempVariable());
         list.add(instruction);
         if (additiveExpressionPrime != null) {

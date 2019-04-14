@@ -40,9 +40,9 @@ public class Term extends Node {
     }
 
     @Override
-    public List<Quadruple> getInstructions(CodeGenerator gen) {
+    public List<Quadruple> getInstructions(CodeGenerator gen, Quadruple instruction) {
         List<Quadruple> list = new ArrayList<>(factor.getInstructions(gen));
-        Quadruple instruction = new Quadruple(-1, null, getExpressionValue(gen), null, null);
+        instruction.setLeftValue(factor.getExpressionValue(gen));
         if (termPrime != null) {
             list.addAll(termPrime.getInstructions(gen, instruction));
         }

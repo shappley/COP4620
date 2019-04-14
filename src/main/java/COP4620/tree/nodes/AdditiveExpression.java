@@ -46,8 +46,12 @@ public class AdditiveExpression extends Node {
 
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen) {
-        List<Quadruple> list = new ArrayList<>(term.getInstructions(gen));
+        Quadruple termInstruction = new Quadruple(-1, null, null, null, null);
+        List<Quadruple> list = new ArrayList<>(term.getInstructions(gen, termInstruction));
         Quadruple instruction = new Quadruple(-1, null, term.getExpressionValue(gen), null, null);
+        if (termInstruction.getDestination() != null) {
+            instruction.setLeftValue(termInstruction.getDestination());
+        }
         if (additiveExpressionPrime != null) {
             list.addAll(additiveExpressionPrime.getInstructions(gen, instruction));
         }
