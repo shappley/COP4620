@@ -50,176 +50,29 @@ class CodeGenTest extends BaseTest {
 
     @DisplayName("1. Function Declarations")
     @ParameterizedTest(name = "1.{index}. {0}")
-    @MethodSource("functionDeclarationArgs")
+    @MethodSource("COP4620.codegen.FunctionDeclarationTestProvider#functionDeclarationArgs")
     void functionDeclaration(String source, Quadruple[] instructions) throws Exception {
         test(source, Arrays.asList(instructions));
     }
 
-    private static Stream<Arguments> functionDeclarationArgs() {
-        return Stream.of(
-                arguments("void main(void){}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(2, Operation.END, "FUNC", "main", "")
-                }),
-                arguments("int f(void){return 1;} void main(void){}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "f", "INT", "0"),
-                        new Quadruple(2, Operation.RETURN, "", "", "1"),
-                        new Quadruple(3, Operation.END, "FUNC", "f", ""),
-                        new Quadruple(4, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(5, Operation.END, "FUNC", "main", "")
-                }),
-                arguments("int f(void){ int x; return x;} void main(void){}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "f", "INT", "0"),
-                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
-                        new Quadruple(3, Operation.RETURN, "", "", "x"),
-                        new Quadruple(4, Operation.END, "FUNC", "f", ""),
-                        new Quadruple(5, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(6, Operation.END, "FUNC", "main", "")
-                })
-        );
-    }
-
     @DisplayName("2. Declarations")
     @ParameterizedTest(name = "2.{index}. {0}")
-    @MethodSource("declarationsArgs")
+    @MethodSource("COP4620.codegen.DeclarationsTestProvider#declarationsArgs")
     void declarations(String source, Quadruple[] instructions) throws Exception {
         test(source, Arrays.asList(instructions));
     }
 
-    private static Stream<Arguments> declarationsArgs() {
-        return Stream.of(
-                arguments("void main(void) {int x;}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
-                        new Quadruple(3, Operation.END, "FUNC", "main", "")
-                }),
-                arguments("void main(void) {int x[10];}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(2, Operation.ALLOC, "40", "", "x"),
-                        new Quadruple(3, Operation.END, "FUNC", "main", "")
-                })
-        );
-    }
-
     @DisplayName("3. Expressions")
     @ParameterizedTest(name = "3.{index}. {0}")
-    @MethodSource("expressionsArgs")
+    @MethodSource("COP4620.codegen.ExpressionsTestProvider#expressionsArgs")
     void expressions(String source, Quadruple[] instructions) throws Exception {
         test(source, Arrays.asList(instructions));
     }
 
-    private static Stream<Arguments> expressionsArgs() {
-        return Stream.of(
-                arguments("void main(void){int x; x=1;}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
-                        new Quadruple(3, Operation.ASGN, "1", "", "x"),
-                        new Quadruple(4, Operation.END, "FUNC", "main", "")
-                }),
-                arguments("void main(void){int x; x=1+2;}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
-                        new Quadruple(3, Operation.ADD, "1", "2", "t1"),
-                        new Quadruple(4, Operation.ASGN, "t1", "", "x"),
-                        new Quadruple(5, Operation.END, "FUNC", "main", "")
-                }),
-                arguments("void main(void){int x; x=1+2+3;}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
-                        new Quadruple(3, Operation.ADD, "1", "2", "t1"),
-                        new Quadruple(4, Operation.ADD, "t1", "3", "t2"),
-                        new Quadruple(5, Operation.ASGN, "t2", "", "x"),
-                        new Quadruple(6, Operation.END, "FUNC", "main", "")
-                }),
-                arguments("void main(void){int x; int y; x=1; y=x;}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
-                        new Quadruple(3, Operation.ALLOC, "4", "", "y"),
-                        new Quadruple(4, Operation.ASGN, "1", "", "x"),
-                        new Quadruple(5, Operation.ASGN, "x", "", "y"),
-                        new Quadruple(6, Operation.END, "FUNC", "main", "")
-                }),
-                arguments("void main(void){int x; int y; x=1; y=1+x;}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
-                        new Quadruple(3, Operation.ALLOC, "4", "", "y"),
-                        new Quadruple(4, Operation.ASGN, "1", "", "x"),
-                        new Quadruple(5, Operation.ADD, "1", "x", "t1"),
-                        new Quadruple(6, Operation.ASGN, "t1", "", "y"),
-                        new Quadruple(7, Operation.END, "FUNC", "main", "")
-                })
-        );
-    }
-
     @DisplayName("4. Order of Operations")
     @ParameterizedTest(name = "4.{index}. {0}")
-    @MethodSource("orderOfOperationsArgs")
+    @MethodSource("COP4620.codegen.OrderOfOperationsTestProvider#orderOfOperationsArgs")
     void orderOfOperations(String source, Quadruple[] instructions) throws Exception {
         test(source, Arrays.asList(instructions));
-    }
-
-    private static Stream<Arguments> orderOfOperationsArgs() {
-        return Stream.of(
-                arguments("void main(void){int x; x=1+2*3;}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
-                        new Quadruple(3, Operation.MUL, "2", "3", "t1"),
-                        new Quadruple(4, Operation.ADD, "1", "t1", "t2"),
-                        new Quadruple(5, Operation.ASGN, "t2", "", "x"),
-                        new Quadruple(6, Operation.END, "FUNC", "main", "")
-                }),
-                arguments("void main(void){int x; x=1*2+3;}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
-                        new Quadruple(3, Operation.MUL, "1", "2", "t1"),
-                        new Quadruple(4, Operation.ADD, "t1", "3", "t2"),
-                        new Quadruple(5, Operation.ASGN, "t2", "", "x"),
-                        new Quadruple(6, Operation.END, "FUNC", "main", "")
-                }),
-                arguments("void main(void){int x; x=1*2+3*4;}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
-                        new Quadruple(3, Operation.MUL, "1", "2", "t1"),
-                        new Quadruple(4, Operation.MUL, "3", "4", "t2"),
-                        new Quadruple(5, Operation.ADD, "t1", "t2", "t3"),
-                        new Quadruple(6, Operation.ASGN, "t3", "", "x"),
-                        new Quadruple(7, Operation.END, "FUNC", "main", "")
-                }),
-                arguments("void main(void){int x; x=(1+2)*3;}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
-                        new Quadruple(3, Operation.ADD, "1", "2", "t1"),
-                        new Quadruple(4, Operation.MUL, "t1", "3", "t2"),
-                        new Quadruple(5, Operation.ASGN, "t2", "", "x"),
-                        new Quadruple(6, Operation.END, "FUNC", "main", "")
-                }),
-                arguments("void main(void){int x; x=1+(2*3);}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
-                        new Quadruple(3, Operation.MUL, "2", "3", "t1"),
-                        new Quadruple(4, Operation.ADD, "1", "t1", "t2"),
-                        new Quadruple(5, Operation.ASGN, "t2", "", "x"),
-                        new Quadruple(6, Operation.END, "FUNC", "main", "")
-                }),
-                arguments("void main(void){int x; x=(1+2)*(3+4);}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
-                        new Quadruple(3, Operation.ADD, "1", "2", "t1"),
-                        new Quadruple(4, Operation.ADD, "3", "4", "t2"),
-                        new Quadruple(5, Operation.MUL, "t1", "t2", "t3"),
-                        new Quadruple(6, Operation.ASGN, "t3", "", "x"),
-                        new Quadruple(7, Operation.END, "FUNC", "main", "")
-                }),
-                arguments("void main(void){int x; x=(1+2)*(3+4)+5;}", new Quadruple[]{
-                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
-                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
-                        new Quadruple(3, Operation.ADD, "1", "2", "t1"),
-                        new Quadruple(4, Operation.ADD, "3", "4", "t2"),
-                        new Quadruple(5, Operation.MUL, "t1", "t2", "t3"),
-                        new Quadruple(6, Operation.ADD, "t3", "5", "t4"),
-                        new Quadruple(7, Operation.ASGN, "t4", "", "x"),
-                        new Quadruple(8, Operation.END, "FUNC", "main", "")
-                })
-        );
     }
 }
