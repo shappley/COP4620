@@ -4,6 +4,7 @@ public enum Operation {
     ALLOC,
     ASGN,
     FUNC,
+    RETURN,
     END,
     BLT,
     BLTE,
