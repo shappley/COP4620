@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Project4 {
     public static void main(String[] args) {
-        Lexer lexer = new Lexer("void main(void){ int x; x=5; }");
+        Lexer lexer = new Lexer("void main(void){ int x; x=1;}");
         Token[] tokens = lexer.getTokens();
         Parser parser = new Parser(tokens);
         Node root = parser.program();
@@ -20,9 +20,7 @@ public class Project4 {
         if (semanticAnalyzer.isValid()) {
             CodeGenerator codeGen = new CodeGenerator(root);
             List<Quadruple> instructions = codeGen.getInstructions();
-            int i = 0;
             for (Quadruple e : instructions) {
-                e.setLine(++i);
                 System.out.println(e);
             }
         }

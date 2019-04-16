@@ -23,11 +23,7 @@ public class AdditiveExpressionPrime extends Node {
 
     public String getExpressionValue(CodeGenerator gen) {
         if (expressionValue == null) {
-            if (additiveExpressionPrime != null) {
-                expressionValue = gen.getNextTempVariable();
-            } else {
-                expressionValue = term.getExpressionValue(gen);
-            }
+            expressionValue = gen.getNextTempVariable();
         }
         return expressionValue;
     }
@@ -56,7 +52,7 @@ public class AdditiveExpressionPrime extends Node {
             instruction.setRightValue(term.getExpressionValue(gen));
         }
 
-        instruction.setDestination(gen.getNextTempVariable());
+        instruction.setDestination(getExpressionValue(gen));
         list.add(instruction);
         if (additiveExpressionPrime != null) {
             list.addAll(additiveExpressionPrime.getInstructions(gen, new Quadruple(-1, null, gen.getLastTempVariable(), null, null)));

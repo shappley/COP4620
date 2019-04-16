@@ -36,8 +36,8 @@ public class ReturnStmt extends Statement {
         List<Quadruple> list = new ArrayList<>();
         if (expression != null) {
             list.addAll(expression.getInstructions(gen));
+            list.add(new Quadruple(gen.nextLine(), Operation.RETURN, "", "", expression.getExpressionValue(gen)));
         }
-        list.add(new Quadruple(gen.nextLine(), Operation.RETURN, "", "", expression.getExpressionValue(gen)));
         return list;
     }
 }
