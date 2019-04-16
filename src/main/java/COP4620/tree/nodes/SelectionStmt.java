@@ -54,7 +54,7 @@ public class SelectionStmt extends Statement {
         conditionBranch.setDestination(String.valueOf(list.get(list.size() - 1).getLine() + 1));
 
         if (elseBody != null) {
-            conditionBranch.setDestination(String.valueOf(list.get(list.size() - 1).getLine() + 1));
+            conditionBranch.setDestination(String.valueOf(list.get(list.size() - 1).getLine() + 2));
             Quadruple unconditionalBranch = new Quadruple(gen.nextLine(), Operation.BR, "", "", null);
             list.add(unconditionalBranch);
             list.addAll(elseBody.getInstructions(gen));
