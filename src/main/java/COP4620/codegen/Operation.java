@@ -6,6 +6,7 @@ public enum Operation {
     FUNC,
     CALL,
     RETURN,
+    ARG,
     PARAM,
     END,
     BLT,

@@ -58,7 +58,7 @@ class ExpressionsTestProvider {
                 }),
                 arguments("int f(void){return f();} void main(void){}", new Quadruple[]{
                         new Quadruple(1, Operation.FUNC, "f", "INT", "0"),
-                        new Quadruple(2, Operation.CALL, "f", "", "t1"),
+                        new Quadruple(2, Operation.CALL, "f", "0", "t1"),
                         new Quadruple(3, Operation.RETURN, "", "", "t1"),
                         new Quadruple(4, Operation.END, "FUNC", "f", ""),
                         new Quadruple(5, Operation.FUNC, "main", "VOID", "0"),
@@ -84,12 +84,23 @@ class ExpressionsTestProvider {
                 }),
                 arguments("int f(void){return f()+1;} void main(void){}", new Quadruple[]{
                         new Quadruple(1, Operation.FUNC, "f", "INT", "0"),
-                        new Quadruple(2, Operation.CALL, "f", "", "t1"),
+                        new Quadruple(2, Operation.CALL, "f", "0", "t1"),
                         new Quadruple(3, Operation.ADD, "t1", "1", "t2"),
                         new Quadruple(4, Operation.RETURN, "", "", "t2"),
                         new Quadruple(5, Operation.END, "FUNC", "f", ""),
                         new Quadruple(6, Operation.FUNC, "main", "VOID", "0"),
                         new Quadruple(7, Operation.END, "FUNC", "main", "")
+                }),
+                arguments("int f(int x){return x;} void main(void){ f(1); }", new Quadruple[]{
+                        new Quadruple(1, Operation.FUNC, "f", "INT", "1"),
+                        new Quadruple(2, Operation.PARAM, "", "", "x"),
+                        new Quadruple(3, Operation.ALLOC, "4", "", "x"),
+                        new Quadruple(4, Operation.RETURN, "", "", "x"),
+                        new Quadruple(5, Operation.END, "FUNC", "f", ""),
+                        new Quadruple(6, Operation.FUNC, "main", "VOID", "0"),
+                        new Quadruple(7, Operation.ARG, "", "", "1"),
+                        new Quadruple(8, Operation.CALL, "f", "1", "t1"),
+                        new Quadruple(9, Operation.END, "FUNC", "main", "")
                 })
         );
     }

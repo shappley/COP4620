@@ -38,7 +38,12 @@ public class Call extends Node {
     @Override
     public List<Quadruple> getInstructions(CodeGenerator gen) {
         List<Quadruple> list = new ArrayList<>();
-        list.add(new Quadruple(gen.nextLine(), Operation.CALL, id, "", gen.getNextTempVariable()));
+        String argsCount = "0";
+        if (args != null) {
+            argsCount = String.valueOf(args.getArgsCount());
+            list.addAll(args.getInstructions(gen));
+        }
+        list.add(new Quadruple(gen.nextLine(), Operation.CALL, id, argsCount, gen.getNextTempVariable()));
         return list;
     }
 }
