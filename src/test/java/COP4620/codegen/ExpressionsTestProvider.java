@@ -64,14 +64,32 @@ class ExpressionsTestProvider {
                         new Quadruple(5, Operation.FUNC, "main", "VOID", "0"),
                         new Quadruple(6, Operation.END, "FUNC", "main", "")
                 }),
-                arguments("int f(void){return f()+1;} void main(void){}", new Quadruple[]{
+                arguments("int f(void){int x; x=1+1; return 0;} void main(void){}", new Quadruple[]{
                         new Quadruple(1, Operation.FUNC, "f", "INT", "0"),
-                        new Quadruple(2, Operation.CALL, "f", "", "t1"),
-                        new Quadruple(2, Operation.ADD, "t1", "1", "t2"),
-                        new Quadruple(3, Operation.RETURN, "", "", "t2"),
+                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
+                        new Quadruple(3, Operation.ADD, "1", "1", "t1"),
+                        new Quadruple(4, Operation.ASGN, "t1", "", "x"),
+                        new Quadruple(5, Operation.RETURN, "", "", "0"),
+                        new Quadruple(6, Operation.END, "FUNC", "f", ""),
+                        new Quadruple(7, Operation.FUNC, "main", "VOID", "0"),
+                        new Quadruple(8, Operation.END, "FUNC", "main", "")
+                }),
+                arguments("int f(void){return 1+1;} void main(void){}", new Quadruple[]{
+                        new Quadruple(1, Operation.FUNC, "f", "INT", "0"),
+                        new Quadruple(2, Operation.ADD, "1", "1", "t1"),
+                        new Quadruple(3, Operation.RETURN, "", "", "t1"),
                         new Quadruple(4, Operation.END, "FUNC", "f", ""),
                         new Quadruple(5, Operation.FUNC, "main", "VOID", "0"),
                         new Quadruple(6, Operation.END, "FUNC", "main", "")
+                }),
+                arguments("int f(void){return f()+1;} void main(void){}", new Quadruple[]{
+                        new Quadruple(1, Operation.FUNC, "f", "INT", "0"),
+                        new Quadruple(2, Operation.CALL, "f", "", "t1"),
+                        new Quadruple(3, Operation.ADD, "t1", "1", "t2"),
+                        new Quadruple(4, Operation.RETURN, "", "", "t2"),
+                        new Quadruple(5, Operation.END, "FUNC", "f", ""),
+                        new Quadruple(6, Operation.FUNC, "main", "VOID", "0"),
+                        new Quadruple(7, Operation.END, "FUNC", "main", "")
                 })
         );
     }
