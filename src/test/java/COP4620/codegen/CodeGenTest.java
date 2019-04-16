@@ -75,4 +75,11 @@ class CodeGenTest extends BaseTest {
     void orderOfOperations(String source, Quadruple[] instructions) throws Exception {
         test(source, Arrays.asList(instructions));
     }
+
+    @DisplayName("5. Selection Statements")
+    @ParameterizedTest(name = "5.{index}. {0}")
+    @MethodSource("COP4620.codegen.SelectionStatementsTestProvider#args")
+    void selectionStatements(String source, Quadruple[] instructions) throws Exception {
+        test(source, Arrays.asList(instructions));
+    }
 }

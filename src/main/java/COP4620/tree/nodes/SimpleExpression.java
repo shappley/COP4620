@@ -34,6 +34,10 @@ public class SimpleExpression extends Node {
         return expressionValue;
     }
 
+    public Relop getRelop() {
+        return relop;
+    }
+
     @Override
     public boolean isValid(Scope scope) {
         if (right != null) {
@@ -57,7 +61,7 @@ public class SimpleExpression extends Node {
         List<Quadruple> list = left.getInstructions(gen);
         if (relop != null) {
             list.addAll(right.getInstructions(gen));
-            list.add(new Quadruple(gen.nextLine(), Operation.COMPR, null, null, null));
+            list.add(new Quadruple(gen.nextLine(), Operation.COMPR, left.getExpressionValue(gen), right.getExpressionValue(gen), getExpressionValue(gen)));
         }
         return list;
     }

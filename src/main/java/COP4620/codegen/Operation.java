@@ -13,6 +13,7 @@ public enum Operation {
     BLTE,
     BGT,
     BGTE,
+    BR,
     BE,
     BDE,
     COMPR,

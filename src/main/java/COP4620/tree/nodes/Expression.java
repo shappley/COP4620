@@ -30,6 +30,13 @@ public class Expression extends Node {
         return expression.getExpressionValue(gen);
     }
 
+    public SimpleExpression getSimpleExpression() {
+        if (simpleExpression != null) {
+            return simpleExpression;
+        }
+        return expression.getSimpleExpression();
+    }
+
     @Override
     public boolean isValid(Scope scope) {
         if (var != null) {

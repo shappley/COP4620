@@ -6,4 +6,8 @@ public class Relop extends Node {
     public Relop(String value) {
         this.value = value;
     }
+
+    public String getValue() {
+        return value;
+    }
 }
