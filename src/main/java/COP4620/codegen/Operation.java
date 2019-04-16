@@ -1,41 +1,41 @@
 package COP4620.codegen;
 
 public enum Operation {
-    ALLOC,
-    ASGN,
-    FUNC,
-    CALL,
-    RETURN,
-    ARG,
-    PARAM,
-    END,
-    BLT,
-    BLTE,
-    BGT,
-    BGTE,
-    BR,
-    BE,
-    BDE,
-    COMPR,
     ADD,
-    SUB,
+    ALLOC,
+    ARG,
+    ASGN,
+    BR,
+    BREQ,
+    BRGE,
+    BRGT,
+    BRLT,
+    BRLE,
+    BRNEQ,
+    CALL,
+    COMPR,
+    DIV,
+    END,
+    FUNC,
     MUL,
-    DIV;
+    PARAM,
+    RETURN,
+    SUB;
 
     public static Operation getRelop(String relop) {
         switch (relop) {
             case ">":
-                return BGT;
+                return BRGT;
             case ">=":
-                return BGTE;
+                return BRGE;
             case "<":
-                return BLT;
+                return BRLT;
             case "<=":
-                return BLTE;
+                return BRLE;
             case "==":
-                return BE;
+                return BREQ;
             case "!=":
-                return BDE;
+                return BRNEQ;
         }
         return null;
     }
@@ -43,17 +43,17 @@ public enum Operation {
     public static Operation getNegatedRelop(String relop) {
         switch (relop) {
             case ">":
-                return BLTE;
+                return BRLE;
             case ">=":
-                return BLT;
+                return BRLT;
             case "<":
-                return BGTE;
+                return BRGE;
             case "<=":
-                return BGT;
+                return BRGT;
             case "==":
-                return BDE;
+                return BRNEQ;
             case "!=":
-                return BE;
+                return BREQ;
         }
         return null;
     }

@@ -44,7 +44,7 @@ public class SelectionStmt extends Statement {
             conditionBranch.setLeftValue(condition.getExpressionValue(gen));
         } else {
             list.add(new Quadruple(gen.nextLine(), Operation.COMPR, condition.getExpressionValue(gen), "0", gen.getNextTempVariable()));
-            conditionBranch.setOperation(Operation.BDE);
+            conditionBranch.setOperation(Operation.BRNEQ);
             conditionBranch.setLeftValue(gen.getLastTempVariable());
         }
 
