@@ -267,10 +267,10 @@ public class Parser {
                     nextToken();
                     Statement elseStatement = statement();
                     if (elseStatement != null) {
-                        return new SelectionStmt(statement, elseStatement);
+                        return new SelectionStmt(expression, statement, elseStatement);
                     }
                 } else {
-                    return new SelectionStmt(statement);
+                    return new SelectionStmt(expression, statement);
                 }
             }
         }
