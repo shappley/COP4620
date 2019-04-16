@@ -1,8 +1,14 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.CodeGenerator;
+import COP4620.codegen.Operation;
+import COP4620.codegen.Quadruple;
 import COP4620.parser.FunctionSymbol;
 import COP4620.parser.Scope;
 import COP4620.parser.Symbol;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Call extends Node {
     private String id;
@@ -27,5 +33,12 @@ public class Call extends Node {
     @Override
     public Symbol.Type evaluateType(Scope scope) {
         return scope.getTypeOf(id);
+    }
+
+    @Override
+    public List<Quadruple> getInstructions(CodeGenerator gen) {
+        List<Quadruple> list = new ArrayList<>();
+        list.add(new Quadruple(gen.nextLine(), Operation.CALL, id, "", gen.getNextTempVariable()));
+        return list;
     }
 }
