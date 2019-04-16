@@ -18,6 +18,16 @@ class DeclarationsTestProvider {
                         new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
                         new Quadruple(2, Operation.ALLOC, "40", "", "x"),
                         new Quadruple(3, Operation.END, "FUNC", "main", "")
+                }),
+                arguments("void main(void) {float x;}", new Quadruple[]{
+                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
+                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
+                        new Quadruple(3, Operation.END, "FUNC", "main", "")
+                }),
+                arguments("void main(void) {float x[10];}", new Quadruple[]{
+                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
+                        new Quadruple(2, Operation.ALLOC, "40", "", "x"),
+                        new Quadruple(3, Operation.END, "FUNC", "main", "")
                 })
         );
     }
