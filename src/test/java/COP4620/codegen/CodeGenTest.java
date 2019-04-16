@@ -82,4 +82,11 @@ class CodeGenTest extends BaseTest {
     void selectionStatements(String source, Quadruple[] instructions) throws Exception {
         test(source, Arrays.asList(instructions));
     }
+
+    @DisplayName("6. Iteration Statements")
+    @ParameterizedTest(name = "5.{index}. {0}")
+    @MethodSource("COP4620.codegen.IterationStatementTestProvider#args")
+    void iterationStatements(String source, Quadruple[] instructions) throws Exception {
+        test(source, Arrays.asList(instructions));
+    }
 }
