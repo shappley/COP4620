@@ -1,7 +1,12 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.CodeGenerator;
+import COP4620.codegen.Quadruple;
 import COP4620.parser.Scope;
 import COP4620.parser.Symbol;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ParamList extends Node {
     private Param param;
@@ -29,5 +34,14 @@ public class ParamList extends Node {
             return 1;
         }
         return 1 + paramList.getParameterCount();
+    }
+
+    @Override
+    public List<Quadruple> getInstructions(CodeGenerator gen) {
+        List<Quadruple> list = new ArrayList<>(param.getInstructions(gen));
+        if (paramList != null) {
+            list.addAll(paramList.getInstructions(gen));
+        }
+        return list;
     }
 }

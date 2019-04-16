@@ -1,6 +1,12 @@
 package COP4620.tree.nodes;
 
+import COP4620.codegen.CodeGenerator;
+import COP4620.codegen.Operation;
+import COP4620.codegen.Quadruple;
 import COP4620.parser.Symbol;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Param extends Node {
     private TypeSpecifier typeSpecifier;
@@ -44,5 +50,13 @@ public class Param extends Node {
             }
         }
         return null;
+    }
+
+    @Override
+    public List<Quadruple> getInstructions(CodeGenerator gen) {
+        List<Quadruple> list = new ArrayList<>();
+        list.add(new Quadruple(gen.nextLine(), Operation.PARAM, "", "", id));
+        list.add(new Quadruple(gen.nextLine(), Operation.ALLOC, "4", "", id));
+        return list;
     }
 }

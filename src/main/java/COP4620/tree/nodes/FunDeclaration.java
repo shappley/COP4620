@@ -47,6 +47,7 @@ public class FunDeclaration extends Node {
     public List<Quadruple> getInstructions(CodeGenerator gen) {
         List<Quadruple> instructions = new ArrayList<>();
         instructions.add(new Quadruple(gen.nextLine(), Operation.FUNC, id, getType().toString(), String.valueOf(params.getParameterCount())));
+        instructions.addAll(params.getInstructions(gen));
         instructions.addAll(body.getInstructions(gen));
         instructions.add(new Quadruple(gen.nextLine(), Operation.END, Operation.FUNC.name(), id, ""));
         return instructions;

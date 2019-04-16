@@ -35,6 +35,26 @@ class FunctionDeclarationTestProvider {
                         new Quadruple(4, Operation.END, "FUNC", "f", ""),
                         new Quadruple(5, Operation.FUNC, "main", "VOID", "0"),
                         new Quadruple(6, Operation.END, "FUNC", "main", "")
+                }),
+                arguments("int f(int x){return x;} void main(void){}", new Quadruple[]{
+                        new Quadruple(1, Operation.FUNC, "f", "INT", "1"),
+                        new Quadruple(2, Operation.PARAM, "", "", "x"),
+                        new Quadruple(3, Operation.ALLOC, "4", "", "x"),
+                        new Quadruple(4, Operation.RETURN, "", "", "x"),
+                        new Quadruple(5, Operation.END, "FUNC", "f", ""),
+                        new Quadruple(6, Operation.FUNC, "main", "VOID", "0"),
+                        new Quadruple(7, Operation.END, "FUNC", "main", "")
+                }),
+                arguments("int f(int x, int y){return x;} void main(void){}", new Quadruple[]{
+                        new Quadruple(1, Operation.FUNC, "f", "INT", "2"),
+                        new Quadruple(2, Operation.PARAM, "", "", "x"),
+                        new Quadruple(3, Operation.ALLOC, "4", "", "x"),
+                        new Quadruple(4, Operation.PARAM, "", "", "y"),
+                        new Quadruple(5, Operation.ALLOC, "4", "", "y"),
+                        new Quadruple(6, Operation.RETURN, "", "", "x"),
+                        new Quadruple(7, Operation.END, "FUNC", "f", ""),
+                        new Quadruple(8, Operation.FUNC, "main", "VOID", "0"),
+                        new Quadruple(9, Operation.END, "FUNC", "main", "")
                 })
         );
     }
