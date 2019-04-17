@@ -63,8 +63,9 @@ public class Expression extends Node {
         if (simpleExpression != null) {
             return new ArrayList<>(simpleExpression.getInstructions(gen));
         }
-        List<Quadruple> list = new ArrayList<>(expression.getInstructions(gen));
-        Quadruple instruction = new Quadruple(gen.nextLine(), Operation.ASGN, gen.getLastTempVariable(), "", var.getId());
+        List<Quadruple> list = new ArrayList<>(var.getInstructions(gen));
+        list.addAll(expression.getInstructions(gen));
+        Quadruple instruction = new Quadruple(gen.nextLine(), Operation.ASGN, gen.getLastTempVariable(), "", var.getExpressionValue(gen));
         if (list.isEmpty()) {
             instruction.setLeftValue(getExpressionValue(gen));
         }

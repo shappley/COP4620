@@ -14,6 +14,7 @@ public enum Operation {
     BRNEQ,
     CALL,
     COMPR,
+    DISP,
     DIV,
     END,
     FUNC,
