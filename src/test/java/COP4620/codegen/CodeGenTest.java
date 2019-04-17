@@ -89,4 +89,11 @@ class CodeGenTest extends BaseTest {
     void iterationStatements(String source, Quadruple[] instructions) throws Exception {
         test(source, Arrays.asList(instructions));
     }
+
+    @DisplayName("7. Eggen Tests")
+    @ParameterizedTest(name = "5.{index}. {0}")
+    @MethodSource("COP4620.codegen.EggenTestProvider#args")
+    void eggenTests(String source, Quadruple[] instructions) throws Exception {
+        test(source, Arrays.asList(instructions));
+    }
 }
