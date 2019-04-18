@@ -47,6 +47,16 @@ class ExpressionsTestProvider {
                         new Quadruple(6, Operation.ASGN, "t2", "", "y"),
                         new Quadruple(7, Operation.END, "FUNC", "main", "")
                 }),
+                arguments("void main(void){int x[1]; int y; y = x[0]+2;}", new Quadruple[]{
+                        new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
+                        new Quadruple(2, Operation.ALLOC, "4", "", "x"),
+                        new Quadruple(3, Operation.ALLOC, "4", "", "y"),
+                        new Quadruple(4, Operation.MUL, "0", "4", "t1"),
+                        new Quadruple(5, Operation.DISP, "x", "t1", "t2"),
+                        new Quadruple(6, Operation.ADD, "t2", "2", "t3"),
+                        new Quadruple(7, Operation.ASGN, "t3", "", "y"),
+                        new Quadruple(8, Operation.END, "FUNC", "main", "")
+                }),
                 arguments("void main(void){int x[1]; int y; y = x[2+3];}", new Quadruple[]{
                         new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),
                         new Quadruple(2, Operation.ALLOC, "4", "", "x"),
