@@ -1,5 +1,7 @@
-package COP4620.codegen;
+package COP4620.codegen.providers;
 
+import COP4620.codegen.Operation;
+import COP4620.codegen.Quadruple;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
@@ -7,7 +9,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class ExpressionsTestProvider {
-    static Stream<Arguments> expressionsArgs() {
+    static Stream<Arguments> args() {
         return Stream.of(
                 arguments("void main(void){int x; x=1;}", new Quadruple[]{
                         new Quadruple(1, Operation.FUNC, "main", "VOID", "0"),

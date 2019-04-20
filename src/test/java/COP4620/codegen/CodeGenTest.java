@@ -8,16 +8,13 @@ import COP4620.parser.SemanticAnalyzer;
 import COP4620.tree.nodes.Node;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @DisplayName("4. Code Generation")
 class CodeGenTest extends BaseTest {
@@ -50,49 +47,49 @@ class CodeGenTest extends BaseTest {
 
     @DisplayName("1. Function Declarations")
     @ParameterizedTest(name = "1.{index}. {0}")
-    @MethodSource("COP4620.codegen.FunctionDeclarationTestProvider#functionDeclarationArgs")
+    @MethodSource("COP4620.codegen.providers.FunctionDeclarationTestProvider#args")
     void functionDeclaration(String source, Quadruple[] instructions) throws Exception {
         test(source, Arrays.asList(instructions));
     }
 
     @DisplayName("2. Declarations")
     @ParameterizedTest(name = "2.{index}. {0}")
-    @MethodSource("COP4620.codegen.DeclarationsTestProvider#declarationsArgs")
+    @MethodSource("COP4620.codegen.providers.DeclarationsTestProvider#args")
     void declarations(String source, Quadruple[] instructions) throws Exception {
         test(source, Arrays.asList(instructions));
     }
 
     @DisplayName("3. Expressions")
     @ParameterizedTest(name = "3.{index}. {0}")
-    @MethodSource("COP4620.codegen.ExpressionsTestProvider#expressionsArgs")
+    @MethodSource("COP4620.codegen.providers.ExpressionsTestProvider#args")
     void expressions(String source, Quadruple[] instructions) throws Exception {
         test(source, Arrays.asList(instructions));
     }
 
     @DisplayName("4. Order of Operations")
     @ParameterizedTest(name = "4.{index}. {0}")
-    @MethodSource("COP4620.codegen.OrderOfOperationsTestProvider#orderOfOperationsArgs")
+    @MethodSource("COP4620.codegen.providers.OrderOfOperationsTestProvider#args")
     void orderOfOperations(String source, Quadruple[] instructions) throws Exception {
         test(source, Arrays.asList(instructions));
     }
 
     @DisplayName("5. Selection Statements")
     @ParameterizedTest(name = "5.{index}. {0}")
-    @MethodSource("COP4620.codegen.SelectionStatementsTestProvider#args")
+    @MethodSource("COP4620.codegen.providers.SelectionStatementsTestProvider#args")
     void selectionStatements(String source, Quadruple[] instructions) throws Exception {
         test(source, Arrays.asList(instructions));
     }
 
     @DisplayName("6. Iteration Statements")
     @ParameterizedTest(name = "5.{index}. {0}")
-    @MethodSource("COP4620.codegen.IterationStatementTestProvider#args")
+    @MethodSource("COP4620.codegen.providers.IterationStatementTestProvider#args")
     void iterationStatements(String source, Quadruple[] instructions) throws Exception {
         test(source, Arrays.asList(instructions));
     }
 
     @DisplayName("7. Eggen Tests")
     @ParameterizedTest(name = "5.{index}. {0}")
-    @MethodSource("COP4620.codegen.EggenTestProvider#args")
+    @MethodSource("COP4620.codegen.providers.EggenTestProvider#args")
     void eggenTests(String source, Quadruple[] instructions) throws Exception {
         test(source, Arrays.asList(instructions));
     }

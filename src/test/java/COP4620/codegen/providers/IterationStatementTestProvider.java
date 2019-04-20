@@ -1,5 +1,7 @@
-package COP4620.codegen;
+package COP4620.codegen.providers;
 
+import COP4620.codegen.Operation;
+import COP4620.codegen.Quadruple;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
