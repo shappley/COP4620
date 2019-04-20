@@ -1,7 +1,0 @@
-all: clean
-	mkdir bin
-	javac -sourcepath src src/COP4620/Project3.java -d bin
-clean:
-	-rm -rf bin
-run: all
-	java -cp bin COP4620/Project3 ${file}
