@@ -71,7 +71,7 @@ To generate the instructions for this, it:
 4. Calls to generate the else-body `statement`
 
 ## Test Suite
-At the time of writing, there are 409 tests in this suite.
+At the time of writing, there are 413 tests in this suite with greater than 90% coverage.
 All unit tests were written for JUnit 5 and rely on the `jupiter-params` packages for parameterized tests.
 
 Tests are broken into categories corresponding to each stage of the compilation process.
