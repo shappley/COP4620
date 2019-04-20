@@ -35,7 +35,7 @@ class CodeGenTest extends BaseTest {
         List<Quadruple> actual = codeGenerator.getInstructions();
         String actualString = quadrupleListToString(actual);
 
-        System.out.println(actualString);
+        //System.out.println(actualString);
 
         assertEquals(quadrupleListToString(expected), actualString);
     }
